@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-radius="soft" data-contrast="deep" data-accent="buzz" data-neutral="warm" data-paper="cream" data-type="bricolage">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waggle — the night shift for your operations</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Inter+Tight:wght@400..700&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../src/index.css">
+<style>
+  /* ============================================================
+     WAGGLE — Astryx-discipline layout on Buzz & Ink v0.7.
+     Type voice: bricolage. Motion: the system's tokens + reveal().
+     Memory section: the system's knowledge graph (buzz-and-ink/graph).
+     One background. One surface. One radius. One accent.
+     ============================================================ */
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#0B0A08;
+    --surface:#141210;
+    --surface-2:#1A1815;
+    --line:rgba(242,234,217,.08);
+    --line-strong:rgba(242,234,217,.14);
+    --text:#F5F1E8;
+    --text-2:#A79E8F;
+    --text-3:#6E675C;
+    --accent:#E28C3F;
+    --accent-deep:#D9701E;
+    --r:12px;
+    --r-s:8px;
+  }
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--bi-font-body);background:var(--bg);color:var(--text);
+    -webkit-font-smoothing:antialiased;font-size:15px;line-height:1.6;
+  }
+  ::selection{background:rgba(226,140,63,.3)}
+  .wrap{max-width:1064px;margin:0 auto;padding:0 24px}
+
+  /* one whisper of light behind the hero — the only decoration on the page */
+  .halo{position:absolute;top:-280px;left:50%;transform:translateX(-50%);width:920px;height:560px;
+    background:radial-gradient(ellipse at center,rgba(226,140,63,.09) 0%,transparent 60%);
+    pointer-events:none}
+
+  /* ── nav ────────────────────────────────────────────────────── */
+  header.nav{
+    position:sticky;top:0;z-index:var(--bi-z-nav);
+    background:rgba(11,10,8,.75);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  header.nav .wrap{display:flex;align-items:center;gap:8px;height:60px}
+  .wordmark{font-family:var(--bi-font-mono);font-weight:500;font-size:13px;letter-spacing:.14em;color:var(--text);margin-right:24px}
+  .wordmark b{color:var(--accent);font-weight:500}
+  header.nav a{
+    font-size:13.5px;font-weight:450;color:var(--text-2);text-decoration:none;
+    padding:8px 12px;border-radius:var(--r-s);transition:color var(--bi-dur-2) var(--bi-ease-out);
+  }
+  header.nav a:hover{color:var(--text)}
+  header.nav .grow{flex:1}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;border:none;
+    font-family:var(--bi-font-body);font-size:13.5px;font-weight:500;
+    height:38px;padding:0 18px;border-radius:var(--r-s);
+    transition:background var(--bi-dur-2) var(--bi-ease-out),border-color var(--bi-dur-2) var(--bi-ease-out),
+               transform var(--bi-dur-2) var(--bi-ease-out);
+  }
+  .btn:active{transform:scale(.97)}
+  .btn--primary{background:var(--accent-deep);color:#FFF}
+  .btn--primary:hover{background:var(--accent)}
+  .btn--quiet{background:transparent;color:var(--text);border:1px solid var(--line-strong)}
+  .btn--quiet:hover{border-color:rgba(242,234,217,.3)}
+  .btn--lg{height:44px;padding:0 22px;font-size:14px}
+
+  /* ── shared section skeleton ────────────────────────────────── */
+  section.blk{padding:112px 0 0}
+  .label{
+    font-family:var(--bi-font-mono);font-size:11px;font-weight:500;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--accent);display:block;margin-bottom:16px;
+  }
+  h1,h2{font-family:var(--bi-font-display);font-weight:560;letter-spacing:-.028em;line-height:1.06}
+  h2{font-size:34px;max-width:24ch}
+  h1 em,h2 em{font-style:normal;color:var(--accent)}
+  .sub{color:var(--text-2);font-size:15.5px;max-width:56ch;margin-top:14px}
+
+  /* the one card treatment, used everywhere */
+  .card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    box-shadow:inset 0 1px 0 rgba(242,234,217,.04);
+  }
+
+  /* ── hero ───────────────────────────────────────────────────── */
+  .hero{position:relative;text-align:center;padding:104px 0 0;overflow:visible}
+  .hero h1{font-size:clamp(42px,5.4vw,66px);max-width:17ch;margin:0 auto}
+  .hero .sub{margin:20px auto 0;text-align:center}
+  .hero .actions{display:flex;gap:12px;justify-content:center;margin-top:32px}
+  .hero .meta{
+    display:flex;gap:8px;justify-content:center;align-items:center;margin-top:20px;
+    font-size:12.5px;color:var(--text-3);
+  }
+  .hero .meta i{width:3px;height:3px;border-radius:99px;background:var(--text-3);font-style:normal}
+
+  /* ── the product panel ──────────────────────────────────────── */
+  .panel{margin:64px auto 0;max-width:960px;overflow:hidden;text-align:left}
+  .panel-head{
+    display:flex;align-items:center;gap:12px;height:52px;padding:0 20px;
+    border-bottom:1px solid var(--line);
+  }
+  .panel-head .dot{width:7px;height:7px;border-radius:99px;background:var(--bi-live)}
+  .panel-head b{font-size:13px;font-weight:500}
+  .panel-head span{font-family:var(--bi-font-mono);font-size:11px;color:var(--text-3)}
+  .panel-head .right{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .rows{padding:6px 8px}
+  .row{
+    display:grid;grid-template-columns:20px minmax(0,1fr) 130px 110px 90px;gap:16px;align-items:center;
+    padding:13px 12px;border-radius:var(--r-s);font-size:13.5px;
+    transition:background var(--bi-dur-1) var(--bi-ease-out);
+  }
+  .row:hover{background:var(--surface-2)}
+  .row + .row{border-top:1px solid var(--line)}
+  .row .chk{width:16px;height:16px;border-radius:5px;border:1.5px solid var(--line-strong)}
+  .row .chk.on{background:var(--accent-deep);border-color:var(--accent-deep);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-size:11px;background-position:center;background-repeat:no-repeat}
+  .row b{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row .agent,.row .when{font-family:var(--bi-font-mono);font-size:11.5px;color:var(--text-3)}
+  .row .amt{font-family:var(--bi-font-mono);font-size:12px;color:var(--text-2);text-align:right}
+  .panel-foot{
+    display:flex;align-items:center;gap:14px;height:56px;padding:0 20px;border-top:1px solid var(--line);
+  }
+  .panel-foot span{font-size:12.5px;color:var(--text-3)}
+  @media (max-width:760px){.row{grid-template-columns:20px 1fr 90px}.row .agent,.row .when{display:none}}
+
+  /* ── logos ──────────────────────────────────────────────────── */
+  .logos{display:flex;justify-content:center;gap:44px;flex-wrap:wrap;padding:56px 0 0}
+  .logos span{font-family:var(--bi-font-mono);font-size:12px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--text-3)}
+
+  /* ── features: three identical cards ────────────────────────── */
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+  @media (max-width:860px){.grid3{grid-template-columns:1fr}}
+  .feature{padding:24px}
+  .feature .ic{
+    width:36px;height:36px;border-radius:var(--r-s);margin-bottom:16px;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(226,140,63,.1);color:var(--accent);
+  }
+  .feature .ic svg{width:17px;height:17px}
+  .feature h3{font-size:15.5px;font-weight:600;font-family:var(--bi-font-body);margin-bottom:6px}
+  .feature p{font-size:13.5px;color:var(--text-2);line-height:1.6}
+
+  /* ── memory graph: the system's knowledge graph in the one card ── */
+  .mem{margin-top:48px;overflow:hidden}
+  #memgraph{position:relative;height:420px}
+  #memgraph.bi-graph{background:transparent;border:0;border-radius:0;min-height:0}
+  #mem-q{
+    height:36px;width:240px;padding:0 16px;border-radius:99px;outline:none;
+    background:rgba(11,10,8,.72);backdrop-filter:blur(8px);
+    border:1px solid var(--line-strong);color:var(--text);
+    font-family:var(--bi-font-mono);font-size:12px;
+    transition:border-color var(--bi-dur-2) var(--bi-ease-out);
+  }
+  #mem-q::placeholder{color:var(--text-3)}
+  #mem-q:focus{border-color:rgba(226,140,63,.5)}
+  .mem-hint{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:var(--bi-font-mono);font-size:12px;letter-spacing:.04em;color:var(--text-3);
+  }
+
+  /* ── how it works: numbered rows ────────────────────────────── */
+  .steps{margin-top:48px}
+  .step{
+    display:grid;grid-template-columns:56px minmax(0,1fr) minmax(0,1.1fr);gap:24px;align-items:center;
+    padding:28px 0;border-top:1px solid var(--line);
+  }
+  .step:last-child{border-bottom:1px solid var(--line)}
+  @media (max-width:760px){.step{grid-template-columns:56px 1fr}.step code{display:none}}
+  .step .num{font-family:var(--bi-font-mono);font-size:12px;color:var(--text-3)}
+  .step h3{font-size:16px;font-weight:600;font-family:var(--bi-font-body);margin-bottom:4px}
+  .step p{font-size:13.5px;color:var(--text-2)}
+  .step code{
+    font-family:var(--bi-font-mono);font-size:12px;line-height:1.7;color:var(--text-2);
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--r-s);
+    padding:14px 16px;display:block;white-space:pre;overflow-x:auto;
+  }
+  .step code .c{color:var(--text-3)}
+  .step code .a{color:var(--accent)}
+
+  /* ── stats ──────────────────────────────────────────────────── */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px}
+  @media (max-width:860px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{padding:22px 24px}
+  .stat b{font-family:var(--bi-font-body);font-weight:600;font-size:28px;letter-spacing:-.02em;display:block}
+  .stat span{font-size:12.5px;color:var(--text-3);display:block;margin-top:4px}
+
+  /* ── pricing ────────────────────────────────────────────────── */
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+  @media (max-width:860px){.plans{grid-template-columns:1fr}}
+  .plan{padding:26px;display:flex;flex-direction:column;gap:18px}
+  .plan.hot{border-color:rgba(226,140,63,.5)}
+  .plan .tier{display:flex;align-items:center;justify-content:space-between;
+    font-size:13.5px;font-weight:600}
+  .plan .tier em{font-style:normal;font-family:var(--bi-font-mono);font-size:10px;font-weight:500;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--accent);
+    border:1px solid rgba(226,140,63,.35);border-radius:99px;padding:3px 9px}
+  .plan .amt{font-size:32px;font-weight:600;letter-spacing:-.02em}
+  .plan .amt span{font-size:13px;font-weight:450;color:var(--text-3)}
+  .plan ul{list-style:none;display:flex;flex-direction:column;gap:10px;flex:1;font-size:13.5px;color:var(--text-2)}
+  .plan li{display:flex;gap:10px;align-items:baseline}
+  .plan li::before{content:'';width:5px;height:5px;border-radius:99px;background:var(--accent);flex-shrink:0;
+    transform:translateY(-2px)}
+
+  /* ── FAQ ────────────────────────────────────────────────────── */
+  .faq{max-width:680px;margin-top:40px}
+  .faq details{border-top:1px solid var(--line)}
+  .faq details:last-child{border-bottom:1px solid var(--line)}
+  .faq summary{
+    list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+    padding:18px 4px;font-size:14.5px;font-weight:500;
+  }
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:'+';font-family:var(--bi-font-mono);color:var(--text-3);font-size:15px;
+    transition:transform var(--bi-dur-3) var(--bi-ease-out)}
+  .faq details[open] summary::after{transform:rotate(45deg)}
+  .faq details div{padding:0 4px 20px;font-size:13.5px;color:var(--text-2);line-height:1.65;max-width:58ch}
+  .faq details[open] div{animation:biRevealIn var(--bi-dur-3) var(--bi-ease-out)}
+
+  /* ── CTA + footer ───────────────────────────────────────────── */
+  .cta-end{text-align:center;padding:128px 0 120px}
+  .cta-end h2{margin:0 auto}
+  .cta-end .btn{margin-top:30px}
+  footer.site{border-top:1px solid var(--line);padding:28px 0}
+  footer.site .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  footer.site span{font-size:12px;color:var(--text-3)}
+</style>
+</head>
+<body class="bi">
+
+<header class="nav">
+  <div class="wrap">
+    <span class="wordmark">WAGGLE<b>*</b></span>
+    <a href="#product">Product</a>
+    <a href="#memory">Memory</a>
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#faq">FAQ</a>
+    <span class="grow"></span>
+    <a href="#">Sign in</a>
+    <button class="btn btn--primary demo-cta">Get started</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="halo"></div>
+    <div class="wrap">
+      <span class="label" data-bi-reveal>The night shift for operations</span>
+      <h1 data-bi-reveal="60">While you slept, <em>they worked.</em></h1>
+      <p class="sub" data-bi-reveal="120">
+        Waggle agents run your operational grunt work overnight and stage every
+        action behind your approval. You wake up to finished work, not a to-do list.
+      </p>
+      <div class="actions" data-bi-reveal="180">
+        <button class="btn btn--primary btn--lg demo-cta">Start free</button>
+        <button class="btn btn--quiet btn--lg demo-cta">Watch a 2-min demo</button>
+      </div>
+      <div class="meta" data-bi-reveal="240">
+        <span>SOC 2 Type II</span><i></i><span>Zero unsupervised actions</span><i></i><span>Rollback on everything</span>
+      </div>
+
+      <div class="card panel" data-bi-reveal="300">
+        <div class="panel-head">
+          <span class="dot"></span><b>Morning queue</b><span>staged overnight · run #4126</span>
+          <div class="right"><span>06:00</span></div>
+        </div>
+        <div class="rows">
+          <div class="row"><span class="chk on"></span><b>Send 12 payment reminders</b><span class="agent">invoice-chase</span><span class="when">03:47</span><span class="amt">$48,210</span></div>
+          <div class="row"><span class="chk on"></span><b>Reconcile 1,204 ledger rows</b><span class="agent">books-sync</span><span class="when">01:12</span><span class="amt">2 flags</span></div>
+          <div class="row"><span class="chk"></span><b>Escalate Meadowbank renewal</b><span class="agent">renewals</span><span class="when">02:30</span><span class="amt">day 89</span></div>
+          <div class="row"><span class="chk on"></span><b>Close 31 resolved tickets</b><span class="agent">queue-triage</span><span class="when">04:15</span><span class="amt">CSAT 4.9</span></div>
+        </div>
+        <div class="panel-foot">
+          <button class="btn btn--primary demo-cta">Approve 3 selected</button>
+          <button class="btn btn--quiet demo-cta">Review</button>
+          <span style="margin-left:auto">4 actions · 2 flags held for you</span>
+        </div>
+      </div>
+
+      <div class="logos" data-bi-reveal>
+        <span>Hexagon Freight</span><span>Meadowbank</span><span>Corvid Health</span><span>Alpenglow</span><span>Basalt &amp; Co</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <section class="blk" id="product">
+      <span class="label" data-bi-reveal>What gets done</span>
+      <h2 data-bi-reveal="60">Real work, staged for one tap.</h2>
+      <p class="sub" data-bi-reveal="120">Agents act inside guardrails you define, and everything lands in a single approval queue.</p>
+      <div class="grid3">
+        <div class="card feature" data-bi-reveal>
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+          <h3>Works overnight</h3>
+          <p>Agents pick up queues at 23:00 — invoices, ledgers, renewals, tickets — and finish before your first coffee.</p>
+        </div>
+        <div class="card feature" data-bi-reveal="90">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 4v5c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V7z"/><path d="M9.5 12l2 2 3.5-4"/></svg></div>
+          <h3>Asks before acting</h3>
+          <p>Spending caps, tone rules, and approval gates are the config. Nothing irreversible happens without you.</p>
+        </div>
+        <div class="card feature" data-bi-reveal="180">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9"/><path d="M3 4v5h5"/></svg></div>
+          <h3>Undo on everything</h3>
+          <p>Runs are journaled end-to-end. One tap rolls back anything an agent did — emails included.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="blk" id="memory">
+      <span class="label" data-bi-reveal>Agent memory</span>
+      <h2 data-bi-reveal="60">Agents that <em>remember.</em></h2>
+      <p class="sub" data-bi-reveal="120">
+        Every approval teaches the swarm. Vendors, policies, people — connected into
+        a live memory your agents consult before they act. Hover to explore, drag
+        anything, search it like your team would.
+      </p>
+      <div class="card mem" data-bi-reveal="180">
+        <div class="panel-head">
+          <span class="dot"></span><b>Memory graph</b><span id="mem-meta">warming up&hellip;</span>
+          <div class="right"><span>hover &middot; drag &middot; click</span></div>
+        </div>
+        <div id="memgraph">
+          <div class="bi-graph-hud bi-graph-hud--bc">
+            <input id="mem-q" type="search" placeholder="Search memories&hellip;" aria-label="Search memories">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="blk" id="how">
+      <span class="label" data-bi-reveal>How it works</span>
+      <h2 data-bi-reveal="60">Live in an afternoon.</h2>
+      <div class="steps" data-bi-reveal="120">
+        <div class="step">
+          <span class="num">01</span>
+          <div><h3>Connect your tools</h3><p>ERP, help desk, books, email — OAuth in, nothing to host.</p></div>
+          <code><span class="c">// waggle.config.ts</span>
+connect(<span class="a">'netsuite'</span>, <span class="a">'zendesk'</span>, <span class="a">'gmail'</span>)</code>
+        </div>
+        <div class="step">
+          <span class="num">02</span>
+          <div><h3>Pick a playbook</h3><p>AR chasing, reconciliation, renewals, triage — tuned templates, not blank prompts.</p></div>
+          <code>agent(<span class="a">'invoice-chase'</span>, {
+  watch: erp.invoices.overdue({days: 30})
+})</code>
+        </div>
+        <div class="step">
+          <span class="num">03</span>
+          <div><h3>Set the guardrails</h3><p>Approval gates, spending caps, tone. The defaults are strict; loosen as trust builds.</p></div>
+          <code>approve: <span class="a">'human'</span>,
+caps: {spend: 0, send: <span class="a">'draft-only'</span>}</code>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="card stat" data-bi-reveal><b>2.4M</b><span>Tasks completed</span></div>
+        <div class="card stat" data-bi-reveal="70"><b>96%</b><span>Approved first pass</span></div>
+        <div class="card stat" data-bi-reveal="140"><b>11 hrs</b><span>Saved per operator, weekly</span></div>
+        <div class="card stat" data-bi-reveal="210"><b>0</b><span>Unsupervised actions</span></div>
+      </div>
+    </section>
+
+    <section class="blk" id="pricing">
+      <span class="label" data-bi-reveal>Pricing</span>
+      <h2 data-bi-reveal="60">Start free. Scale when it earns it.</h2>
+      <div class="plans">
+        <div class="card plan" data-bi-reveal>
+          <div class="tier">Forager</div>
+          <div class="amt">$0 <span>/ month</span></div>
+          <ul><li>2 agents, 200 runs</li><li>Core playbooks</li><li>Community support</li></ul>
+          <button class="btn btn--quiet demo-cta">Start free</button>
+        </div>
+        <div class="card plan hot" data-bi-reveal="90">
+          <div class="tier">Worker <em>Popular</em></div>
+          <div class="amt">$79 <span>/ month</span></div>
+          <ul><li>10 agents, unlimited runs</li><li>Custom playbooks + SDK</li><li>Approval workflows</li><li>Priority support</li></ul>
+          <button class="btn btn--primary demo-cta">Get started</button>
+        </div>
+        <div class="card plan" data-bi-reveal="180">
+          <div class="tier">Queen</div>
+          <div class="amt">Custom</div>
+          <ul><li>Unlimited agents</li><li>SSO, audit exports, VPC</li><li>Dedicated support</li></ul>
+          <button class="btn btn--quiet demo-cta">Talk to us</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="blk" id="faq">
+      <span class="label" data-bi-reveal>FAQ</span>
+      <h2 data-bi-reveal="60">Asked at every demo.</h2>
+      <div class="faq" data-bi-reveal="120">
+        <details><summary>Do agents ever act without approval?</summary><div>Only inside guardrails you define. Fresh workspaces default to approve-everything; most teams loosen gates as trust builds. The audit log keeps every action, forever.</div></details>
+        <details><summary>What can they do on day one?</summary><div>Ship with playbooks for AR chasing, ledger reconciliation, renewals, and queue triage. Connect your tools, set gates, run one night.</div></details>
+        <details><summary>Which models power Waggle?</summary><div>We route per-task across frontier models and our own small planners. Pin providers, or bring your own keys on the Queen plan.</div></details>
+        <details><summary>Is my data used for training?</summary><div>No. Workspace data stays in your workspace, encrypted at rest, deletable on request. SOC 2 Type II report under NDA.</div></details>
+      </div>
+    </section>
+  </div>
+
+  <section class="cta-end">
+    <div class="wrap">
+      <span class="label" data-bi-reveal>Free for your first two agents</span>
+      <h2 data-bi-reveal="60" style="font-size:clamp(34px,4vw,48px)">Morning comes with <em>the work done.</em></h2>
+      <button class="btn btn--primary btn--lg demo-cta" data-bi-reveal="140">Start tonight</button>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <span class="wordmark">WAGGLE<b>*</b></span>
+    <span>© 2026 Waggle — a fictional company. A Buzz &amp; Ink design-system demo.</span>
+    <span>MIT · buzz-and-ink v0.7</span>
+  </div>
+</footer>
+
+<div class="bi-toasts" id="toasts"></div>
+
+<script type="module">
+  // v0.6: the system's own reveal() utility; inline fallback keeps the page
+  // double-clickable (file:// blocks module imports).
+  const fallback = () => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.documentElement.classList.add('bi-motion');
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    }), { threshold: 0.15 });
+    document.querySelectorAll('[data-bi-reveal]').forEach(el => {
+      const d = el.getAttribute('data-bi-reveal');
+      if (d) el.style.transitionDelay = `${d}ms`;
+      io.observe(el);
+    });
+  };
+  try {
+    const {reveal} = await import('../../src/motion.js');
+    reveal() ?? null;
+  } catch { fallback(); }
+</script>
+<script type="module">
+  // v0.7: the agents' memory graph — buzz-and-ink/graph reading the live tokens.
+  const meta = document.getElementById('mem-meta');
+  const slot = document.getElementById('memgraph');
+  try {
+    const {knowledgeGraph} = await import('../../src/graph.js');
+
+    const N = [], E = [];
+    const hub = (id) => N.push({id, label: id, hub: true, group: 'memory'});
+    const learn = (h, group, ids) => ids.forEach(id => {
+      N.push({id, label: id, group});
+      E.push({from: h, to: id});
+    });
+
+    hub('vendors'); hub('policies'); hub('agents'); hub('playbooks');
+    learn('vendors', 'vendor', ['Meadowbank', 'Hexagon Freight', 'Corvid Health',
+      'Alpenglow', 'Basalt & Co', 'Acme Cloud', 'Juniper Legal', 'Northgate',
+      'Foundry Paper', 'Bluejay Media', 'Kestrel Labs', 'Marrow & Sons']);
+    learn('policies', 'policy', ['net-30 terms', 'spend cap $500', 'draft-only email',
+      'tone: warm', 'escalate day 90', 'approve-all default', 'no weekend sends',
+      'cc finance on legal', 'retry ×3 then hold', 'flag > $10k']);
+    learn('agents', 'agent', ['invoice-chase', 'books-sync', 'renewals', 'queue-triage',
+      'Dana · finance', 'Sam · ops', 'Priya · CS']);
+    learn('playbooks', 'playbook', ['AR chasing', 'reconciliation', 'renewal saves',
+      'ticket triage', 'escalations']);
+
+    E.push(
+      {from: 'vendors', to: 'policies'},
+      {from: 'policies', to: 'agents'},
+      {from: 'agents', to: 'playbooks'},
+      {from: 'invoice-chase', to: 'Meadowbank', accent: true},
+      {from: 'invoice-chase', to: 'net-30 terms', accent: true},
+      {from: 'renewals', to: 'escalate day 90', accent: true},
+      {from: 'books-sync', to: 'Dana · finance', accent: true},
+      {from: 'Hexagon Freight', to: 'Basalt & Co', kind: 'soft'},
+      {from: 'tone: warm', to: 'draft-only email', kind: 'soft'},
+      {from: 'queue-triage', to: 'Priya · CS', kind: 'soft'},
+    );
+
+    const g = knowledgeGraph(slot, {nodes: N, edges: E, wheelZoom: false});
+    const base = `${g.stats().nodes} memories · learned from 4,126 runs`;
+    meta.textContent = base;
+    document.getElementById('mem-q').addEventListener('input', e => {
+      const q = e.target.value;
+      const n = g.filter(q);
+      meta.textContent = q ? `${n} matching memor${n === 1 ? 'y' : 'ies'}` : base;
+    });
+  } catch {
+    slot.innerHTML = '<div class="mem-hint">live memory graph — serve over http to explore (npm run docs)</div>';
+    meta.textContent = '38 memories · learned from 4,126 runs';
+  }
+</script>
+<script>
+  document.querySelectorAll('.demo-cta').forEach(b => b.addEventListener('click', () => {
+    const t = document.createElement('div');
+    t.className = 'bi-toast bi-toast--ok';
+    t.textContent = 'Fictional company — but the design system is real.';
+    document.getElementById('toasts').appendChild(t);
+    setTimeout(() => t.remove(), 3200);
+  }));
+</script>
+</body>
+</html>

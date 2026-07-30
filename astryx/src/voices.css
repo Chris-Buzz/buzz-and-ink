@@ -1,0 +1,80 @@
+/* ==========================================================================
+   BUZZ & INK × ASTRYX — palette voices
+   The same data-accent / data-neutral / data-paper attributes that drive the
+   Buzz & Ink CSS package, retargeted at Astryx's custom properties. Set the
+   attribute on <html> (or any ancestor of the Theme wrapper) and both systems
+   change together.
+
+   These rules are deliberately unlayered: Astryx injects its theme tokens
+   inside @layer astryx-theme, and unlayered author CSS always wins over
+   layered CSS, so no specificity fights.
+
+   light-dark() picks the slot per mode (Astryx's reset wires color-scheme
+   to the data-theme attribute its <Theme> component syncs onto <html>).
+   ========================================================================== */
+
+/* ── accent voice: AMBER (golden) ────────────────────────────────────────── */
+[data-accent="amber"] [data-astryx-theme^="buzz-ink"],
+[data-astryx-theme^="buzz-ink"][data-accent="amber"]{
+  --color-accent:light-dark(#D98E14, #E5A736);
+  --color-accent-muted:light-dark(#FAEACB, #3B2C09);
+  --color-text-accent:light-dark(#B4740C, #EEBE62);
+  --color-icon-accent:light-dark(#B4740C, #EEBE62);
+  --shadow-inset-hover:inset 0px 0px 0px 2px #D98E144D;
+  --shadow-inset-selected:inset 0px 0px 0px 2px #D98E1480;
+}
+
+/* ── accent voice: RUST (red-orange) ─────────────────────────────────────── */
+[data-accent="rust"] [data-astryx-theme^="buzz-ink"],
+[data-astryx-theme^="buzz-ink"][data-accent="rust"]{
+  --color-accent:light-dark(#C75B26, #DB7A4A);
+  --color-accent-muted:light-dark(#F8DFD2, #3B1F10);
+  --color-text-accent:light-dark(#A44819, #E69A74);
+  --color-icon-accent:light-dark(#A44819, #E69A74);
+  --shadow-inset-hover:inset 0px 0px 0px 2px #C75B264D;
+  --shadow-inset-selected:inset 0px 0px 0px 2px #C75B2680;
+}
+
+/* ── neutral voice: CARBON (cool print grays) ────────────────────────────── */
+[data-neutral="carbon"] [data-astryx-theme^="buzz-ink"],
+[data-astryx-theme^="buzz-ink"][data-neutral="carbon"]{
+  --color-text-primary:light-dark(#212121, #EDEDED);
+  --color-text-secondary:light-dark(#6C6C6C, #A6A6A6);
+  --color-text-disabled:light-dark(#A0A0A0, #6C6C6C);
+  --color-icon-primary:light-dark(#212121, #EDEDED);
+  --color-icon-secondary:light-dark(#6C6C6C, #A6A6A6);
+  --color-icon-disabled:light-dark(#A0A0A0, #6C6C6C);
+}
+
+/* ── neutral voice: ESPRESSO (coffee brown-blacks) ───────────────────────── */
+[data-neutral="espresso"] [data-astryx-theme^="buzz-ink"],
+[data-astryx-theme^="buzz-ink"][data-neutral="espresso"]{
+  --color-text-primary:light-dark(#251B16, #EFE5DE);
+  --color-text-secondary:light-dark(#745B4E, #B49E92);
+  --color-text-disabled:light-dark(#A98D7B, #745B4E);
+  --color-icon-primary:light-dark(#251B16, #EFE5DE);
+  --color-icon-secondary:light-dark(#745B4E, #B49E92);
+  --color-icon-disabled:light-dark(#A98D7B, #745B4E);
+}
+
+/* ── paper voice: IVORY (cooler, whiter — light theme) ───────────────────── */
+[data-paper="ivory"] [data-astryx-theme^="buzz-ink"],
+[data-astryx-theme^="buzz-ink"][data-paper="ivory"]{
+  --color-background-body:light-dark(#FBFAF6, #181310);
+  --color-background-surface:light-dark(#FEFDFB, #241D14);
+  --color-background-card:light-dark(#FEFDFB, #241D14);
+  --color-background-popover:light-dark(#FEFDFB, #241D14);
+  --color-background-muted:light-dark(#F5F3EC, #1F1911);
+  --color-border:light-dark(#E8E5D8, #3A3122);
+}
+
+/* ── paper voice: OAT (warmer, toastier — light theme) ───────────────────── */
+[data-paper="oat"] [data-astryx-theme^="buzz-ink"],
+[data-astryx-theme^="buzz-ink"][data-paper="oat"]{
+  --color-background-body:light-dark(#F6EEDD, #181310);
+  --color-background-surface:light-dark(#FCF7EC, #241D14);
+  --color-background-card:light-dark(#FCF7EC, #241D14);
+  --color-background-popover:light-dark(#FCF7EC, #241D14);
+  --color-background-muted:light-dark(#EFE2C8, #1F1911);
+  --color-border:light-dark(#DFCCA5, #3A3122);
+}

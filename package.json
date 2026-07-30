@@ -1,0 +1,50 @@
+{
+  "name": "buzz-and-ink",
+  "version": "0.7.0",
+  "description": "Buzz & Ink — an editorial design system in warm cream, working orange, and rich ink. Tokens-first, framework-agnostic CSS with switchable edge personalities.",
+  "license": "MIT",
+  "type": "module",
+  "author": "Christopher Buzaid <cjpbuzaid@gmail.com>",
+  "homepage": "https://github.com/Chris-Buzz/buzz-and-ink",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Chris-Buzz/buzz-and-ink.git"
+  },
+  "keywords": [
+    "design-system",
+    "css",
+    "design-tokens",
+    "ui",
+    "editorial"
+  ],
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "style": "src/index.css",
+  "exports": {
+    ".": "./src/index.css",
+    "./tokens": "./src/tokens.css",
+    "./components": "./src/components.css",
+    "./theme": {
+      "types": "./src/theme.d.ts",
+      "default": "./src/theme.js"
+    },
+    "./motion": {
+      "types": "./src/motion.d.ts",
+      "default": "./src/motion.js"
+    },
+    "./graph": {
+      "types": "./src/graph.d.ts",
+      "default": "./src/graph.js"
+    },
+    "./icons": {
+      "types": "./src/icons.d.ts",
+      "default": "./src/icons.js"
+    }
+  },
+  "scripts": {
+    "docs": "npx serve . -l 5177"
+  }
+}

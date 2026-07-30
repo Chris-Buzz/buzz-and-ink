@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "declaration": false,
+    "rootDir": ".",
+    "paths": {
+      "@buzz-ink/react": ["./src/index.ts"]
+    }
+  },
+  "include": ["src", "demo"]
+}

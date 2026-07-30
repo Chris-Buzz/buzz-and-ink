@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-radius="standard" data-contrast="standard" data-accent="buzz" data-neutral="warm" data-paper="cream" data-type="fraunces">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buzz &amp; Ink — design system playground</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,380;0,9..144,450;0,9..144,550;1,9..144,420&family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Inter+Tight:wght@400..700&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../src/tokens.css">
+<link rel="stylesheet" href="../src/components.css">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:var(--bi-font-body);background:var(--bi-bg);color:var(--bi-text);
+    transition:background .3s,color .3s;min-height:100vh}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 32px}
+
+  /* control bar — one row, scrolls sideways when cramped */
+  .bar{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bi-bg) 88%,transparent);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--bi-line);padding:11px 0}
+  .bar .wrap{display:flex;align-items:center;gap:20px;flex-wrap:nowrap;overflow-x:auto;
+    scrollbar-width:none}
+  .bar .wrap::-webkit-scrollbar{display:none}
+  .brand{font-family:var(--bi-font-mono);font-size:12px;letter-spacing:.16em;font-weight:700;
+    flex:none;margin-right:6px}
+  .brand b{color:var(--bi-accent)}
+  .ctl{display:flex;align-items:center;gap:8px;flex:none}
+  .ctl label{font-family:var(--bi-font-mono);font-size:10px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--bi-text-3)}
+  .ctl .seg{display:flex;border:1px solid var(--bi-line);border-radius:var(--bi-r-s);overflow:hidden}
+  .ctl button{font-family:var(--bi-font-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+    background:var(--bi-surface);color:var(--bi-text-2);border:none;padding:7px 12px;cursor:pointer;white-space:nowrap}
+  .ctl button.on{background:var(--bi-accent);color:var(--bi-cream-0)}
+
+  /* docs shell — storybook-style sidebar + content */
+  .shell{max-width:1240px;margin:0 auto;padding:0 32px;
+    display:grid;grid-template-columns:198px minmax(0,1fr);gap:48px}
+  .side{position:sticky;top:58px;align-self:start;height:calc(100vh - 58px);
+    overflow-y:auto;padding:30px 20px 48px 0;border-right:1px solid var(--bi-line);
+    scrollbar-width:none}
+  .side::-webkit-scrollbar{display:none}
+  .side h5{font-family:var(--bi-font-mono);font-size:9px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--bi-text-3);margin:22px 0 6px}
+  .side h5:first-child{margin-top:0}
+  .side a{display:block;padding:5px 10px;margin-left:-10px;border-radius:var(--bi-r-s);
+    font-size:13px;color:var(--bi-text-2);text-decoration:none;
+    transition:color var(--bi-dur-1) var(--bi-ease-out),background var(--bi-dur-1) var(--bi-ease-out)}
+  .side a:hover{color:var(--bi-text)}
+  .side a.on{color:var(--bi-text);background:var(--bi-surface)}
+  .content{min-width:0;padding-bottom:48px}
+
+  /* mobile: sidebar becomes a sticky chip rail */
+  .chipnav{display:none}
+  @media (max-width:960px){
+    .shell{display:block;padding:0 20px}
+    .side{display:none}
+    .chipnav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+      position:sticky;top:52px;z-index:9;padding:10px 20px;
+      background:color-mix(in srgb,var(--bi-bg) 90%,transparent);
+      backdrop-filter:blur(10px);border-bottom:1px solid var(--bi-line)}
+    .chipnav::-webkit-scrollbar{display:none}
+    .chipnav a{flex:none;font-family:var(--bi-font-mono);font-size:10.5px;letter-spacing:.06em;
+      text-transform:uppercase;color:var(--bi-text-2);text-decoration:none;
+      background:var(--bi-surface);border:1px solid var(--bi-line);border-radius:99px;padding:6px 12px}
+    .chipnav a.on{color:var(--bi-cream-0);background:var(--bi-accent);border-color:var(--bi-accent)}
+    .win-tree{display:none}
+    .bi-nav{flex-wrap:wrap}
+    section{overflow-x:clip}
+    .bi-table{display:block;overflow-x:auto}
+    .bi-codeblock pre{overflow-x:auto}
+    #kg .bi-graph-hud--bc{left:auto;right:12px;transform:none}
+    #kg-q{width:180px}
+  }
+
+  section{padding:64px 0 8px;scroll-margin-top:120px}
+  .sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:26px}
+  .sec-head .bi-ghost-num{font-size:44px}
+  .sec-head h2{font-family:var(--bi-font-display);font-weight:450;font-size:28px}
+  .bi-command{max-width:100%}
+  .row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+
+  .swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:8px}
+  .sw-group{margin-bottom:18px}
+  .sw-label{font-family:var(--bi-font-mono);font-size:10px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--bi-text-3);margin-bottom:8px}
+  .sw{border:1px solid var(--bi-line);border-radius:var(--bi-r-s);overflow:hidden}
+  .sw i{display:block;height:52px}
+  .sw span{display:block;font-family:var(--bi-font-mono);font-size:9px;padding:5px 7px;color:var(--bi-text-2)}
+
+  footer{padding:60px 0 80px;color:var(--bi-text-3);font-family:var(--bi-font-mono);
+    font-size:11px;letter-spacing:.1em}
+</style>
+</head>
+<body class="bi">
+  <div class="bar">
+    <div class="wrap">
+      <div class="brand">BUZZ <b>&amp;</b> INK <span style="color:var(--bi-text-3)">v0.7</span></div>
+      <div class="ctl"><label>Theme</label>
+        <div class="seg" data-attr="data-theme">
+          <button data-v="light" class="on">Light</button><button data-v="dark">Dark</button>
+        </div>
+      </div>
+      <div class="ctl"><label>Edges</label>
+        <div class="seg" data-attr="data-radius">
+          <button data-v="sharp">Sharp</button><button data-v="standard" class="on">Standard</button><button data-v="soft">Soft</button>
+        </div>
+      </div>
+      <div class="ctl"><label>Contrast</label>
+        <div class="seg" data-attr="data-contrast">
+          <button data-v="standard" class="on">Standard</button><button data-v="deep">Deep</button>
+        </div>
+      </div>
+      <div class="ctl"><label>Accent</label>
+        <div class="seg" data-attr="data-accent">
+          <button data-v="buzz" class="on">Buzz</button><button data-v="amber">Amber</button><button data-v="rust">Rust</button>
+        </div>
+      </div>
+      <div class="ctl"><label>Ink</label>
+        <div class="seg" data-attr="data-neutral">
+          <button data-v="warm" class="on">Warm</button><button data-v="carbon">Carbon</button><button data-v="espresso">Espresso</button>
+        </div>
+      </div>
+      <div class="ctl"><label>Paper</label>
+        <div class="seg" data-attr="data-paper">
+          <button data-v="cream" class="on">Cream</button><button data-v="ivory">Ivory</button><button data-v="oat">Oat</button>
+        </div>
+      </div>
+      <div class="ctl"><label>Type</label>
+        <div class="seg" data-attr="data-type">
+          <button data-v="fraunces" class="on">Fraunces</button><button data-v="bricolage">Bricolage</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="chipnav" id="chipnav" aria-label="Sections"></nav>
+
+  <div class="shell">
+    <aside class="side" aria-label="Docs navigation">
+      <h5>Introduction</h5>
+      <a href="#intro" class="on">Overview</a>
+      <h5>Foundations</h5>
+      <a href="#colors">Colors</a>
+      <a href="#type">Typography</a>
+      <h5>Components</h5>
+      <a href="#core">Core</a>
+      <a href="#forms">Forms</a>
+      <a href="#feedback">Feedback</a>
+      <a href="#data">Data</a>
+      <a href="#editorial">Editorial</a>
+      <a href="#general">General</a>
+      <a href="#desktop">Desktop</a>
+      <a href="#mobile">Mobile</a>
+      <h5>Patterns</h5>
+      <a href="#graph">Knowledge graph</a>
+      <a href="#make">Make it yours</a>
+    </aside>
+    <main class="content">
+    <section id="intro">
+      <div class="bi-kicker">An editorial design system</div>
+      <h1 class="bi-display" style="font-size:var(--bi-text-hero);margin:16px 0 14px">
+        Warm cream. Working orange. <em>Rich ink.</em>
+      </h1>
+      <p style="color:var(--bi-text-2);max-width:56ch;line-height:1.6">
+        Tokens-first and framework-agnostic. Flip the controls above — the theme, the edge
+        personality, and the contrast are each one attribute on the root element. Edges and
+        shadows share a personality: sharp corners bring hard offset shadows, soft corners
+        bring blurs.
+      </p>
+      <div class="row" style="margin-top:24px">
+        <button class="bi-btn bi-btn--primary">Primary action</button>
+        <button class="bi-btn bi-btn--ghost">Ghost action</button>
+        <span class="bi-chip"><i></i>Accepting new clients</span>
+      </div>
+    </section>
+
+    <section id="colors">
+      <div class="sec-head"><span class="bi-ghost-num">01</span><h2>Colors</h2></div>
+      <div id="swatches"></div>
+    </section>
+
+    <section id="type">
+      <div class="sec-head"><span class="bi-ghost-num">02</span><h2>Typography</h2></div>
+      <div class="bi-kicker">Kicker — mono, tracked out</div>
+      <p class="bi-display" style="margin:12px 0">Display serif, with an <em>accent.</em></p>
+      <p style="max-width:60ch;color:var(--bi-text-2);line-height:1.6;margin-bottom:10px">
+        Body — Inter at a comfortable measure. The third voice is the mono accent used for
+        labels, nav, and metadata. Flip <b>Type</b> in the bar to hear the Bricolage voice.
+      </p>
+    </section>
+
+    <section id="core">
+      <div class="sec-head"><span class="bi-ghost-num">03</span><h2>Core</h2></div>
+      <div class="row">
+        <span class="bi-tag">FastAPI</span><span class="bi-tag">RAG</span>
+        <span class="bi-tag">Three.js</span><span class="bi-tag">MCP</span>
+      </div>
+      <div class="grid" style="margin-bottom:18px">
+        <div class="bi-card bi-card--interactive">
+          <span class="bi-card-num">01 — WORK</span>
+          <h3>Interactive card</h3>
+          <p>Hover me — the raise shadow follows the current edge personality.</p>
+        </div>
+        <div class="bi-card">
+          <span class="bi-card-num">02 — STATIC</span>
+          <h3>Quiet card</h3>
+          <p>Surface, hairline border, serif heading, muted body.</p>
+        </div>
+        <div class="bi-card">
+          <span class="bi-card-num">03 — FORM</span>
+          <h3>Input</h3>
+          <input class="bi-input" placeholder="Ask Digby about Chris…">
+        </div>
+      </div>
+      <nav class="bi-nav">
+        <a href="#" class="active">Home</a><a href="#">Work</a><a href="#">The Hive</a>
+        <a href="#">Thoughts</a><a href="#">About</a>
+      </nav>
+    </section>
+
+    <section id="forms">
+      <div class="sec-head"><span class="bi-ghost-num">04</span><h2>Forms</h2></div>
+      <div class="row">
+        <div class="bi-seg" id="demo-seg">
+          <button class="on">Day</button><button>Week</button><button>Month</button>
+        </div>
+        <label class="bi-switch"><input type="checkbox" checked><i></i>Digby enabled</label>
+        <label class="bi-check"><input type="checkbox" checked>Email me updates</label>
+        <label class="bi-radio"><input type="radio" name="r" checked>Virtual</label>
+        <label class="bi-radio"><input type="radio" name="r">In person</label>
+        <span class="bi-select">
+          <select><option>Consulting session</option><option>Project review</option><option>Workshop</option></select>
+        </span>
+      </div>
+    </section>
+
+    <section id="feedback">
+      <div class="sec-head"><span class="bi-ghost-num">05</span><h2>Feedback</h2></div>
+      <div class="row">
+        <span class="bi-badge">Flagship</span>
+        <span class="bi-badge bi-badge--live">Live</span>
+        <span class="bi-badge bi-badge--ink">Archived</span>
+        <button class="bi-btn bi-btn--ghost bi-tip" data-tip="Tooltips are pure CSS">Hover for tooltip</button>
+        <button class="bi-btn bi-btn--primary" id="toast-btn">Spawn toast</button>
+        <button class="bi-btn bi-btn--ghost" id="modal-btn">Open modal</button>
+      </div>
+      <div style="max-width:420px;margin-top:6px">
+        <div class="bi-progress"><i style="width:68%"></i></div>
+      </div>
+    </section>
+
+    <section id="data">
+      <div class="sec-head"><span class="bi-ghost-num">06</span><h2>Data</h2></div>
+      <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));margin-bottom:22px">
+        <div class="bi-stat"><b>3.9</b><span>GPA / 4.0</span></div>
+        <div class="bi-stat"><b>50+</b><span>Club athletes led</span></div>
+        <div class="bi-stat"><b>8</b><span>Shipped builds</span></div>
+        <div class="bi-stat"><b>45</b><span>Hive nodes</span></div>
+      </div>
+      <table class="bi-table">
+        <thead><tr><th>Project</th><th>Stack</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>LearnAI</td><td>React · FastAPI · Supabase</td><td><span class="bi-badge bi-badge--live">Live</span></td></tr>
+          <tr><td>Digby</td><td>Tauri · MCP · Ollama</td><td><span class="bi-badge">Flagship</span></td></tr>
+          <tr><td>Planno</td><td>React · FastAPI</td><td><span class="bi-badge bi-badge--live">Live</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="editorial">
+      <div class="sec-head"><span class="bi-ghost-num">07</span><h2>Editorial devices</h2></div>
+      <div class="bi-ticker" style="margin-bottom:26px">
+        <div>
+          <span>Warm cream</span><span>Working orange</span><span>Rich ink</span><span>One graph</span>
+          <span>Warm cream</span><span>Working orange</span><span>Rich ink</span><span>One graph</span>
+        </div>
+      </div>
+      <div class="row" style="align-items:flex-end;gap:40px">
+        <div class="bi-ghost-word">BUZZ</div>
+        <figure class="bi-frame" style="margin:0">
+          <div class="bi-frame-media" style="width:190px;height:150px;background:
+            radial-gradient(circle at 30% 30%,var(--bi-buzz-200),var(--bi-buzz-500))"></div>
+          <figcaption>Lake Grove, NY</figcaption>
+        </figure>
+        <div style="flex:1;min-width:220px">
+          <details class="bi-acc"><summary>What is Buzz &amp; Ink?</summary><div>An editorial design system extracted from real shipped sites, generalized into tokens.</div></details>
+          <details class="bi-acc"><summary>Is it framework-agnostic?</summary><div>Yes — pure CSS. React wrappers are on the roadmap.</div></details>
+          <details class="bi-acc" open><summary>Accordion, no JavaScript?</summary><div>Native <code>&lt;details&gt;</code> under the hood. The chevron is a border trick.</div></details>
+        </div>
+      </div>
+    </section>
+
+    <section id="general">
+      <div class="sec-head"><span class="bi-ghost-num">08</span><h2>General</h2></div>
+      <div class="row" style="align-items:stretch">
+        <div class="bi-alert" style="flex:1;min-width:220px"><div><b>Heads up.</b><p>Default callout with the accent rail.</p></div></div>
+        <div class="bi-alert bi-alert--ok" style="flex:1;min-width:220px"><div><b>Deployed.</b><p>lainow.com is live.</p></div></div>
+        <div class="bi-alert bi-alert--warn" style="flex:1;min-width:220px"><div><b>Draft unsaved.</b><p>Changes exist only here.</p></div></div>
+      </div>
+      <div class="row">
+        <span class="bi-avatar bi-avatar--s">CB</span>
+        <span class="bi-avatar">CB</span>
+        <span class="bi-avatar bi-avatar--l bi-avatar--ink">DG</span>
+        <span class="bi-avatars">
+          <span class="bi-avatar">CB</span><span class="bi-avatar bi-avatar--ink">DG</span><span class="bi-avatar" style="background:var(--bi-sage)">LA</span>
+        </span>
+        <nav class="bi-breadcrumbs"><li><a href="#">Work</a></li><li><a href="#">LearnAI</a></li><li><span aria-current="page">Analytics</span></li></nav>
+        <span class="bi-pages">
+          <button disabled>&larr;</button><button>1</button><button class="on">2</button><button>3</button><i>&hellip;</i><button>9</button><button>&rarr;</button>
+        </span>
+      </div>
+      <div class="row">
+        <span class="bi-spinner"></span>
+        <span class="bi-spinner bi-spinner--l"></span>
+        <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:8px">
+          <span class="bi-skeleton" style="width:70%"></span>
+          <span class="bi-skeleton" style="width:45%"></span>
+        </div>
+        <input class="bi-slider" type="range" min="0" max="100" value="64" style="flex:1;min-width:180px" aria-label="Demo slider">
+      </div>
+      <ol class="bi-steps" style="margin-bottom:18px;max-width:640px">
+        <li class="done">Discover</li><li class="done">Design</li><li class="current">Build</li><li>Ship</li>
+      </ol>
+      <div class="row" style="align-items:flex-start">
+        <div style="flex:1;min-width:260px">
+          <div class="bi-tabs" id="demo-tabs">
+            <button class="on">Overview</button><button>Analytics</button><button>Settings</button>
+          </div>
+          <div class="bi-empty">
+            <i>&there4;</i><b>Nothing here yet.</b>
+            <p>Empty states get the ghost glyph, a serif title, and one clear action.</p>
+            <button class="bi-btn bi-btn--primary">Create the first one</button>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;min-width:260px;flex:1">
+          <details class="bi-dropdown" id="demo-dropdown">
+            <summary><span class="bi-btn bi-btn--ghost">Actions &or;</span></summary>
+            <div class="bi-dropdown-menu">
+              <button>Duplicate <span class="bi-kbd"><kbd>&#8984;</kbd><kbd>D</kbd></span></button>
+              <button>Rename <span class="bi-kbd"><kbd>F2</kbd></span></button>
+              <hr>
+              <button class="danger">Delete&hellip;</button>
+            </div>
+          </details>
+          <p style="font-size:13px;color:var(--bi-text-2)">Inline <span class="bi-code">bi-code</span> and a block:</p>
+          <div class="bi-codeblock">
+            <header><span>theme.js</span><span>ESM</span></header>
+            <pre>import {createTheme} from 'buzz-and-ink/theme';
+createTheme({accent: '#7B61FF'}).apply();</pre>
+          </div>
+          <button class="bi-btn bi-btn--ghost" id="drawer-open">Open drawer &rarr;</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="desktop">
+      <div class="sec-head"><span class="bi-ghost-num">09</span><h2>Desktop</h2></div>
+      <div class="bi-window" style="margin-bottom:20px">
+        <div class="bi-titlebar"><span class="dots"><i></i><i></i><i></i></span><b>digby — mission control</b><span class="bi-kbd"><kbd>&#8984;</kbd><kbd>K</kbd></span></div>
+        <div style="display:flex;gap:0;min-height:230px">
+          <div class="win-tree" style="width:210px;border-right:1px solid var(--bi-line);padding:12px">
+            <div class="bi-tree" id="demo-tree">
+              <details open>
+                <summary>src</summary>
+                <div>
+                  <details><summary>components</summary><div><span class="leaf on">Buzzy.tsx</span><span class="leaf">DigbyFace.tsx</span></div></details>
+                  <span class="leaf">main.tsx</span>
+                </div>
+              </details>
+              <span class="leaf">package.json</span>
+            </div>
+          </div>
+          <div style="flex:1;padding:14px;display:flex;flex-direction:column;gap:12px">
+            <div class="bi-toolbar">
+              <button class="on">B</button><button><i style="font-style:italic">I</i></button><button style="text-decoration:underline">U</button>
+              <hr><button>&ldquo;&rdquo;</button><button>&lt;/&gt;</button><hr><button>&#8634;</button><button>&#8635;</button>
+            </div>
+            <div class="bi-command" style="align-self:center;margin-top:4px">
+              <div class="search"><span class="bi-spinner" style="width:14px;height:14px;border-width:1.5px"></span><input placeholder="Type a command or search&hellip;" aria-label="Command search"></div>
+              <div class="group">Navigate</div>
+              <div class="item selected">Go to Work <span class="bi-kbd"><kbd>G</kbd><kbd>W</kbd></span></div>
+              <div class="item">Go to The Hive <span class="bi-kbd"><kbd>G</kbd><kbd>H</kbd></span></div>
+              <div class="group">Actions</div>
+              <div class="item">Ask Digby&hellip; <span class="bi-kbd"><kbd>&#8984;</kbd><kbd>J</kbd></span></div>
+              <footer><span class="bi-kbd"><kbd>&uarr;</kbd><kbd>&darr;</kbd> navigate</span><span class="bi-kbd"><kbd>&#9166;</kbd> select</span><span class="bi-kbd"><kbd>esc</kbd> close</span></footer>
+            </div>
+          </div>
+        </div>
+        <div class="bi-statusbar"><span><i></i>connected</span><span>main*</span><span class="spacer"></span><span>ln 42, col 7</span><span>UTF-8</span></div>
+      </div>
+    </section>
+
+    <section id="mobile">
+      <div class="sec-head"><span class="bi-ghost-num">10</span><h2>Mobile</h2></div>
+      <div class="row" style="align-items:flex-start;gap:32px">
+        <div class="bi-phone" id="demo-phone" style="height:560px">
+          <div class="bi-appbar"><button class="back" aria-label="Back"></button><b>Settings</b><span class="bi-avatar bi-avatar--s">CB</span></div>
+          <div style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:18px">
+            <div>
+              <p class="bi-list-label">Digby</p>
+              <div class="bi-list">
+                <button class="rowitem"><i class="ic">&#127907;</i>Persona<span class="val">Warm</span></button>
+                <button class="rowitem"><i class="ic">&#129504;</i>Model<span class="val">gemini-flash</span></button>
+                <button class="rowitem plain" id="sheet-open"><i class="ic">&#128202;</i>Usage &amp; limits</button>
+              </div>
+            </div>
+            <div>
+              <p class="bi-list-label">Appearance</p>
+              <div class="bi-list">
+                <button class="rowitem"><i class="ic">&#127912;</i>Accent<span class="val">Buzz</span></button>
+                <button class="rowitem"><i class="ic">&#128441;</i>Edges<span class="val">Standard</span></button>
+              </div>
+            </div>
+          </div>
+          <button class="bi-fab" id="fab-demo" aria-label="New note">+</button>
+          <div class="bi-sheet" id="demo-sheet">
+            <b>Usage this month</b>
+            <p>128 questions answered, 96% grounded in the Hive. You&rsquo;re on the free tier.</p>
+            <button class="bi-btn bi-btn--primary" style="width:100%" id="sheet-close">Nice — close</button>
+          </div>
+          <div class="bi-sheet-backdrop" id="sheet-backdrop"></div>
+          <div class="bi-bottomnav">
+            <button class="on"><i>&#127968;</i>Home</button>
+            <button><i>&#128188;</i>Work</button>
+            <button><span class="dot"></span><i>&#128029;</i>Digby</button>
+            <button><i>&#9881;&#65039;</i>More</button>
+          </div>
+        </div>
+        <p style="max-width:36ch;color:var(--bi-text-2);font-size:14px;line-height:1.6">
+          App bar, grouped settings list, FAB, bottom sheet (tap &ldquo;Usage &amp; limits&rdquo;),
+          and a tab bar with a badge dot — the mobile kit, all tokens-driven, all
+          re-skinnable with the controls up top. The frame itself is <span class="bi-code">bi-phone</span>.
+        </p>
+      </div>
+    </section>
+
+    <section id="graph">
+      <div class="sec-head"><span class="bi-ghost-num">11</span><h2>Knowledge graph</h2></div>
+      <p style="max-width:62ch;color:var(--bi-text-2);line-height:1.6;margin-bottom:18px">
+        A force-directed knowledge graph on <span class="bi-code">&lt;canvas&gt;</span>, inked
+        entirely by the live tokens — flip theme, accent, or ink above and it re-inks itself
+        without a re-init. This one maps the <em>whole</em> system: every scale step, every
+        component, every package. Hover to spotlight, drag anything, wheel to zoom, click to pin.
+      </p>
+      <div class="bi-graph" id="kg" style="height:620px">
+        <div class="bi-graph-hud bi-graph-hud--tr">
+          <details class="bi-graph-legend" open>
+            <summary>Legend</summary>
+            <div>
+              <h4>Statistics</h4>
+              <div class="bi-graph-key" id="kg-n"><i class="k-node"></i>&hellip;</div>
+              <div class="bi-graph-key" id="kg-h"><i class="k-hub"></i>&hellip;</div>
+              <div class="bi-graph-key" id="kg-e"><i class="k-line"></i>&hellip;</div>
+              <h4>Nodes</h4>
+              <div class="bi-graph-key"><i class="k-node"></i>part</div>
+              <div class="bi-graph-key"><i class="k-hub"></i>cluster</div>
+              <h4>Connections</h4>
+              <div class="bi-graph-key"><i class="k-line"></i>structure</div>
+              <div class="bi-graph-key"><i class="k-soft"></i>affinity</div>
+              <div class="bi-graph-key"><i class="k-acc"></i>brand flow &middot; active</div>
+            </div>
+          </details>
+        </div>
+        <div class="bi-graph-hud bi-graph-hud--bl bi-graph-ctl">
+          <button id="kg-fit">Fit</button>
+          <button id="kg-center">Center</button>
+          <button id="kg-in" aria-label="Zoom in">+</button>
+          <button id="kg-out" aria-label="Zoom out">&minus;</button>
+        </div>
+        <div class="bi-graph-hud bi-graph-hud--bc">
+          <input class="bi-input" id="kg-q" type="search" placeholder="Search the system&hellip;" style="width:250px;border-radius:99px" aria-label="Search graph nodes">
+        </div>
+      </div>
+      <p id="kg-note" aria-live="polite" style="font-family:var(--bi-font-mono);font-size:11px;letter-spacing:.06em;color:var(--bi-text-3);margin-top:8px">
+        HOVER TO EXPLORE — SEARCH, DRAG, ZOOM. CLICK TO PIN A SELECTION.
+      </p>
+    </section>
+
+    <section id="make">
+      <div class="sec-head"><span class="bi-ghost-num">12</span><h2>Make it yours</h2></div>
+      <p style="max-width:60ch;color:var(--bi-text-2);line-height:1.6;margin-bottom:18px">
+        A true design system takes <em>your</em> colors. Pick seeds below —
+        <span class="bi-code">createTheme()</span> derives full perceptual scales in OKLCH
+        (accent 50&ndash;900, ink 50&ndash;950, paper 0&ndash;200), gamut-clamped, and remaps the
+        system live. Works in both themes, every edge personality, every component above.
+      </p>
+      <div class="row" style="align-items:flex-end;gap:18px">
+        <div class="ctl" style="flex-direction:column;align-items:flex-start;gap:6px">
+          <label>Accent</label><input type="color" id="seed-accent" value="#D9701E" style="width:64px;height:36px;border:1px solid var(--bi-line);border-radius:var(--bi-r-s);background:var(--bi-surface);cursor:pointer">
+        </div>
+        <div class="ctl" style="flex-direction:column;align-items:flex-start;gap:6px">
+          <label>Neutral</label><input type="color" id="seed-neutral" value="#6E6350" style="width:64px;height:36px;border:1px solid var(--bi-line);border-radius:var(--bi-r-s);background:var(--bi-surface);cursor:pointer">
+        </div>
+        <div class="ctl" style="flex-direction:column;align-items:flex-start;gap:6px">
+          <label>Paper</label><input type="color" id="seed-paper" value="#FAF6EE" style="width:64px;height:36px;border:1px solid var(--bi-line);border-radius:var(--bi-r-s);background:var(--bi-surface);cursor:pointer">
+        </div>
+        <button class="bi-btn bi-btn--primary" id="theme-apply">Apply my colors</button>
+        <button class="bi-btn bi-btn--ghost" id="theme-copy">Copy CSS</button>
+        <button class="bi-btn bi-btn--ghost" id="theme-reset">Reset</button>
+      </div>
+      <p id="theme-note" style="font-family:var(--bi-font-mono);font-size:11px;letter-spacing:.06em;color:var(--bi-text-3);margin-top:6px"></p>
+    </section>
+
+    <footer>BUZZ &amp; INK — MIT — EXTRACTED FROM CHRISBUZAID.DEV &amp; LAINOW.COM</footer>
+    </main>
+  </div>
+
+  <aside class="bi-drawer" id="demo-drawer" aria-label="Demo drawer">
+    <header><b>Drawer.</b><button class="bi-btn bi-btn--ghost" id="drawer-close" style="padding:7px 14px">Close</button></header>
+    <div>
+      <p style="font-size:13.5px;color:var(--bi-text-2);line-height:1.6">
+        Side panels for filters, detail views, and secondary tasks. Slides on the
+        motion tokens, sits on <span class="bi-code">--bi-z-drawer</span>.
+      </p>
+    </div>
+  </aside>
+  <div class="bi-drawer-backdrop" id="drawer-backdrop"></div>
+
+  <dialog class="bi-modal" id="demo-modal">
+    <h3>Book a session.</h3>
+    <p>Modals ride the native &lt;dialog&gt; element — focus trapping and Escape handling come free from the platform.</p>
+    <div style="display:flex;gap:10px">
+      <button class="bi-btn bi-btn--primary" onclick="this.closest('dialog').close()">Confirm</button>
+      <button class="bi-btn bi-btn--ghost" onclick="this.closest('dialog').close()">Cancel</button>
+    </div>
+  </dialog>
+  <div class="bi-toasts" id="toasts"></div>
+
+<script>
+  // sidebar scrollspy + mobile chip rail (chips are cloned from the sidebar)
+  {
+    const links = [...document.querySelectorAll('.side a')];
+    const chipnav = document.getElementById('chipnav');
+    chipnav.innerHTML = links.map(a =>
+      `<a href="${a.getAttribute('href')}">${a.textContent}</a>`).join('');
+    const all = [...links, ...chipnav.querySelectorAll('a')];
+    const spy = new IntersectionObserver(es => es.forEach(en => {
+      if (!en.isIntersecting) return;
+      const id = '#' + en.target.id;
+      all.forEach(a => a.classList.toggle('on', a.getAttribute('href') === id));
+      const chip = chipnav.querySelector('.on');
+      if (chip && chipnav.offsetParent) chip.scrollIntoView({ block: 'nearest', inline: 'center' });
+    }), { rootMargin: '-15% 0px -75% 0px' });
+    links.forEach(a => {
+      const s = document.querySelector(a.getAttribute('href'));
+      if (s) spy.observe(s);
+    });
+  }
+
+  // segmented controls → root attributes
+  document.querySelectorAll('.seg').forEach(seg => {
+    seg.addEventListener('click', e => {
+      const btn = e.target.closest('button'); if (!btn) return;
+      seg.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn));
+      document.documentElement.setAttribute(seg.dataset.attr, btn.dataset.v);
+    });
+  });
+
+  // palette swatches from the actual tokens, grouped by family
+  const ACCENT_STEPS = [50,100,200,300,400,500,600,700,800,900];
+  const NEUTRAL_STEPS = [...ACCENT_STEPS, 950];
+  const PAPER_STEPS = [0,25,50,100,150,200];
+  const groups = [
+    ['buzz — the working orange (default accent)', ACCENT_STEPS.map(n => `buzz-${n}`)],
+    ['amber — golden orange (data-accent="amber")', ACCENT_STEPS.map(n => `amber-${n}`)],
+    ['rust — red-orange (data-accent="rust")', ACCENT_STEPS.map(n => `rust-${n}`)],
+    ['ink — warm neutrals (default)', NEUTRAL_STEPS.map(n => `ink-${n}`)],
+    ['carbon — cool grays (data-neutral="carbon")', NEUTRAL_STEPS.map(n => `carbon-${n}`)],
+    ['espresso — coffee blacks (data-neutral="espresso")', NEUTRAL_STEPS.map(n => `espresso-${n}`)],
+    ['cream — paper (default)', PAPER_STEPS.map(n => `cream-${n}`)],
+    ['ivory — cooler paper (data-paper="ivory")', PAPER_STEPS.map(n => `ivory-${n}`)],
+    ['oat — toastier paper (data-paper="oat")', PAPER_STEPS.map(n => `oat-${n}`)],
+    ['supporting accents', ['honey','sage','taupe','live']],
+  ];
+  document.getElementById('swatches').innerHTML = groups.map(([label, scales]) =>
+    `<div class="sw-group"><div class="sw-label">${label}</div><div class="swatches">${
+      scales.map(s => `<div class="sw"><i style="background:var(--bi-${s})"></i><span>${s}</span></div>`).join('')
+    }</div></div>`).join('');
+
+  // demo seg
+  document.getElementById('demo-seg').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    e.currentTarget.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+  });
+  // modal + toast demos
+  document.getElementById('modal-btn').addEventListener('click', () =>
+    document.getElementById('demo-modal').showModal());
+  const kinds = [['', 'Saved to the Hive.'], ['bi-toast--ok', 'Deployed — lainow.com is live.'], ['bi-toast--warn', 'Heads up: draft not saved.']];
+  let ti = 0;
+  document.getElementById('toast-btn').addEventListener('click', () => {
+    const [cls, msg] = kinds[ti++ % kinds.length];
+    const t = document.createElement('div');
+    t.className = `bi-toast ${cls}`;
+    t.textContent = msg;
+    document.getElementById('toasts').appendChild(t);
+    setTimeout(() => t.remove(), 3200);
+  });
+
+  // v0.4 demos — tabs
+  document.getElementById('demo-tabs').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    e.currentTarget.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+  });
+  // drawer
+  const drawer = document.getElementById('demo-drawer');
+  const drawerBd = document.getElementById('drawer-backdrop');
+  const setDrawer = open => { drawer.classList.toggle('open', open); drawerBd.classList.toggle('open', open); };
+  document.getElementById('drawer-open').addEventListener('click', () => setDrawer(true));
+  document.getElementById('drawer-close').addEventListener('click', () => setDrawer(false));
+  drawerBd.addEventListener('click', () => setDrawer(false));
+  // bottom sheet (inside the phone frame)
+  const sheet = document.getElementById('demo-sheet');
+  const sheetBd = document.getElementById('sheet-backdrop');
+  const setSheet = open => { sheet.classList.toggle('open', open); sheetBd.classList.toggle('open', open); };
+  document.getElementById('sheet-open').addEventListener('click', () => setSheet(true));
+  document.getElementById('sheet-close').addEventListener('click', () => setSheet(false));
+  sheetBd.addEventListener('click', () => setSheet(false));
+</script>
+
+<script type="module">
+  // "Make it yours" — live theme builder on top of createTheme().
+  // Needs the page served over http (npm run docs); file:// blocks module imports.
+  const note = document.getElementById('theme-note');
+  let engine = null;
+  try {
+    engine = await import('../src/theme.js');
+    // v0.5 motion: staggered scroll reveals on every section head
+    const {reveal} = await import('../src/motion.js');
+    document.querySelectorAll('.sec-head').forEach((el, i) => el.setAttribute('data-bi-reveal', String((i % 3) * 90)));
+    reveal();
+  } catch {
+    note.textContent = 'THE BUILDER NEEDS THE DOCS SERVED OVER HTTP — RUN `npm run docs` FROM THE PACKAGE ROOT.';
+  }
+  let lastCss = '';
+  const build = () => engine.createTheme({
+    name: 'mine',
+    accent: document.getElementById('seed-accent').value,
+    neutral: document.getElementById('seed-neutral').value,
+    paper: document.getElementById('seed-paper').value,
+  });
+  document.getElementById('theme-apply').addEventListener('click', () => {
+    if (!engine) return;
+    const theme = build();
+    theme.apply();
+    lastCss = theme.css;
+    note.textContent = `APPLIED — ${Object.keys(theme.tokens).length} TOKENS DERIVED. FLIP THEME/EDGES/CONTRAST — IT ALL FOLLOWS.`;
+  });
+  document.getElementById('theme-copy').addEventListener('click', async () => {
+    if (!engine) return;
+    const css = lastCss || build().css;
+    await navigator.clipboard.writeText(css);
+    note.textContent = 'CSS COPIED — PASTE INTO YOUR STYLESHEET AFTER THE BUZZ & INK IMPORT.';
+  });
+  document.getElementById('theme-reset').addEventListener('click', () => {
+    document.getElementById('bi-theme-mine')?.remove();
+    lastCss = '';
+    note.textContent = 'BACK TO THE HOUSE PALETTE.';
+  });
+</script>
+
+<script type="module">
+  // 11 · Knowledge graph — the WHOLE system mapped over itself, heyhaigh-style:
+  // family clusters burst into their real members (scale steps, components).
+  const kgNote = document.getElementById('kg-note');
+  const IDLE = 'HOVER TO EXPLORE — SEARCH, DRAG, ZOOM. CLICK TO PIN A SELECTION.';
+  try {
+    const { knowledgeGraph } = await import('../src/graph.js');
+
+    const N = [], E = [];
+    const add = (id, label, x) => N.push({ id, label, ...x });
+    const link = (a, b, x) => E.push({ from: a, to: b, ...(x || {}) });
+    const family = (parent, id, label, group, leaves) => {
+      add(id, label, { group });
+      link(parent, id);
+      leaves.forEach(l => { add(`${id}/${l}`, l, { group }); link(id, `${id}/${l}`); });
+    };
+
+    add('tokens', 'tokens', { hub: true, group: 'foundation' });
+    add('components', 'components', { hub: true, group: 'component' });
+    link('tokens', 'components');
+
+    const TEN = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
+    const SCALES = {
+      buzz: TEN, amber: TEN, rust: TEN,
+      ink: [...TEN, 950], carbon: [...TEN, 950], espresso: [...TEN, 950],
+      cream: [0, 25, 50, 100, 150, 200], ivory: [0, 25, 50, 100, 150, 200], oat: [0, 25, 50, 100, 150, 200],
+    };
+    for (const [fam, steps] of Object.entries(SCALES))
+      family('tokens', fam, fam, 'color', steps.map(s => `${fam}-${s}`));
+
+    family('tokens', 'type', 'type voices', 'foundation', ['fraunces', 'bricolage', 'inter', 'mono']);
+    family('tokens', 'motion', 'motion', 'foundation',
+      ['dur 140', 'dur 220', 'dur 340', 'dur 520', 'ease-out', 'ease-spring', 'reveal()']);
+    family('tokens', 'layout', 'layout', 'foundation', ['spacing', 'z-scale', 'radius', 'contrast']);
+
+    const FAMS = {
+      core: ['button', 'card', 'nav', 'tag', 'chip', 'badge', 'hr'],
+      forms: ['input', 'select', 'checkbox', 'radio', 'switch', 'segmented', 'slider'],
+      feedback: ['alert', 'toast', 'modal', 'tooltip', 'progress', 'spinner', 'skeleton'],
+      data: ['table', 'stat', 'steps', 'pagination'],
+      general: ['avatar', 'breadcrumbs', 'tabs', 'dropdown', 'code', 'empty state', 'drawer', 'palette'],
+      desktop: ['window', 'titlebar', 'toolbar', 'statusbar', 'file tree', 'kbd'],
+      mobile: ['phone', 'appbar', 'bottom nav', 'sheet', 'fab', 'settings list'],
+      editorial: ['kicker', 'display', 'ghost num', 'ghost word', 'ticker', 'frame'],
+    };
+    for (const [fam, items] of Object.entries(FAMS))
+      family('components', `c/${fam}`, fam, 'component', items);
+
+    family('components', 'react', '@buzz-ink/react', 'package',
+      ['ThemeProvider', 'useBuzzTheme', 'useToast', 'wrappers ×25']);
+    family('tokens', 'engine', 'createTheme()', 'package', ['oklch', 'gamut clamp']);
+    family('tokens', 'astryx', '@buzz-ink/astryx', 'package', ['buzzInkTheme', 'sharp', 'voices.css']);
+    add('waggle', 'waggle', { group: 'example' });
+    add('docs', 'docs', { group: 'example' });
+    add('mc', 'mission control', { group: 'example' });
+
+    E.push(
+      { from: 'tokens', to: 'react', accent: true },
+      { from: 'tokens', to: 'waggle', accent: true },
+      { from: 'engine', to: 'docs', accent: true },
+      { from: 'components', to: 'waggle' },
+      { from: 'components', to: 'docs' },
+      { from: 'astryx', to: 'mc' },
+      { from: 'motion', to: 'waggle' },
+      { from: 'type/fraunces', to: 'type/bricolage', kind: 'soft' },
+      { from: 'amber', to: 'rust', kind: 'soft' },
+      { from: 'carbon', to: 'espresso', kind: 'soft' },
+      { from: 'ivory', to: 'oat', kind: 'soft' },
+      { from: 'waggle', to: 'docs', kind: 'soft' },
+    );
+
+    const g = knowledgeGraph(document.getElementById('kg'), {
+      nodes: N, edges: E, hubDegree: 6,
+      onSelect: n => {
+        kgNote.textContent = n
+          ? `SELECTED: ${String(n.label).toUpperCase()} — ${String(n.group).toUpperCase()}`
+          : IDLE;
+      },
+    });
+    window.__kg = g;   // console handle for tinkering
+    if (innerWidth < 700) document.querySelector('.bi-graph-legend').removeAttribute('open');
+    const s = g.stats();
+    document.getElementById('kg-n').innerHTML = `<i class="k-node"></i>${s.nodes} parts`;
+    document.getElementById('kg-h').innerHTML = `<i class="k-hub"></i>${s.hubs} clusters`;
+    document.getElementById('kg-e').innerHTML = `<i class="k-line"></i>${s.edges} connections`;
+    document.getElementById('kg-fit').addEventListener('click', () => g.fit());
+    document.getElementById('kg-center').addEventListener('click', () => g.center());
+    document.getElementById('kg-in').addEventListener('click', () => g.zoomIn());
+    document.getElementById('kg-out').addEventListener('click', () => g.zoomOut());
+    document.getElementById('kg-q').addEventListener('input', e => {
+      const q = e.target.value;
+      const n = g.filter(q);
+      kgNote.textContent = q ? `MATCHING: ${n} NODE${n === 1 ? '' : 'S'}` : IDLE;
+    });
+  } catch {
+    kgNote.textContent = 'THE GRAPH NEEDS THE DOCS SERVED OVER HTTP — RUN `npm run docs` FROM THE PACKAGE ROOT.';
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,357 @@
+/* ==========================================================================
+   BUZZ & INK — design tokens
+   Warm cream, working orange, rich ink. Editorial by default.
+
+   Theming attributes (set on <html> or any subtree root):
+     data-theme    = "light" (default) | "dark"
+     data-radius   = "standard" (default) | "sharp" | "soft"
+     data-contrast = "standard" (default) | "deep"   (whiter whites, deeper
+                                                       blacks, deeper orange)
+     data-accent   = "buzz" (default) | "amber" | "rust"       (orange voice)
+     data-neutral  = "warm" (default) | "carbon" | "espresso"  (ink voice)
+     data-paper    = "cream" (default) | "ivory" | "oat"       (paper voice)
+     data-type     = "fraunces" (default) | "bricolage"        (type voice)
+
+   The palette voices work by remapping the buzz/ink/cream scales in place, so
+   every semantic role that references them follows automatically. The accent
+   voice applies in both themes; neutral and paper shape the light theme (the
+   dark theme's surfaces are hand-tuned, not scale steps).
+
+   Edges and shadows share a personality: sharp edges get hard offset
+   shadows, soft edges get soft blurs. One attribute switches both.
+   ========================================================================== */
+
+:root{
+  /* ── color scales ─────────────────────────────────────────────────────── */
+  /* buzz — the working orange. 500 is the brand anchor. */
+  --bi-buzz-50:#FDF3E9;
+  --bi-buzz-100:#FAE4CE;
+  --bi-buzz-200:#F4C9A0;
+  --bi-buzz-300:#ECA96C;
+  --bi-buzz-400:#E28C3F;
+  --bi-buzz-500:#D9701E;
+  --bi-buzz-600:#B25A12;
+  --bi-buzz-700:#94490D;
+  --bi-buzz-800:#73380A;
+  --bi-buzz-900:#522807;
+
+  /* ink — warm neutrals down to rich black. */
+  --bi-ink-50:#EFE9DC;
+  --bi-ink-100:#E1D8C6;
+  --bi-ink-200:#C9BCA4;
+  --bi-ink-300:#A29278;
+  --bi-ink-400:#877662;
+  --bi-ink-500:#6E6350;
+  --bi-ink-600:#55493A;
+  --bi-ink-700:#3E342A;
+  --bi-ink-800:#2D251C;
+  --bi-ink-900:#241E17;
+  --bi-ink-950:#14100B;
+
+  /* cream — paper. 0 is the whitest white. */
+  --bi-cream-0:#FFFFFF;
+  --bi-cream-25:#FFFDF8;
+  --bi-cream-50:#FAF6EE;
+  --bi-cream-100:#F3ECDD;
+  --bi-cream-150:#EDE3CE;
+  --bi-cream-200:#E6DBC5;
+
+  /* amber — golden orange. Warmer, sunnier alternate accent. */
+  --bi-amber-50:#FDF6E7;
+  --bi-amber-100:#FAEACB;
+  --bi-amber-200:#F5D699;
+  --bi-amber-300:#EEBE62;
+  --bi-amber-400:#E5A736;
+  --bi-amber-500:#D98E14;
+  --bi-amber-600:#B4740C;
+  --bi-amber-700:#955F08;
+  --bi-amber-800:#744A06;
+  --bi-amber-900:#533504;
+
+  /* rust — red-orange. Earthier, more serious alternate accent. */
+  --bi-rust-50:#FCF1EB;
+  --bi-rust-100:#F8DFD2;
+  --bi-rust-200:#F0BFA6;
+  --bi-rust-300:#E69A74;
+  --bi-rust-400:#DB7A4A;
+  --bi-rust-500:#C75B26;
+  --bi-rust-600:#A44819;
+  --bi-rust-700:#873A12;
+  --bi-rust-800:#692C0D;
+  --bi-rust-900:#4B1F09;
+
+  /* carbon — cool neutral grays. A print-shop alternate to the warm ink. */
+  --bi-carbon-50:#EFEFEF;
+  --bi-carbon-100:#E2E2E2;
+  --bi-carbon-200:#C6C6C6;
+  --bi-carbon-300:#A0A0A0;
+  --bi-carbon-400:#858585;
+  --bi-carbon-500:#6C6C6C;
+  --bi-carbon-600:#525252;
+  --bi-carbon-700:#3D3D3D;
+  --bi-carbon-800:#2B2B2B;
+  --bi-carbon-900:#212121;
+  --bi-carbon-950:#121212;
+
+  /* espresso — coffee brown-blacks. Redder and richer than the warm ink. */
+  --bi-espresso-50:#F0E9E4;
+  --bi-espresso-100:#E3D6CD;
+  --bi-espresso-200:#CBB5A7;
+  --bi-espresso-300:#A98D7B;
+  --bi-espresso-400:#8E7263;
+  --bi-espresso-500:#745B4E;
+  --bi-espresso-600:#5A453A;
+  --bi-espresso-700:#42322A;
+  --bi-espresso-800:#30231D;
+  --bi-espresso-900:#251B16;
+  --bi-espresso-950:#150E0A;
+
+  /* ivory — cooler, whiter paper. */
+  --bi-ivory-0:#FFFFFF;
+  --bi-ivory-25:#FEFDFB;
+  --bi-ivory-50:#FBFAF6;
+  --bi-ivory-100:#F5F3EC;
+  --bi-ivory-150:#EFEDE3;
+  --bi-ivory-200:#E8E5D8;
+
+  /* oat — warmer, toastier paper. */
+  --bi-oat-0:#FFFDF7;
+  --bi-oat-25:#FCF7EC;
+  --bi-oat-50:#F6EEDD;
+  --bi-oat-100:#EFE2C8;
+  --bi-oat-150:#E7D7B6;
+  --bi-oat-200:#DFCCA5;
+
+  /* supporting accents */
+  --bi-honey:#DFA251;
+  --bi-sage:#8F9C72;
+  --bi-taupe:#B0A188;
+  --bi-live:#5FA374;
+
+  /* ── typography slots ─────────────────────────────────────────────────── */
+  --bi-font-display:'Fraunces',Georgia,serif;
+  --bi-font-body:'Inter',system-ui,sans-serif;
+  --bi-font-mono:'JetBrains Mono',ui-monospace,monospace;
+  /* Fonts are not bundled — load the families for the voice you use.
+     fraunces voice:  Fraunces · Inter · JetBrains Mono
+     bricolage voice: Bricolage Grotesque · Inter Tight · IBM Plex Mono */
+
+  --bi-text-xs:11px;
+  --bi-text-s:13px;
+  --bi-text-m:15px;
+  --bi-text-l:18px;
+  --bi-text-xl:clamp(24px,2.6vw,32px);
+  --bi-text-display:clamp(40px,5.4vw,66px);
+  --bi-text-hero:clamp(50px,6.8vw,92px);
+  --bi-track-label:.14em;
+
+  /* ── semantic roles (light / standard) ────────────────────────────────── */
+  --bi-bg:var(--bi-cream-50);
+  --bi-bg-deep:var(--bi-cream-100);
+  --bi-surface:var(--bi-cream-25);
+  --bi-line:var(--bi-cream-200);
+  --bi-line-soft:var(--bi-cream-150);
+  --bi-text:var(--bi-ink-900);
+  --bi-text-2:var(--bi-ink-500);
+  --bi-text-3:var(--bi-ink-300);
+  --bi-accent:var(--bi-buzz-500);
+  --bi-accent-deep:var(--bi-buzz-600);
+  --bi-accent-soft:var(--bi-buzz-100);
+  --bi-accent-glow:color-mix(in srgb,var(--bi-accent) 16%,transparent);
+  --bi-shadow-color:var(--bi-ink-900);
+
+  /* ── spacing scale (4px grid) ─────────────────────────────────────────── */
+  --bi-space-1:4px;
+  --bi-space-2:8px;
+  --bi-space-3:12px;
+  --bi-space-4:16px;
+  --bi-space-5:20px;
+  --bi-space-6:24px;
+  --bi-space-7:32px;
+  --bi-space-8:40px;
+  --bi-space-9:56px;
+  --bi-space-10:72px;
+
+  /* ── z-index scale ────────────────────────────────────────────────────── */
+  --bi-z-nav:100;
+  --bi-z-fab:500;
+  --bi-z-drawer:700;
+  --bi-z-sheet:750;
+  --bi-z-modal:800;
+  --bi-z-command:850;
+  --bi-z-toast:900;
+  --bi-z-tip:950;
+
+  /* ── breakpoints (reference — use in @media queries) ──────────────────────
+     mobile  < 640px   ·   tablet 640–959px   ·   desktop ≥ 960px
+     wide ≥ 1200px ─────────────────────────────────────────────────────────── */
+
+  /* ── motion ───────────────────────────────────────────────────────────────
+     dur-1 hovers/presses · dur-2 state changes · dur-3 entrances · dur-4 panels
+     ease-out = the smooth default · ease = decisive settle · spring = delight */
+  --bi-dur-1:140ms;
+  --bi-dur-2:220ms;
+  --bi-dur-3:340ms;
+  --bi-dur-4:520ms;
+  --bi-ease:cubic-bezier(.16,1,.3,1);
+  --bi-ease-out:cubic-bezier(.25,.6,.2,1);
+  --bi-ease-spring:cubic-bezier(.34,1.32,.45,1);
+
+  /* ── edge personality: STANDARD (editorial default) ───────────────────── */
+  --bi-r-s:3px;
+  --bi-r-m:6px;
+  --bi-r-l:10px;
+  --bi-shadow-s:0 1px 2px rgba(20,16,11,.05),0 4px 14px rgba(20,16,11,.06);
+  --bi-shadow-m:0 2px 4px rgba(20,16,11,.05),0 16px 48px rgba(20,16,11,.11);
+  --bi-shadow-raise:3px 3px 0 var(--bi-shadow-color);
+  --bi-shadow-raise-hover:5px 5px 0 var(--bi-shadow-color);
+}
+
+/* ── edge personality: SHARP (print/brutalist — hard edges, hard shadows) ── */
+[data-radius="sharp"]{
+  --bi-r-s:0px;
+  --bi-r-m:0px;
+  --bi-r-l:0px;
+  --bi-shadow-s:none;
+  --bi-shadow-m:6px 6px 0 rgba(20,16,11,.08);
+  --bi-shadow-raise:4px 4px 0 var(--bi-shadow-color);
+  --bi-shadow-raise-hover:7px 7px 0 var(--bi-shadow-color);
+}
+
+/* ── edge personality: SOFT (friendly — pills and blurs) ─────────────────── */
+[data-radius="soft"]{
+  --bi-r-s:8px;
+  --bi-r-m:14px;
+  --bi-r-l:22px;
+  --bi-shadow-s:0 1px 2px rgba(20,16,11,.05),0 4px 14px rgba(20,16,11,.07);
+  --bi-shadow-m:0 4px 10px rgba(20,16,11,.06),0 22px 60px rgba(20,16,11,.13);
+  --bi-shadow-raise:0 8px 24px var(--bi-accent-glow);
+  --bi-shadow-raise-hover:0 14px 34px var(--bi-accent-glow);
+}
+
+/* ── contrast: DEEP (whiter whites, deeper blacks, deeper orange) ────────── */
+[data-contrast="deep"]{
+  --bi-bg:var(--bi-cream-0);
+  --bi-surface:var(--bi-cream-0);
+  --bi-bg-deep:var(--bi-cream-50);
+  --bi-text:var(--bi-ink-950);
+  --bi-accent:var(--bi-buzz-600);
+  --bi-accent-deep:var(--bi-buzz-700);
+  --bi-shadow-color:var(--bi-ink-950);
+}
+
+/* ── palette voices ──────────────────────────────────────────────────────────
+   Each voice remaps a base scale in place. Semantic roles reference the base
+   scale, so custom properties re-resolve and the whole system follows —
+   in light, dark, and deep contrast alike. ─────────────────────────────────── */
+
+/* accent voice: AMBER (golden) */
+[data-accent="amber"]{
+  --bi-buzz-50:var(--bi-amber-50);
+  --bi-buzz-100:var(--bi-amber-100);
+  --bi-buzz-200:var(--bi-amber-200);
+  --bi-buzz-300:var(--bi-amber-300);
+  --bi-buzz-400:var(--bi-amber-400);
+  --bi-buzz-500:var(--bi-amber-500);
+  --bi-buzz-600:var(--bi-amber-600);
+  --bi-buzz-700:var(--bi-amber-700);
+  --bi-buzz-800:var(--bi-amber-800);
+  --bi-buzz-900:var(--bi-amber-900);
+}
+
+/* accent voice: RUST (red-orange) */
+[data-accent="rust"]{
+  --bi-buzz-50:var(--bi-rust-50);
+  --bi-buzz-100:var(--bi-rust-100);
+  --bi-buzz-200:var(--bi-rust-200);
+  --bi-buzz-300:var(--bi-rust-300);
+  --bi-buzz-400:var(--bi-rust-400);
+  --bi-buzz-500:var(--bi-rust-500);
+  --bi-buzz-600:var(--bi-rust-600);
+  --bi-buzz-700:var(--bi-rust-700);
+  --bi-buzz-800:var(--bi-rust-800);
+  --bi-buzz-900:var(--bi-rust-900);
+}
+
+/* neutral voice: CARBON (cool print grays) */
+[data-neutral="carbon"]{
+  --bi-ink-50:var(--bi-carbon-50);
+  --bi-ink-100:var(--bi-carbon-100);
+  --bi-ink-200:var(--bi-carbon-200);
+  --bi-ink-300:var(--bi-carbon-300);
+  --bi-ink-400:var(--bi-carbon-400);
+  --bi-ink-500:var(--bi-carbon-500);
+  --bi-ink-600:var(--bi-carbon-600);
+  --bi-ink-700:var(--bi-carbon-700);
+  --bi-ink-800:var(--bi-carbon-800);
+  --bi-ink-900:var(--bi-carbon-900);
+  --bi-ink-950:var(--bi-carbon-950);
+}
+
+/* neutral voice: ESPRESSO (coffee brown-blacks) */
+[data-neutral="espresso"]{
+  --bi-ink-50:var(--bi-espresso-50);
+  --bi-ink-100:var(--bi-espresso-100);
+  --bi-ink-200:var(--bi-espresso-200);
+  --bi-ink-300:var(--bi-espresso-300);
+  --bi-ink-400:var(--bi-espresso-400);
+  --bi-ink-500:var(--bi-espresso-500);
+  --bi-ink-600:var(--bi-espresso-600);
+  --bi-ink-700:var(--bi-espresso-700);
+  --bi-ink-800:var(--bi-espresso-800);
+  --bi-ink-900:var(--bi-espresso-900);
+  --bi-ink-950:var(--bi-espresso-950);
+}
+
+/* paper voice: IVORY (cooler, whiter) */
+[data-paper="ivory"]{
+  --bi-cream-0:var(--bi-ivory-0);
+  --bi-cream-25:var(--bi-ivory-25);
+  --bi-cream-50:var(--bi-ivory-50);
+  --bi-cream-100:var(--bi-ivory-100);
+  --bi-cream-150:var(--bi-ivory-150);
+  --bi-cream-200:var(--bi-ivory-200);
+}
+
+/* paper voice: OAT (warmer, toastier) */
+[data-paper="oat"]{
+  --bi-cream-0:var(--bi-oat-0);
+  --bi-cream-25:var(--bi-oat-25);
+  --bi-cream-50:var(--bi-oat-50);
+  --bi-cream-100:var(--bi-oat-100);
+  --bi-cream-150:var(--bi-oat-150);
+  --bi-cream-200:var(--bi-oat-200);
+}
+
+/* type voice: BRICOLAGE (modern grotesque — simple and stylish) */
+[data-type="bricolage"]{
+  --bi-font-display:'Bricolage Grotesque','Inter Tight',system-ui,sans-serif;
+  --bi-font-body:'Inter Tight',system-ui,sans-serif;
+  --bi-font-mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+
+/* ── dark theme ──────────────────────────────────────────────────────────── */
+[data-theme="dark"]{
+  --bi-bg:#181310;
+  --bi-bg-deep:#120E09;
+  --bi-surface:#241D14;
+  --bi-line:#3A3122;
+  --bi-line-soft:#2E2618;
+  --bi-text:#F2EAD9;
+  --bi-text-2:#B8AA8F;
+  --bi-text-3:#8A7C63;
+  --bi-accent:var(--bi-buzz-400);
+  --bi-accent-deep:var(--bi-buzz-300);
+  --bi-accent-soft:#3A2510;
+  --bi-accent-glow:color-mix(in srgb,var(--bi-accent) 20%,transparent);
+  --bi-shadow-color:#000000;
+}
+
+/* dark + deep: true black, pure white */
+[data-theme="dark"][data-contrast="deep"]{
+  --bi-bg:#0C0906;
+  --bi-bg-deep:#000000;
+  --bi-surface:#171209;
+  --bi-text:#FFFFFF;
+  --bi-accent:var(--bi-buzz-400);
+}
