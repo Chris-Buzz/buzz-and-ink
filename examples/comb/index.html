@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-radius="standard" data-contrast="standard" data-accent="buzz" data-neutral="warm" data-paper="cream" data-type="bricolage">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comb — readership analytics</title>
+<meta name="description" content="An analytics dashboard built entirely on Buzz & Ink v0.8, with token-driven charts.">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Inter+Tight:wght@400..700&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../src/index.css">
+<style>
+  /* ============================================================
+     COMB — readership analytics.
+
+     The chart-heavy corner of the system. Every mark on this page
+     is painted with var(--bi-series-N), so the whole dashboard
+     re-inks the instant you touch the theme panel — no redraw.
+
+     Type voice: bricolage. Edge personality: standard.
+     ============================================================ */
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{font-family:var(--bi-font-body);background:var(--bi-bg);color:var(--bi-text);-webkit-font-smoothing:antialiased}
+
+  .wrap{max-width:1280px;margin:0 auto;padding:0 var(--bi-space-6)}
+
+  /* header */
+  header.top{
+    position:sticky;top:0;z-index:var(--bi-z-nav);
+    background:color-mix(in srgb,var(--bi-bg) 88%,transparent);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--bi-line);
+  }
+  header.top .wrap{display:flex;align-items:center;gap:14px;height:62px}
+  .wordmark{
+    display:flex;align-items:center;gap:9px;
+    font-family:var(--bi-font-mono);font-weight:500;font-size:13px;letter-spacing:.16em;
+    color:var(--bi-text);margin-right:10px;
+  }
+  .wordmark b{color:var(--bi-accent);font-weight:500}
+  header.top .grow{flex:1}
+
+  /* hero */
+  .hero{padding:var(--bi-space-8) 0 var(--bi-space-6);position:relative;overflow:hidden}
+  .hero h1{
+    font-family:var(--bi-font-display);font-weight:520;font-size:clamp(30px,4vw,46px);
+    line-height:1.04;letter-spacing:-.02em;margin:12px 0 8px;
+  }
+  .hero p{font-size:15px;color:var(--bi-text-2);max-width:58ch;line-height:1.6}
+
+  /* layout */
+  .grid{display:grid;gap:var(--bi-space-4);margin-bottom:var(--bi-space-4)}
+  .g-2{grid-template-columns:1.55fr 1fr}
+  .g-3{grid-template-columns:repeat(3,1fr)}
+  .panel{
+    background:var(--bi-surface);border:1px solid var(--bi-line);border-radius:var(--bi-r-m);
+    padding:var(--bi-space-5);display:flex;flex-direction:column;
+  }
+  .panel > header{display:flex;align-items:center;gap:12px;margin-bottom:var(--bi-space-4)}
+  .panel > header h3{font-family:var(--bi-font-display);font-weight:520;font-size:16px;letter-spacing:-.01em}
+  .panel > header .grow{flex:1}
+
+  /* filter bar — one row, above the charts */
+  .filters{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:var(--bi-space-5)}
+  .filters .grow{flex:1}
+
+  footer.foot{
+    border-top:1px solid var(--bi-line);margin-top:var(--bi-space-8);padding:var(--bi-space-6) 0;
+    font-family:var(--bi-font-mono);font-size:10.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--bi-text-3);
+  }
+
+  @media (max-width:1080px){ .g-2,.g-3{grid-template-columns:1fr} }
+</style>
+</head>
+<body class="bi">
+
+<div class="bi-scrollbar" data-bi-scroll-progress></div>
+
+<header class="top">
+  <div class="wrap">
+    <span class="wordmark">
+      <svg class="bi-icon bi-icon--l" style="color:var(--bi-accent)"><use href="#bi-i-hex"/></svg>
+      COMB<b>·</b>ANALYTICS
+    </span>
+    <nav class="bi-nav">
+      <a href="#" class="active">Overview</a>
+      <a href="#">Stories</a>
+      <a href="#">Audience</a>
+      <a href="#">Revenue</a>
+    </nav>
+    <span class="grow"></span>
+    <span class="bi-chip"><i></i>LIVE</span>
+    <div class="bi-avatars">
+      <span class="bi-avatar bi-avatar--s">CB</span>
+      <span class="bi-avatar bi-avatar--s bi-avatar--ink">MO</span>
+      <span class="bi-avatar bi-avatar--s">RK</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ── hero ────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="bi-aurora"></div>
+    <div style="position:relative">
+      <div class="bi-kicker">Readership · last 30 days</div>
+      <h1 data-bi-split data-bi-reveal>Six hundred thousand people read you this month.</h1>
+      <p data-bi-reveal data-bi-delay="240">Traffic is up across every section except Business, where the paywall test is still running. The bee story is carrying 19% of all reads on its own.</p>
+    </div>
+  </section>
+
+  <!-- ── filters ─────────────────────────────────────────────── -->
+  <div class="filters">
+    <div class="bi-seg" id="rangeSeg">
+      <button data-range="7">7D</button>
+      <button class="on" data-range="30">30D</button>
+      <button data-range="90">90D</button>
+    </div>
+    <div class="bi-select">
+      <select id="sectionSel">
+        <option value="all">All sections</option>
+        <option value="Politics">Politics</option>
+        <option value="Science">Science</option>
+        <option value="Business">Business</option>
+        <option value="Features">Features</option>
+      </select>
+    </div>
+    <span class="grow"></span>
+    <button class="bi-btn bi-btn--ghost" id="exportBtn">
+      <svg class="bi-icon bi-icon--s"><use href="#bi-i-download"/></svg> Export
+    </button>
+    <button class="bi-btn bi-btn--primary" data-bi-magnetic="0.25" id="reportBtn">
+      Build report <svg class="bi-icon bi-icon--s"><use href="#bi-i-arrow-right"/></svg>
+    </button>
+  </div>
+
+  <!-- ── KPI row ─────────────────────────────────────────────── -->
+  <div class="bi-stat-row" style="margin-bottom:var(--bi-space-4)" data-bi-stagger="70">
+    <div class="bi-stat" data-bi-reveal="scale">
+      <header><span>Total reads</span><span class="bi-stat-delta bi-stat-delta--up">18%</span></header>
+      <b data-bi-count="604820">0</b>
+      <div class="bi-spark" data-spark="reads"></div>
+    </div>
+    <div class="bi-stat" data-bi-reveal="scale">
+      <header><span>Subscribers</span><span class="bi-stat-delta bi-stat-delta--up">6%</span></header>
+      <b data-bi-count="12480">0</b>
+      <div class="bi-spark" data-spark="subs"></div>
+    </div>
+    <div class="bi-stat" data-bi-reveal="scale">
+      <header><span>Avg. read time</span><span class="bi-stat-delta bi-stat-delta--down">3%</span></header>
+      <b data-bi-count="4.8" data-bi-decimals="1" data-bi-suffix=" min">0</b>
+      <div class="bi-spark" data-spark="time"></div>
+    </div>
+    <div class="bi-stat" data-bi-reveal="scale">
+      <header><span>Completion</span><span class="bi-stat-delta bi-stat-delta--up">9%</span></header>
+      <b data-bi-count="61" data-bi-suffix="%">0</b>
+      <div class="bi-spark" data-spark="done"></div>
+    </div>
+  </div>
+
+  <!-- ── main charts ─────────────────────────────────────────── -->
+  <div class="grid g-2">
+    <section class="panel" data-bi-reveal>
+      <header>
+        <h3>Reads by day</h3>
+        <span class="grow"></span>
+        <span class="bi-tag" id="rangeTag">30 days</span>
+      </header>
+      <div id="trendChart"></div>
+    </section>
+
+    <section class="panel" data-bi-reveal data-bi-delay="120">
+      <header><h3>Where they came from</h3></header>
+      <div id="sourceChart"></div>
+    </section>
+  </div>
+
+  <div class="grid g-2">
+    <section class="panel" data-bi-reveal>
+      <header>
+        <h3>Reads by section</h3>
+        <span class="grow"></span>
+        <label class="bi-switch" style="font-size:11.5px">
+          <input type="checkbox" id="stackToggle"><i></i> Stack
+        </label>
+      </header>
+      <div id="sectionChart"></div>
+    </section>
+
+    <section class="panel" data-bi-reveal data-bi-delay="120">
+      <header><h3>Reading depth</h3></header>
+      <div style="display:flex;flex-direction:column;gap:16px;margin-top:4px">
+        <div class="bi-meter"><header><span>Opened</span><b>100%</b></header><div class="bi-meter-track"><i class="bi-meter-fill" style="width:100%"></i></div></div>
+        <div class="bi-meter"><header><span>Past the fold</span><b>78%</b></header><div class="bi-meter-track"><i class="bi-meter-fill" style="width:78%"></i></div></div>
+        <div class="bi-meter bi-meter--good"><header><span>Halfway</span><b>61%</b></header><div class="bi-meter-track"><i class="bi-meter-fill" style="width:61%"></i></div></div>
+        <div class="bi-meter bi-meter--warn"><header><span>Finished</span><b>34%</b></header><div class="bi-meter-track"><i class="bi-meter-fill" style="width:34%"></i></div></div>
+        <div class="bi-meter bi-meter--critical"><header><span>Shared</span><b>9%</b></header><div class="bi-meter-track"><i class="bi-meter-fill" style="width:9%"></i></div></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ── data grid ───────────────────────────────────────────── -->
+  <section class="panel" data-bi-reveal style="margin-bottom:var(--bi-space-4)">
+    <header>
+      <h3>Top stories</h3>
+      <span class="grow"></span>
+      <input class="bi-input" id="search" placeholder="Filter stories…" style="width:230px">
+    </header>
+    <div class="bi-table-scroll">
+      <table class="bi-table bi-table--sortable bi-table--zebra bi-table--numeric" id="grid">
+        <thead>
+          <tr>
+            <th data-key="title" data-sort="none">Story</th>
+            <th data-key="section" data-sort="none" style="text-align:left">Section</th>
+            <th data-key="reads" data-sort="desc">Reads</th>
+            <th data-key="time" data-sort="none">Avg. time</th>
+            <th data-key="done" data-sort="none">Finished</th>
+            <th style="text-align:right">Trend</th>
+          </tr>
+        </thead>
+        <tbody id="gridBody"></tbody>
+      </table>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;margin-top:var(--bi-space-4)">
+      <span class="bi-tag" id="gridCount"></span>
+      <span class="grow" style="flex:1"></span>
+      <div class="bi-pages">
+        <button disabled>←</button>
+        <button class="on">1</button><button>2</button><button>3</button>
+        <i>…</i><button>9</button>
+        <button>→</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── bottom row ──────────────────────────────────────────── -->
+  <div class="grid g-3">
+    <section class="panel" data-bi-reveal>
+      <header><h3>Devices</h3></header>
+      <div id="deviceChart"></div>
+    </section>
+    <section class="panel" data-bi-reveal data-bi-delay="90">
+      <header><h3>Newsletter</h3></header>
+      <div id="mailChart"></div>
+    </section>
+    <section class="panel" data-bi-reveal data-bi-delay="180">
+      <header><h3>Desk activity</h3></header>
+      <ol class="bi-timeline" style="margin-top:2px">
+        <li class="on"><time>09:12</time><b>Bee story hit 100k</b><p>Fastest to six figures this year.</p></li>
+        <li class="done"><time>08:40</time><b>Paywall test resumed</b><p>Business section, 50/50 split.</p></li>
+        <li class="done"><time>Yesterday</time><b>Newsletter sent</b><p>62% open rate, 14% click.</p></li>
+        <li class="done"><time>Mon</time><b>Weekly report filed</b><p>Circulated to the desk.</p></li>
+      </ol>
+    </section>
+  </div>
+
+  <footer class="foot">
+    Comb · built on Buzz &amp; Ink v0.8 · every mark on this page is a design token
+  </footer>
+</main>
+
+<div class="bi-toasts" id="toasts"></div>
+
+<script type="module">
+import { injectIcons } from '../../src/icons.js';
+import { barChart, lineChart, donutChart, sparkline } from '../../src/charts.js';
+import { initMotion } from '../../src/motion.js';
+import { themer } from '../../src/themer.js';
+
+injectIcons();
+
+/* ── data ──────────────────────────────────────────────────── */
+const rand = (seed) => () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+function seriesFor(days, base, spread, seed) {
+  const r = rand(seed);
+  return Array.from({ length: days }, (_, i) =>
+    Math.round(base + Math.sin(i / 3.4) * spread * 0.5 + r() * spread + i * (base * 0.006)));
+}
+
+const STORIES = [
+  { title: 'Why the bees came back',                section: 'Science',  reads: 118420, time: 7.4, done: 68, trend: [12, 18, 26, 34, 48, 61, 78] },
+  { title: 'What the port strike actually costs',   section: 'Business', reads: 84210,  time: 5.1, done: 52, trend: [30, 28, 34, 31, 38, 40, 44] },
+  { title: 'Three winters on the ridge',            section: 'Features', reads: 61870,  time: 9.2, done: 71, trend: [8, 14, 19, 22, 27, 30, 36] },
+  { title: 'The lab that measures silence',         section: 'Science',  reads: 52940,  time: 6.8, done: 64, trend: [22, 24, 21, 26, 29, 27, 31] },
+  { title: 'The last independent pharmacy',         section: 'Features', reads: 41220,  time: 8.1, done: 66, trend: [11, 13, 16, 18, 17, 21, 24] },
+  { title: 'Six months inside the transit board',   section: 'Politics', reads: 38610,  time: 6.2, done: 49, trend: [19, 17, 20, 23, 22, 25, 26] },
+  { title: 'A field guide to municipal budgets',    section: 'Politics', reads: 29480,  time: 4.4, done: 41, trend: [14, 15, 13, 17, 16, 19, 20] },
+  { title: 'Nobody audits the auditors',            section: 'Business', reads: 24150,  time: 5.6, done: 45, trend: [9, 12, 11, 14, 15, 14, 18] },
+  { title: 'Reading the river gauges',              section: 'Science',  reads: 19730,  time: 5.9, done: 58, trend: [7, 8, 10, 12, 11, 14, 15] },
+  { title: 'The quiet arithmetic of water',         section: 'Politics', reads: 14260,  time: 11.3, done: 74, trend: [3, 5, 6, 9, 12, 16, 21] },
+];
+
+/* ── sparklines in the KPI tiles ───────────────────────────── */
+const SPARKS = {
+  reads: [380, 402, 441, 428, 496, 533, 561, 604],
+  subs:  [11.2, 11.4, 11.6, 11.9, 12.0, 12.2, 12.3, 12.5],
+  time:  [5.2, 5.1, 5.0, 5.1, 4.9, 4.9, 4.8, 4.8],
+  done:  [54, 55, 57, 56, 58, 60, 60, 61],
+};
+const SPARK_COLOR = { reads: 0, subs: 4, time: 3, done: 1 };
+document.querySelectorAll('[data-spark]').forEach((el) => {
+  const key = el.dataset.spark;
+  sparkline(el, {
+    values: SPARKS[key], width: 108, height: 26,
+    color: `var(--bi-series-${SPARK_COLOR[key] + 1})`,
+  });
+});
+
+/* ── trend chart (responds to the range filter) ────────────── */
+let range = 30;
+const trendEl = document.getElementById('trendChart');
+let trend = lineChart(trendEl, trendOptions());
+
+function trendOptions() {
+  const days = range;
+  const step = days > 40 ? 7 : days > 10 ? 3 : 1;
+  const values = seriesFor(days, 14000, 7000, 7);
+  return {
+    categories: Array.from({ length: days }, (_, i) => `${i + 1}`).filter((_, i) => i % step === 0 || i === days - 1),
+    series: [{ name: 'Reads', values: values.filter((_, i) => i % step === 0 || i === days - 1) }],
+    height: 268, area: true, legend: false,
+    format: (v) => v >= 1000 ? `${Math.round(v / 1000)}k` : String(v),
+  };
+}
+
+document.querySelectorAll('#rangeSeg button').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#rangeSeg button').forEach((b) => b.classList.remove('on'));
+    btn.classList.add('on');
+    range = Number(btn.dataset.range);
+    document.getElementById('rangeTag').textContent = `${range} days`;
+    trend.update(trendOptions());
+  });
+});
+
+/* ── source donut ──────────────────────────────────────────── */
+donutChart(document.getElementById('sourceChart'), {
+  data: [
+    { label: 'Direct',    value: 214000 },
+    { label: 'Search',    value: 168000 },
+    { label: 'Newsletter', value: 121000 },
+    { label: 'Social',    value: 68000 },
+    { label: 'Referral',  value: 33820 },
+  ],
+  size: 196, thickness: 24,
+  center: { value: '604k', label: 'total reads' },
+  format: (v) => `${(v / 1000).toFixed(0)}k`,
+});
+
+/* ── section bar chart (grouped ⇄ stacked) ─────────────────── */
+const sectionEl = document.getElementById('sectionChart');
+const SECTION_DATA = {
+  categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+  series: [
+    { name: 'Politics', values: [22100, 24800, 23400, 27600] },
+    { name: 'Science',  values: [31400, 34200, 41800, 48200] },
+    { name: 'Business', values: [18600, 17200, 16400, 15100] },
+    { name: 'Features', values: [14200, 15800, 17100, 18900] },
+  ],
+};
+let sectionChart = barChart(sectionEl, { ...SECTION_DATA, height: 250, format: (v) => `${Math.round(v / 1000)}k` });
+document.getElementById('stackToggle').addEventListener('change', (e) => {
+  sectionChart.update({ stacked: e.target.checked });
+});
+
+/* ── bottom charts ─────────────────────────────────────────── */
+donutChart(document.getElementById('deviceChart'), {
+  data: [{ label: 'Mobile', value: 61 }, { label: 'Desktop', value: 29 }, { label: 'Tablet', value: 10 }],
+  size: 158, thickness: 20, center: { value: '61%', label: 'mobile' }, format: (v) => `${v}%`,
+});
+
+barChart(document.getElementById('mailChart'), {
+  categories: ['Apr', 'May', 'Jun', 'Jul', 'Aug'],
+  series: [{ name: 'Open rate', values: [54, 57, 59, 61, 62] }],
+  height: 176, legend: false, format: (v) => `${v}%`,
+});
+
+/* ── data grid ─────────────────────────────────────────────── */
+const body = document.getElementById('gridBody');
+let sortKey = 'reads', sortDir = 'desc', query = '', section = 'all';
+
+function renderGrid() {
+  const rows = STORIES
+    .filter((s) => section === 'all' || s.section === section)
+    .filter((s) => s.title.toLowerCase().includes(query))
+    .sort((a, b) => {
+      const av = a[sortKey], bv = b[sortKey];
+      const cmp = typeof av === 'number' ? av - bv : String(av).localeCompare(String(bv));
+      return sortDir === 'asc' ? cmp : -cmp;
+    });
+
+  body.textContent = '';
+  rows.forEach((s) => {
+    const tr = document.createElement('tr');
+
+    const title = document.createElement('td');
+    title.textContent = s.title;
+
+    const sec = document.createElement('td');
+    sec.style.textAlign = 'left';
+    const tag = document.createElement('span');
+    tag.className = 'bi-tag';
+    tag.textContent = s.section;
+    sec.append(tag);
+
+    const reads = document.createElement('td');
+    reads.textContent = s.reads.toLocaleString();
+
+    const time = document.createElement('td');
+    time.textContent = `${s.time.toFixed(1)}m`;
+
+    const done = document.createElement('td');
+    done.textContent = `${s.done}%`;
+
+    const spark = document.createElement('td');
+    const holder = document.createElement('div');
+    holder.style.cssText = 'display:flex;justify-content:flex-end';
+    spark.append(holder);
+
+    tr.append(title, sec, reads, time, done, spark);
+    body.append(tr);
+    sparkline(holder, { values: s.trend, width: 80, height: 22 });
+  });
+
+  document.getElementById('gridCount').textContent = `${rows.length} of ${STORIES.length} stories`;
+}
+
+document.querySelectorAll('#grid th[data-key]').forEach((th) => {
+  th.addEventListener('click', () => {
+    const key = th.dataset.key;
+    sortDir = sortKey === key && sortDir === 'desc' ? 'asc' : 'desc';
+    sortKey = key;
+    document.querySelectorAll('#grid th[data-key]').forEach((o) => (o.dataset.sort = 'none'));
+    th.dataset.sort = sortDir;
+    renderGrid();
+  });
+});
+document.getElementById('search').addEventListener('input', (e) => {
+  query = e.target.value.toLowerCase().trim();
+  renderGrid();
+});
+document.getElementById('sectionSel').addEventListener('change', (e) => {
+  section = e.target.value;
+  renderGrid();
+});
+renderGrid();
+
+/* ── misc ──────────────────────────────────────────────────── */
+function toast(message) {
+  const t = document.createElement('div');
+  t.className = 'bi-toast';
+  t.textContent = message;
+  document.getElementById('toasts').append(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; setTimeout(() => t.remove(), 320); }, 2200);
+}
+document.getElementById('exportBtn').addEventListener('click', () => toast('CSV exported'));
+document.getElementById('reportBtn').addEventListener('click', () => toast('Report queued'));
+
+initMotion();
+themer();
+</script>
+</body>
+</html>

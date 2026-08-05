@@ -128,6 +128,33 @@
   --bi-taupe:#B0A188;
   --bi-live:#5FA374;
 
+  /* ── data series (categorical) ─────────────────────────────────────────────
+     Six slots for charts, assigned in fixed order and never cycled — a 7th
+     series folds into "other" or becomes small multiples. Slot 1 is the brand
+     orange so a single-series chart is always on-brand.
+
+     These are not eyeballed. Both the light set and the dark set below were
+     validated for OKLCH lightness band, chroma floor, adjacent-pair separation
+     under deuteranopia/protanopia/tritanopia, and contrast against their own
+     surface. The dark set is re-picked against the dark surface, not flipped.
+
+     Worst tritan margin sits in the 6–8 band, which is only legal alongside a
+     secondary encoding — so charts.js always draws a legend for 2+ series and
+     keeps a 2px surface gap between adjacent fills. Don't remove those. */
+  --bi-series-1:#D9701E;  /* orange — brand anchor */
+  --bi-series-2:#008EA6;  /* teal   */
+  --bi-series-3:#B07A16;  /* amber  */
+  --bi-series-4:#A03A72;  /* plum   */
+  --bi-series-5:#6E9A2B;  /* green  */
+  --bi-series-6:#3D6BA8;  /* blue   */
+
+  /* status — reserved. Never reused as a series color, and always shipped
+     with an icon or label so state is never carried by color alone. */
+  --bi-good:#5FA374;
+  --bi-warn:#DFA251;
+  --bi-serious:#C75B26;
+  --bi-critical:#9C2B2B;
+
   /* ── typography slots ─────────────────────────────────────────────────── */
   --bi-font-display:'Fraunces',Georgia,serif;
   --bi-font-body:'Inter',system-ui,sans-serif;
@@ -345,6 +372,10 @@
   --bi-accent-soft:#3A2510;
   --bi-accent-glow:color-mix(in srgb,var(--bi-accent) 20%,transparent);
   --bi-shadow-color:#000000;
+
+  /* Series re-picked for the dark surface — only the plum needed lifting to
+     clear 3:1 against #241D14. The rest already sat inside the dark band. */
+  --bi-series-4:#B8508A;
 }
 
 /* dark + deep: true black, pure white */

@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-radius="soft" data-contrast="standard" data-accent="buzz" data-neutral="warm" data-paper="cream" data-type="fraunces">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Apiary — field operations</title>
+<meta name="description" content="A mobile field-operations app built entirely on Buzz & Ink v0.8.">
+<meta name="theme-color" content="#FAF6EE">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../src/index.css">
+<style>
+  /* ============================================================
+     APIARY — field operations for people who keep bees.
+
+     A real mobile application: four screens, a bottom sheet, a
+     FAB, live charts. It is built full-viewport first, so it is
+     a genuine phone app — on a wide screen the media query at the
+     bottom parks it in a device frame so you can look at it from
+     a desktop without resizing anything.
+     ============================================================ */
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overscroll-behavior:none}
+  body{
+    font-family:var(--bi-body,var(--bi-font-body));background:var(--bi-bg-deep);
+    color:var(--bi-text);-webkit-font-smoothing:antialiased;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  .phone{
+    position:relative;display:flex;flex-direction:column;overflow:hidden;
+    width:100%;height:100%;background:var(--bi-bg);
+  }
+
+  /* screens */
+  .screen{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:var(--bi-space-4) var(--bi-space-4) 90px;display:none}
+  .screen.on{display:block;animation:slideUp var(--bi-dur-3) var(--bi-ease-out)}
+  @keyframes slideUp{from{opacity:0;transform:translateY(8px)}}
+
+  .sec-label{
+    font-family:var(--bi-font-mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--bi-text-3);margin:var(--bi-space-5) 0 10px 2px;
+  }
+  .sec-label:first-child{margin-top:4px}
+
+  /* hero greeting */
+  .hello{padding:6px 2px 2px}
+  .hello h1{font-family:var(--bi-font-display);font-weight:450;font-size:26px;line-height:1.15;letter-spacing:-.015em}
+  .hello h1 em{font-style:italic;color:var(--bi-accent)}
+  .hello p{font-size:13px;color:var(--bi-text-2);margin-top:5px}
+
+  /* stat pair */
+  .stat-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .stat-pair .bi-stat{padding:14px 15px;gap:4px}
+  .stat-pair .bi-stat b{font-size:26px}
+
+  /* hive card */
+  .hive{display:flex;align-items:center;gap:13px;padding:13px 15px;cursor:pointer}
+  .hive .ring{
+    width:40px;height:40px;flex:none;border-radius:99px;display:grid;place-items:center;
+    background:var(--bi-accent-soft);color:var(--bi-accent-deep);
+  }
+  .hive .meta{flex:1;min-width:0}
+  .hive .meta b{display:block;font-size:14px;font-weight:600;margin-bottom:2px}
+  .hive .meta span{font-size:11.5px;color:var(--bi-text-3);font-family:var(--bi-font-mono)}
+  .hive .trail{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+
+  /* card grid for the log */
+  .note{padding:14px 16px}
+  .note h4{font-family:var(--bi-font-display);font-weight:500;font-size:15px;margin-bottom:4px}
+  .note p{font-size:13px;color:var(--bi-text-2);line-height:1.55}
+
+  /* weather strip */
+  .weather{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+  .weather::-webkit-scrollbar{display:none}
+  .weather div{
+    flex:none;width:62px;padding:11px 8px;text-align:center;border-radius:var(--bi-r-m);
+    background:var(--bi-surface);border:1px solid var(--bi-line);
+  }
+  .weather span{display:block;font-family:var(--bi-font-mono);font-size:9px;letter-spacing:.1em;color:var(--bi-text-3);text-transform:uppercase}
+  .weather b{display:block;font-family:var(--bi-font-mono);font-size:14px;margin-top:6px}
+  .weather svg{margin:5px auto 0;color:var(--bi-accent)}
+
+  /* on a desktop, park the app in a device frame */
+  @media (min-width:760px){
+    body{padding:26px;background:var(--bi-bg-deep)}
+    .phone{
+      width:390px;height:min(844px,calc(100vh - 52px));
+      border-radius:42px;border:1px solid var(--bi-line);box-shadow:var(--bi-shadow-m);
+    }
+    .phone::before{
+      content:'';position:absolute;top:9px;left:50%;transform:translateX(-50%);
+      width:104px;height:22px;border-radius:99px;background:var(--bi-text);opacity:.9;z-index:60;
+    }
+    .bi-appbar{padding-top:34px !important;min-height:82px !important}
+  }
+</style>
+</head>
+<body class="bi">
+
+<div class="phone" id="phone">
+
+  <!-- ── app bar ─────────────────────────────────────────────── -->
+  <header class="bi-appbar">
+    <svg class="bi-icon bi-icon--l" style="color:var(--bi-accent)"><use href="#bi-i-bee"/></svg>
+    <b id="screenTitle">Apiary</b>
+    <button id="bellBtn" style="background:none;border:none;cursor:pointer;color:var(--bi-text-2);position:relative">
+      <svg class="bi-icon bi-icon--l"><use href="#bi-i-bell"/></svg>
+    </button>
+    <span class="bi-avatar bi-avatar--s">CB</span>
+  </header>
+
+  <!-- ══ HOME ═══════════════════════════════════════════════ -->
+  <section class="screen on" id="s-home">
+    <div class="hello">
+      <h1>Good morning, <em>Chris</em></h1>
+      <p>14 hives · 3 need attention · wind 6 mph</p>
+    </div>
+
+    <div class="sec-label">This week</div>
+    <div class="stat-pair">
+      <div class="bi-stat">
+        <header>
+          <span>Yield</span>
+          <span class="bi-stat-delta bi-stat-delta--up">12%</span>
+        </header>
+        <b data-bi-count="184" data-bi-suffix=" lb">0</b>
+        <div class="bi-spark" id="sparkYield"></div>
+      </div>
+      <div class="bi-stat">
+        <header>
+          <span>Brood</span>
+          <span class="bi-stat-delta bi-stat-delta--down">4%</span>
+        </header>
+        <b data-bi-count="92" data-bi-suffix="%">0</b>
+        <div class="bi-spark" id="sparkBrood"></div>
+      </div>
+    </div>
+
+    <div class="sec-label">Hive weight · 14 days</div>
+    <div class="bi-card" style="padding:16px 14px 12px">
+      <div id="weightChart"></div>
+    </div>
+
+    <div class="sec-label">Forecast</div>
+    <div class="weather" id="weather"></div>
+
+    <div class="sec-label">Needs attention</div>
+    <div class="bi-list" id="alertList"></div>
+
+    <div class="sec-label">Recent activity</div>
+    <ol class="bi-timeline" style="padding:2px 2px 0">
+      <li class="on"><time>07:40 today</time><b>Hive 07 inspected</b><p>Queen sighted. Two frames of capped brood added.</p></li>
+      <li class="done"><time>Yesterday</time><b>Supers added to row B</b><p>Four hives, medium supers.</p></li>
+      <li class="done"><time>Mon</time><b>Varroa count logged</b><p>Average 2.1 per 100 bees — below threshold.</p></li>
+    </ol>
+  </section>
+
+  <!-- ══ HIVES ══════════════════════════════════════════════ -->
+  <section class="screen" id="s-hives">
+    <div class="sec-label">Yard A · 8 hives</div>
+    <div class="bi-list" id="hiveListA"></div>
+    <div class="sec-label">Yard B · 6 hives</div>
+    <div class="bi-list" id="hiveListB"></div>
+
+    <div class="sec-label">Colony strength</div>
+    <div class="bi-card" style="padding:16px 14px 12px">
+      <div id="strengthChart"></div>
+    </div>
+  </section>
+
+  <!-- ══ LOG ════════════════════════════════════════════════ -->
+  <section class="screen" id="s-log">
+    <div class="sec-label">August</div>
+    <div class="bi-calendar" id="cal"></div>
+
+    <div class="sec-label">Entries</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <article class="bi-card note">
+        <div class="bi-card-num">07:40 · HIVE 07</div>
+        <h4>Queen sighted, marked blue</h4>
+        <p>Laying pattern tight and even across four frames. No signs of chalkbrood. Added a medium super.</p>
+        <div style="display:flex;gap:5px;margin-top:9px">
+          <span class="bi-tag">queenright</span><span class="bi-tag">super added</span>
+        </div>
+      </article>
+      <article class="bi-card note">
+        <div class="bi-card-num">YESTERDAY · HIVE 03</div>
+        <h4>Light stores, fed 1:1</h4>
+        <p>Frames five through seven nearly empty. Started syrup. Recheck Thursday.</p>
+        <div style="display:flex;gap:5px;margin-top:9px">
+          <span class="bi-tag">feeding</span><span class="bi-tag">recheck</span>
+        </div>
+      </article>
+      <article class="bi-card note">
+        <div class="bi-card-num">MON · YARD B</div>
+        <h4>Varroa wash — all six</h4>
+        <p>Average 2.1 mites per 100 bees. Below the treatment threshold; recheck in three weeks.</p>
+        <div style="display:flex;gap:5px;margin-top:9px">
+          <span class="bi-tag">varroa</span><span class="bi-tag">clear</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ══ SETTINGS ═══════════════════════════════════════════ -->
+  <section class="screen" id="s-more">
+    <div style="display:flex;align-items:center;gap:13px;padding:8px 2px 18px">
+      <span class="bi-avatar bi-avatar--l">CB</span>
+      <div>
+        <div style="font-family:var(--bi-font-display);font-size:19px;font-weight:500">Chris Buzaid</div>
+        <div style="font-family:var(--bi-font-mono);font-size:11px;color:var(--bi-text-3)">RIDGELINE APIARY · 14 HIVES</div>
+      </div>
+    </div>
+
+    <div class="sec-label">Season</div>
+    <div class="bi-card" style="gap:14px">
+      <div class="bi-meter">
+        <header><span>Harvest goal</span><b>184 / 300 lb</b></header>
+        <div class="bi-meter-track"><i class="bi-meter-fill" style="width:61%"></i></div>
+      </div>
+      <div class="bi-meter bi-meter--good">
+        <header><span>Hives overwintered</span><b>12 / 14</b></header>
+        <div class="bi-meter-track"><i class="bi-meter-fill" style="width:86%"></i></div>
+      </div>
+    </div>
+
+    <div class="sec-label">Appearance</div>
+    <div class="bi-list">
+      <div class="bi-list rowitem plain" style="border:none">
+        <label class="bi-switch" style="width:100%;justify-content:space-between;padding:13px 16px">
+          <span style="display:flex;align-items:center;gap:12px">
+            <i class="ic" style="font-style:normal"><svg class="bi-icon"><use href="#bi-i-moon"/></svg></i>
+            Dark mode
+          </span>
+          <input type="checkbox" id="darkToggle"><i></i>
+        </label>
+      </div>
+      <button class="rowitem" id="edgeRow">
+        <i class="ic"><svg class="bi-icon"><use href="#bi-i-sliders"/></svg></i>
+        Edge personality <em class="val" id="edgeVal">soft</em>
+      </button>
+      <button class="rowitem" id="accentRow">
+        <i class="ic"><svg class="bi-icon"><use href="#bi-i-drop"/></svg></i>
+        Accent <em class="val" id="accentVal">buzz</em>
+      </button>
+    </div>
+
+    <div class="sec-label">Preferences</div>
+    <div class="bi-list">
+      <button class="rowitem"><i class="ic"><svg class="bi-icon"><use href="#bi-i-bell"/></svg></i>Notifications <em class="val">On</em></button>
+      <button class="rowitem"><i class="ic"><svg class="bi-icon"><use href="#bi-i-map-pin"/></svg></i>Yards <em class="val">2</em></button>
+      <button class="rowitem"><i class="ic"><svg class="bi-icon"><use href="#bi-i-download"/></svg></i>Export records</button>
+      <button class="rowitem"><i class="ic"><svg class="bi-icon"><use href="#bi-i-help"/></svg></i>Help &amp; feedback</button>
+    </div>
+
+    <div class="sec-label">Rate this season</div>
+    <div class="bi-card" style="align-items:center;gap:10px">
+      <div class="bi-rating" id="rating"></div>
+      <p style="font-size:12.5px;color:var(--bi-text-2);text-align:center">Strongest flow since 2023.</p>
+    </div>
+  </section>
+
+  <!-- ── FAB ─────────────────────────────────────────────────── -->
+  <button class="bi-fab" id="fab" aria-label="New entry">
+    <svg class="bi-icon bi-icon--l" style="width:22px;height:22px"><use href="#bi-i-plus"/></svg>
+  </button>
+
+  <!-- ── bottom sheet ────────────────────────────────────────── -->
+  <div class="bi-sheet" id="sheet">
+    <b>New log entry</b>
+    <p>Record an inspection against a hive.</p>
+
+    <div style="display:flex;flex-direction:column;gap:11px">
+      <div class="bi-select" style="width:100%">
+        <select style="width:100%">
+          <option>Hive 07 · Yard A</option><option>Hive 03 · Yard A</option><option>Hive 11 · Yard B</option>
+        </select>
+      </div>
+      <input class="bi-input" placeholder="What did you find?">
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <span class="bi-chip"><i></i>Queenright</span>
+        <span class="bi-chip">Brood</span>
+        <span class="bi-chip">Stores</span>
+        <span class="bi-chip">Varroa</span>
+      </div>
+      <div style="display:flex;gap:9px;margin-top:4px">
+        <button class="bi-btn bi-btn--ghost" id="sheetCancel" style="flex:1;justify-content:center">Cancel</button>
+        <button class="bi-btn bi-btn--primary" id="sheetSave" style="flex:1;justify-content:center">Save entry</button>
+      </div>
+    </div>
+  </div>
+  <div class="bi-sheet-backdrop" id="sheetBack"></div>
+
+  <!-- ── bottom nav ──────────────────────────────────────────── -->
+  <nav class="bi-bottomnav">
+    <button class="on" data-screen="home" data-title="Apiary">
+      <i><svg class="bi-icon bi-icon--l"><use href="#bi-i-home"/></svg></i>Home
+    </button>
+    <button data-screen="hives" data-title="Hives">
+      <i><svg class="bi-icon bi-icon--l"><use href="#bi-i-hex"/></svg></i>Hives
+    </button>
+    <button data-screen="log" data-title="Log">
+      <i><svg class="bi-icon bi-icon--l"><use href="#bi-i-file-text"/></svg></i><span class="dot"></span>Log
+    </button>
+    <button data-screen="more" data-title="Settings">
+      <i><svg class="bi-icon bi-icon--l"><use href="#bi-i-settings"/></svg></i>More
+    </button>
+  </nav>
+
+  <div class="bi-toasts" id="toasts" style="position:absolute;bottom:80px"></div>
+</div>
+
+<script type="module">
+import { injectIcons, icon } from '../../src/icons.js';
+import { sparkline, lineChart, barChart } from '../../src/charts.js';
+import { initMotion } from '../../src/motion.js';
+
+injectIcons();
+
+/* ── charts ────────────────────────────────────────────────── */
+sparkline(document.getElementById('sparkYield'), { values: [22, 31, 28, 44, 39, 58, 64], width: 120, height: 26 });
+sparkline(document.getElementById('sparkBrood'), { values: [96, 95, 97, 94, 93, 92, 92], width: 120, height: 26, color: 'var(--bi-series-5)' });
+
+lineChart(document.getElementById('weightChart'), {
+  categories: ['1', '3', '5', '7', '9', '11', '13'],
+  series: [{ name: 'Yard A', values: [41, 43, 46, 45, 49, 53, 57] },
+           { name: 'Yard B', values: [38, 39, 41, 44, 44, 47, 51] }],
+  // Two series, so no fill: overlapping areas bury whichever is drawn first.
+  // Area is for a single series; comparison is a job for bare lines.
+  height: 168, format: (v) => `${v}kg`,
+});
+
+barChart(document.getElementById('strengthChart'), {
+  categories: ['H01', 'H03', 'H05', 'H07', 'H09', 'H11'],
+  series: [{ name: 'Frames of bees', values: [8, 5, 9, 11, 7, 10] }],
+  height: 168, legend: false,
+});
+
+/* ── forecast strip ────────────────────────────────────────── */
+const FORECAST = [
+  ['Wed', 'sun', '78°'], ['Thu', 'sun', '81°'], ['Fri', 'drop', '74°'],
+  ['Sat', 'drop', '69°'], ['Sun', 'sun', '77°'], ['Mon', 'sun', '80°'],
+];
+const weather = document.getElementById('weather');
+FORECAST.forEach(([day, ic, temp]) => {
+  const cell = document.createElement('div');
+  const s = document.createElement('span'); s.textContent = day;
+  const b = document.createElement('b'); b.textContent = temp;
+  cell.append(s);
+  cell.insertAdjacentHTML('beforeend', icon(ic, 'bi-icon bi-icon--l'));
+  cell.append(b);
+  weather.append(cell);
+});
+
+/* ── alerts ────────────────────────────────────────────────── */
+const ALERTS = [
+  ['alert', 'Hive 03 — light stores', 'Feed'],
+  ['drop',  'Hive 11 — moisture high', 'Check'],
+  ['clock', 'Yard B — varroa recheck due', 'Wed'],
+];
+const alertList = document.getElementById('alertList');
+ALERTS.forEach(([ic, label, val]) => {
+  const b = document.createElement('button');
+  b.className = 'rowitem';
+  b.insertAdjacentHTML('beforeend', `<i class="ic">${icon(ic, 'bi-icon')}</i>`);
+  b.append(document.createTextNode(label));
+  const em = document.createElement('em'); em.className = 'val'; em.textContent = val;
+  b.append(em);
+  b.addEventListener('click', () => toast(label));
+  alertList.append(b);
+});
+
+/* ── hive lists ────────────────────────────────────────────── */
+const HIVES = {
+  hiveListA: [
+    ['07', 'Queenright · strong', 11, 'good'],
+    ['01', 'Queenright', 8, 'good'],
+    ['03', 'Light stores', 5, 'warn'],
+    ['05', 'Queenright', 9, 'good'],
+  ],
+  hiveListB: [
+    ['11', 'Moisture high', 10, 'warn'],
+    ['09', 'Queenright', 7, 'good'],
+    ['13', 'Requeened 6 Jul', 6, 'good'],
+  ],
+};
+for (const [id, rows] of Object.entries(HIVES)) {
+  const host = document.getElementById(id);
+  rows.forEach(([num, status, frames, tone]) => {
+    const row = document.createElement('button');
+    row.className = 'rowitem hive';
+    row.insertAdjacentHTML('beforeend', `<span class="ring">${icon('hex', 'bi-icon bi-icon--l')}</span>`);
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    const b = document.createElement('b'); b.textContent = `Hive ${num}`;
+    const s = document.createElement('span'); s.textContent = status;
+    meta.append(b, s);
+    const trail = document.createElement('div');
+    trail.className = 'trail';
+    const badge = document.createElement('span');
+    badge.className = 'bi-badge' + (tone === 'good' ? ' bi-badge--live' : '');
+    badge.textContent = `${frames} frames`;
+    trail.append(badge);
+    row.append(meta, trail);
+    row.addEventListener('click', () => toast(`Hive ${num} · ${status}`));
+    host.append(row);
+  });
+}
+
+/* ── calendar ──────────────────────────────────────────────── */
+const cal = document.getElementById('cal');
+const head = document.createElement('header');
+const title = document.createElement('b'); title.textContent = 'August 2026';
+const nav = document.createElement('div');
+nav.style.cssText = 'display:flex;gap:4px';
+['chevron-left', 'chevron-right'].forEach((ic) => {
+  const b = document.createElement('button');
+  b.className = 'bi-btn bi-btn--ghost';
+  b.style.cssText = 'padding:5px 9px';
+  b.insertAdjacentHTML('beforeend', icon(ic, 'bi-icon bi-icon--s'));
+  nav.append(b);
+});
+head.append(title, nav);
+cal.append(head);
+
+const grid = document.createElement('div');
+grid.className = 'bi-calendar-grid';
+['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach((d) => {
+  const s = document.createElement('span'); s.textContent = d; grid.append(s);
+});
+// August 2026 starts on a Saturday; 31 days.
+const LOGGED = new Set([3, 5, 8, 12, 14, 17, 19, 24]);
+for (let i = 0; i < 6; i++) { const b = document.createElement('button'); b.className = 'dim'; b.textContent = String(26 + i); grid.append(b); }
+for (let d = 1; d <= 31; d++) {
+  const b = document.createElement('button');
+  b.textContent = String(d);
+  if (d === 5) b.classList.add('today');
+  if (LOGGED.has(d)) { const dot = document.createElement('i'); b.append(dot); }
+  b.addEventListener('click', () => {
+    grid.querySelectorAll('button').forEach((x) => x.classList.remove('on'));
+    b.classList.add('on');
+    toast(`August ${d}`);
+  });
+  grid.append(b);
+}
+cal.append(grid);
+
+/* ── rating ────────────────────────────────────────────────── */
+const rating = document.getElementById('rating');
+for (let i = 1; i <= 5; i++) {
+  const star = document.createElement('i');
+  star.innerHTML = icon('star', 'bi-icon bi-icon--l');
+  if (i <= 4) star.classList.add('on');
+  star.style.cssText = 'width:20px;height:20px;cursor:pointer';
+  star.addEventListener('click', () => {
+    [...rating.querySelectorAll('i')].forEach((s, j) => s.classList.toggle('on', j < i));
+    score.textContent = `${i}.0`;
+  });
+  rating.append(star);
+}
+const score = document.createElement('b');
+score.textContent = '4.0';
+rating.append(score);
+
+/* ── screen switching ──────────────────────────────────────── */
+document.querySelectorAll('.bi-bottomnav button').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.bi-bottomnav button').forEach((b) => b.classList.remove('on'));
+    btn.classList.add('on');
+    document.querySelectorAll('.screen').forEach((s) => s.classList.remove('on'));
+    document.getElementById(`s-${btn.dataset.screen}`).classList.add('on');
+    document.getElementById('screenTitle').textContent = btn.dataset.title;
+    document.querySelector('.screen.on').scrollTop = 0;
+  });
+});
+
+/* ── sheet ─────────────────────────────────────────────────── */
+const sheet = document.getElementById('sheet');
+const sheetBack = document.getElementById('sheetBack');
+const openSheet = () => { sheet.classList.add('open'); sheetBack.classList.add('open'); };
+const shutSheet = () => { sheet.classList.remove('open'); sheetBack.classList.remove('open'); };
+document.getElementById('fab').addEventListener('click', openSheet);
+document.getElementById('sheetCancel').addEventListener('click', shutSheet);
+sheetBack.addEventListener('click', shutSheet);
+document.getElementById('sheetSave').addEventListener('click', () => { shutSheet(); toast('Entry saved', 'bi-toast--ok'); });
+document.getElementById('bellBtn').addEventListener('click', () => toast('3 hives need attention', 'bi-toast--warn'));
+
+/* ── chips ─────────────────────────────────────────────────── */
+document.querySelectorAll('#sheet .bi-chip').forEach((chip) => {
+  chip.style.cursor = 'pointer';
+  chip.addEventListener('click', () => {
+    const on = chip.style.borderColor === 'var(--bi-accent)';
+    chip.style.borderColor = on ? '' : 'var(--bi-accent)';
+    chip.style.color = on ? '' : 'var(--bi-accent-deep)';
+  });
+});
+
+/* ── appearance controls ───────────────────────────────────── */
+const root = document.documentElement;
+document.getElementById('darkToggle').addEventListener('change', (e) => {
+  root.setAttribute('data-theme', e.target.checked ? 'dark' : 'light');
+});
+const EDGES = ['soft', 'standard', 'sharp'];
+document.getElementById('edgeRow').addEventListener('click', () => {
+  const now = root.getAttribute('data-radius') || 'soft';
+  const next = EDGES[(EDGES.indexOf(now) + 1) % EDGES.length];
+  root.setAttribute('data-radius', next);
+  document.getElementById('edgeVal').textContent = next;
+});
+const ACCENTS = ['buzz', 'amber', 'rust'];
+document.getElementById('accentRow').addEventListener('click', () => {
+  const now = root.getAttribute('data-accent') || 'buzz';
+  const next = ACCENTS[(ACCENTS.indexOf(now) + 1) % ACCENTS.length];
+  root.setAttribute('data-accent', next);
+  document.getElementById('accentVal').textContent = next;
+});
+
+/* ── toasts ────────────────────────────────────────────────── */
+function toast(message, kind = '') {
+  const t = document.createElement('div');
+  t.className = `bi-toast ${kind}`;
+  t.textContent = message;
+  document.getElementById('toasts').append(t);
+  setTimeout(() => {
+    t.style.transition = 'opacity .3s, transform .3s';
+    t.style.opacity = '0';
+    setTimeout(() => t.remove(), 320);
+  }, 2000);
+}
+
+initMotion();
+</script>
+</body>
+</html>

@@ -26,3 +26,7 @@ Thumbs.db
 *.log
 npm-debug.log*
 yarn-error.log*
+
+# browser-verification artifacts (screenshots land in the repo root)
+.playwright-mcp/
+/*.png

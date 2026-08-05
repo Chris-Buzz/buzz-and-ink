@@ -60,7 +60,9 @@ fs.writeFileSync('theme.css', theme.css);   // build-time CSS
 Zero dependencies, ~150 lines, works in Node and the browser. Prefer pure CSS?
 The override contract is the same thing by hand: redefine any `--bi-*` scale or
 semantic token after the import — components only ever consume tokens.
-Try it live in the playground's **Make it yours** section.
+
+For a control panel over the same engine — pickers, presets, and a copy-out
+stylesheet — see [`themer()`](#the-theme-panel-v08).
 
 ## Tokens
 
@@ -113,7 +115,17 @@ All autonomous motion (ticker, toast entrance, skeleton shimmer) is disabled und
 `prefers-reduced-motion`. Wrap your app root in class `bi` (or apply tokens globally
 yourself). Overlays stack on the `--bi-z-*` scale.
 
-## Motion (v0.5)
+**Data & shell (v0.8)** — `bi-chart` (see below) · `bi-spark` · `bi-table--{sortable,
+sticky,zebra,numeric,compact,roomy}` + `bi-cell-dot` · `bi-stat-delta` /
+`bi-stat-row` · `bi-app` / `bi-app-body` / `bi-app-main` (full-height shell) ·
+`bi-sidebar` (+`--rail`) · `bi-menubar` · `bi-ctxmenu` · `bi-split` (+`--v`, drag bar) ·
+`bi-timeline` · `bi-calendar` · `bi-meter` · `bi-rating` · `bi-banner`
+
+All autonomous motion (ticker, toast entrance, skeleton shimmer) is disabled under
+`prefers-reduced-motion`. Wrap your app root in class `bi` (or apply tokens globally
+yourself). Overlays stack on the `--bi-z-*` scale.
+
+## Motion (v0.8)
 
 Every interactive component runs on the motion tokens — consistent timing is what
 "polish" is. Built in:
@@ -123,16 +135,115 @@ Every interactive component runs on the motion tokens — consistent timing is w
   slide via `transform: scaleX`.
 - **Entrances** — modal (+ backdrop fade), dropdown menu, accordion, and tree
   children animate in; drawer and sheet glide on `--bi-dur-4`.
-- **Scroll reveals (opt-in)** — mark elements `data-bi-reveal` (a value like `"120"`
-  staggers by ms) and call:
+
+Then the opt-in layer. One call wires every `data-bi-*` attribute on the page:
 
 ```js
-import {reveal} from 'buzz-and-ink/motion';
-reveal();   // progressive: without JS (or with reduced motion) content is simply visible
+import {initMotion} from 'buzz-and-ink/motion';
+initMotion();
 ```
 
-Everything is `transform`/`opacity` only, and every animation — including reveals —
-is disabled under `prefers-reduced-motion`.
+| Attribute | Effect |
+|---|---|
+| `data-bi-reveal` | fade + rise on scroll. Variants: `down` `left` `right` `scale` `blur` `clip` |
+| `data-bi-stagger="60"` | on a container — cascades its children |
+| `data-bi-delay="120"` | delay one element, in ms |
+| `data-bi-split` | wrap words (or `="char"`) so a headline rises piece by piece |
+| `data-bi-count="1284"` | count the number up when it scrolls in (`data-bi-decimals/prefix/suffix`) |
+| `data-bi-parallax="0.3"` | scroll-linked drift |
+| `data-bi-scroll-progress` | writes `--bi-progress` (0–1); pair with `.bi-scrollbar` |
+| `data-bi-magnetic="0.4"` | element drifts toward the cursor |
+| `data-bi-tilt="9"` | 3D tilt + `--bi-mx/--bi-my` for a `.bi-tilt-glare` layer |
+| `data-bi-spotlight` | cursor-following glow via `--bi-spot-x/y` |
+
+Plus surface treatments that need no JS: `.bi-aurora`, `.bi-gradient-text`,
+`.bi-lift`, `.bi-sweep` (underline), `.bi-pulse`, `.bi-rule-draw`. And a
+`spring()` helper for one-off JS animation.
+
+Everything is `transform`/`opacity`/`filter` only, so it stays on the compositor.
+The resting states live behind `.bi-motion`, which only the script adds — with
+JavaScript off the page renders complete, never stuck at `opacity: 0`. Every
+utility no-ops under `prefers-reduced-motion`.
+
+## Icons (v0.8)
+
+The system's own line set — 99 icons, 24×24, 1.5px stroke, round caps, drawn for the
+editorial register. No emoji, ever. Inked by `currentColor`, so they take the
+surrounding text color for free.
+
+```js
+import {injectIcons, icon, ICONS} from 'buzz-and-ink/icons';
+
+injectIcons();   // once — mounts a hidden <symbol> sprite
+```
+
+```html
+<svg class="bi-icon"><use href="#bi-i-search"/></svg>
+<svg class="bi-icon bi-icon--l"><use href="#bi-i-trending-up"/></svg>
+```
+
+Sizes: `bi-icon` 16px, `--s` 13px, `--l` 20px. `icon('search')` returns a standalone
+inline SVG string for templating; `ICONS` is the raw name → path map.
+
+Coverage: navigation and direction, editing (`edit` `copy` `save` `undo`), data
+(`filter` `sort` `table` `pie` `activity` `trending-up/down` `database` `layers`),
+files (`download` `upload` `archive` `inbox` `link` `image`), state (`bell` `eye`
+`lock` `shield` `flag`), commerce and people (`users` `credit-card` `tag` `heart`
+`share`), media and device (`play` `refresh` `globe` `map-pin` `camera` `terminal`),
+plus the house glyphs `bee`, `hex`, and `graph`.
+
+## Charts (v0.8)
+
+Token-driven SVG charts. Marks are painted with `var(--bi-series-N)` rather than a
+resolved hex, so a chart re-inks the moment you flip a theme — no redraw, no
+observer, no JS.
+
+```js
+import {barChart, lineChart, donutChart, sparkline} from 'buzz-and-ink/charts';
+
+lineChart(el, {
+  categories: ['Mon', 'Tue', 'Wed'],
+  series: [{name: 'Reads', values: [12, 19, 14]}],
+  area: true,
+});
+
+sparkline(cell, {values: [3, 5, 4, 9]});   // inline, for table cells and stat tiles
+```
+
+`barChart` (grouped or `stacked`), `lineChart` (+`area`, `curve`, `points`),
+`areaChart`, `donutChart`, `sparkline`. Each returns `{update(), destroy()}` and
+re-renders on container resize.
+
+The six-slot series palette is **computed, not eyeballed** — validated for OKLCH
+lightness band, chroma floor, adjacent-pair separation under deuteranopia /
+protanopia / tritanopia, and contrast against its own surface. Dark mode gets its
+own steps, re-picked against the dark surface rather than flipped.
+
+Two defaults are load-bearing rather than decorative: a legend is drawn for 2+
+series, and adjacent/stacked fills keep a 2px surface gap. The palette only clears
+colorblind separation *with* that secondary encoding.
+
+A lone series follows `--bi-accent` instead — it has no neighbour to be confused
+with, so it can stay on brand and follow a custom theme. Two or more fall back to
+the fixed validated ramp.
+
+## The theme panel (v0.8)
+
+`createTheme()` (above) takes three seed colors and derives every scale step in
+OKLCH. `themer()` puts a control panel on top of it:
+
+```js
+import {themer} from 'buzz-and-ink/themer';
+themer();                       // floating panel, bottom-right
+themer({mount: '#panel'});      // or inline, in your own chrome
+```
+
+Pick an accent, neutral, and paper — the engine derives ~27 perceptually even,
+gamut-clamped steps, and every semantic role, component, chart, and voice follows,
+in light, dark, and deep contrast alike. Six presets ship with it. **Copy CSS**
+hands back a stylesheet you can paste into a project and drop the panel entirely.
+
+Customization is not a fork: you seed three colors, the system does the rest.
 
 ## Knowledge graph (v0.7)
 
@@ -181,10 +292,23 @@ personalities: `buzzInkTheme` / `buzzInkSharp` / `buzzInkSoft`), and its `voices
 makes the `data-accent` / `data-neutral` / `data-paper` attributes drive Astryx's tokens
 too — one attribute re-skins both systems. See [`astryx/README.md`](astryx/README.md).
 
-## Playground
+## Playground & examples
 
 Open [`docs/index.html`](docs/index.html) in a browser (or `npm run docs`) — live controls
 for all six theming attributes, plus the full palette and component gallery.
+
+Four complete applications, each built from the shipped components rather than
+one-off CSS:
+
+| Example | | What it exercises |
+|---|---|---|
+| [`examples/hive-desk/`](examples/hive-desk/) | desktop | Newsroom CMS — menubar, sidebar, resizable split, sortable table, tabs, tree, command palette (`⌘K`), context menu, drawer, statusbar, meters, timeline |
+| [`examples/comb/`](examples/comb/) | desktop | Readership analytics — KPI tiles with deltas and sparklines, line/area, grouped ⇄ stacked bars, donut, filterable sortable data grid, scroll progress |
+| [`examples/apiary/`](examples/apiary/) | mobile | Field operations — four screens, app bar, bottom nav, bottom sheet, FAB, settings list, calendar, rating, live charts |
+| [`examples/waggle/`](examples/waggle/) | marketing | Long-form product page — scroll reveals, ticker, knowledge graph |
+
+All four are static files. `npm run docs` serves the repo root; the examples load
+`../../src/index.css` directly, so edits to the system show up on refresh.
 
 ## Roadmap
 

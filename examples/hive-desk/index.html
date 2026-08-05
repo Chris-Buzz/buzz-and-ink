@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-radius="standard" data-contrast="standard" data-accent="buzz" data-neutral="warm" data-paper="cream" data-type="fraunces">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hive Desk — editorial console</title>
+<meta name="description" content="A desktop newsroom CMS built entirely on Buzz & Ink v0.8.">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../src/index.css">
+<style>
+  /* ============================================================
+     HIVE DESK — the newsroom console.
+     A dense desktop application assembled almost entirely from
+     Buzz & Ink components: menubar, sidebar, split panes, sortable
+     table, tabs, tree, command palette, context menu, drawer,
+     statusbar, timeline, charts.
+
+     The bespoke CSS below is layout only — every color, radius,
+     shadow, and duration comes from the tokens.
+     ============================================================ */
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{font-family:var(--bi-font-body);background:var(--bi-bg);color:var(--bi-text);-webkit-font-smoothing:antialiased}
+
+  /* content column inside the editor pane */
+  .pane{display:flex;flex-direction:column;min-width:0;min-height:0}
+  .pane-head{
+    display:flex;align-items:center;gap:12px;flex:none;
+    padding:10px var(--bi-space-5);border-bottom:1px solid var(--bi-line-soft);
+  }
+  .pane-head .grow{flex:1}
+  .pane-body{flex:1;overflow-y:auto;padding:var(--bi-space-5)}
+
+  /* the article list */
+  .list-row{cursor:pointer}
+  .headline{display:flex;flex-direction:column;gap:2px}
+  .headline b{font-family:var(--bi-font-display);font-weight:500;font-size:14.5px;line-height:1.25}
+  .headline span{font-size:11px;color:var(--bi-text-3)}
+
+  /* the editor surface */
+  .editor{max-width:660px;margin:0 auto}
+  .editor .bi-kicker{margin-bottom:14px}
+  .editor h1{
+    font-family:var(--bi-font-display);font-weight:450;font-size:38px;line-height:1.08;
+    letter-spacing:-.015em;margin-bottom:10px;
+  }
+  .editor h1 em{font-style:italic;color:var(--bi-accent)}
+  .editor .standfirst{font-size:16px;line-height:1.6;color:var(--bi-text-2);margin-bottom:22px}
+  .editor .byline{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+  .editor .byline span{font-family:var(--bi-font-mono);font-size:11px;color:var(--bi-text-3)}
+  .editor p{font-size:15.5px;line-height:1.72;margin-bottom:16px;color:var(--bi-text)}
+  .editor p.drop::first-letter{
+    float:left;font-family:var(--bi-font-display);font-size:58px;line-height:.82;
+    padding:4px 9px 0 0;color:var(--bi-accent);font-weight:500;
+  }
+  .editor blockquote{
+    border-left:2px solid var(--bi-accent);padding-left:18px;margin:22px 0;
+    font-family:var(--bi-font-display);font-size:19px;line-height:1.45;color:var(--bi-text-2);font-style:italic;
+  }
+
+  /* right inspector rail */
+  .inspector{width:274px;flex:none;border-left:1px solid var(--bi-line);background:var(--bi-bg-deep);overflow-y:auto}
+  .inspector section{padding:var(--bi-space-4);border-bottom:1px solid var(--bi-line-soft)}
+  .insp-label{
+    font-family:var(--bi-font-mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--bi-text-3);margin-bottom:10px;
+  }
+  .field{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;font-size:12.5px}
+  .field span{color:var(--bi-text-2)}
+  .field b{font-family:var(--bi-font-mono);font-size:11.5px;font-weight:500}
+
+  /* command palette overlay */
+  .cmd-wrap{
+    position:fixed;inset:0;z-index:var(--bi-z-command);display:none;
+    align-items:flex-start;justify-content:center;padding-top:14vh;
+    background:rgba(20,16,11,.42);backdrop-filter:blur(3px);
+  }
+  .cmd-wrap.open{display:flex;animation:biFadeIn var(--bi-dur-2) var(--bi-ease-out)}
+  .cmd-wrap .bi-command{animation:biModalIn var(--bi-dur-3) var(--bi-ease-out)}
+
+  @media (max-width:1180px){ .inspector{display:none} }
+  @media (max-width:900px){ .bi-sidebar{--bi-sidebar-w:60px} .bi-sidebar .bi-sidebar-label,.bi-sidebar header b,.bi-sidebar .navitem span,.bi-sidebar .count{display:none} .bi-sidebar .navitem{justify-content:center} }
+</style>
+</head>
+<body class="bi">
+
+<div class="bi-app">
+
+  <!-- ── menubar ─────────────────────────────────────────────── -->
+  <div class="bi-menubar">
+    <span class="brand">HIVE<b>·</b>DESK</span>
+    <details class="bi-dropdown">
+      <summary>File</summary>
+      <div class="bi-dropdown-menu">
+        <button>New story <span class="bi-kbd"><kbd>⌘</kbd><kbd>N</kbd></span></button>
+        <button>Import…</button>
+        <hr>
+        <button>Export as Markdown</button>
+        <button class="danger">Move to trash</button>
+      </div>
+    </details>
+    <details class="bi-dropdown">
+      <summary>Edit</summary>
+      <div class="bi-dropdown-menu">
+        <button>Undo <span class="bi-kbd"><kbd>⌘</kbd><kbd>Z</kbd></span></button>
+        <button>Redo <span class="bi-kbd"><kbd>⇧</kbd><kbd>⌘</kbd><kbd>Z</kbd></span></button>
+        <hr>
+        <button>Find in story <span class="bi-kbd"><kbd>⌘</kbd><kbd>F</kbd></span></button>
+      </div>
+    </details>
+    <details class="bi-dropdown">
+      <summary>View</summary>
+      <div class="bi-dropdown-menu">
+        <button data-act="rail">Toggle sidebar</button>
+        <button data-act="theme">Toggle dark mode</button>
+        <button data-act="edges">Cycle edge personality</button>
+      </div>
+    </details>
+    <span class="spacer"></span>
+    <button id="cmdOpen" class="bi-tip" data-tip="Command palette">
+      <svg class="bi-icon bi-icon--s"><use href="#bi-i-search"/></svg>
+    </button>
+    <button data-act="theme" class="bi-tip" data-tip="Light / dark">
+      <svg class="bi-icon bi-icon--s"><use href="#bi-i-moon"/></svg>
+    </button>
+    <button id="notifyBtn" class="bi-tip" data-tip="Activity">
+      <svg class="bi-icon bi-icon--s"><use href="#bi-i-bell"/></svg>
+    </button>
+  </div>
+
+  <!-- ── banner ──────────────────────────────────────────────── -->
+  <div class="bi-banner" id="banner">
+    <svg class="bi-icon bi-icon--s" style="color:var(--bi-accent-deep)"><use href="#bi-i-bolt"/></svg>
+    <p><b>Embargo lifts at 06:00.</b> Three stories are queued and will publish automatically.</p>
+    <button class="close" aria-label="Dismiss">
+      <svg class="bi-icon bi-icon--s"><use href="#bi-i-x"/></svg>
+    </button>
+  </div>
+
+  <div class="bi-app-body">
+
+    <!-- ── sidebar ───────────────────────────────────────────── -->
+    <nav class="bi-sidebar" id="sidebar">
+      <header>
+        <svg class="bi-icon bi-icon--l" style="color:var(--bi-accent)"><use href="#bi-i-bee"/></svg>
+        <b>Hive Desk</b>
+      </header>
+
+      <div class="bi-sidebar-label">Desk</div>
+      <button class="navitem on" data-view="stories">
+        <svg class="bi-icon"><use href="#bi-i-file-text"/></svg><span>Stories</span><em class="count">24</em>
+      </button>
+      <button class="navitem" data-view="queue">
+        <svg class="bi-icon"><use href="#bi-i-clock"/></svg><span>Queue</span><em class="count">3</em>
+      </button>
+      <button class="navitem" data-view="review">
+        <svg class="bi-icon"><use href="#bi-i-eye"/></svg><span>In review</span><em class="count">7</em>
+      </button>
+      <button class="navitem" data-view="archive">
+        <svg class="bi-icon"><use href="#bi-i-archive"/></svg><span>Archive</span>
+      </button>
+
+      <div class="bi-sidebar-label">Sections</div>
+      <div class="bi-tree" style="padding:0 12px">
+        <details open>
+          <summary><svg class="bi-icon bi-icon--s"><use href="#bi-i-folder"/></svg>Newsroom</summary>
+          <div>
+            <div class="leaf on"><svg class="bi-icon bi-icon--s"><use href="#bi-i-hex"/></svg>Politics</div>
+            <div class="leaf"><svg class="bi-icon bi-icon--s"><use href="#bi-i-hex"/></svg>Business</div>
+            <div class="leaf"><svg class="bi-icon bi-icon--s"><use href="#bi-i-hex"/></svg>Science</div>
+          </div>
+        </details>
+        <details>
+          <summary><svg class="bi-icon bi-icon--s"><use href="#bi-i-folder"/></svg>Features</summary>
+          <div>
+            <div class="leaf"><svg class="bi-icon bi-icon--s"><use href="#bi-i-hex"/></svg>Longform</div>
+            <div class="leaf"><svg class="bi-icon bi-icon--s"><use href="#bi-i-hex"/></svg>Interviews</div>
+          </div>
+        </details>
+      </div>
+
+      <div class="bi-sidebar-label">Insight</div>
+      <button class="navitem" data-view="analytics">
+        <svg class="bi-icon"><use href="#bi-i-chart"/></svg><span>Readership</span>
+      </button>
+
+      <footer>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="bi-avatar bi-avatar--s">CB</span>
+          <div style="min-width:0">
+            <div style="font-size:12.5px;font-weight:500">Chris Buzaid</div>
+            <div style="font-family:var(--bi-font-mono);font-size:9.5px;color:var(--bi-text-3)">EDITOR</div>
+          </div>
+        </div>
+      </footer>
+    </nav>
+
+    <!-- ── main ──────────────────────────────────────────────── -->
+    <main class="bi-app-main">
+      <div class="pane-head">
+        <ol class="bi-breadcrumbs">
+          <li><a href="#">Newsroom</a></li>
+          <li><a href="#">Politics</a></li>
+          <li aria-current="page">Draft</li>
+        </ol>
+        <span class="grow"></span>
+        <div class="bi-toolbar">
+          <button class="on bi-tip" data-tip="Bold"><b>B</b></button>
+          <button class="bi-tip" data-tip="Italic"><em>I</em></button>
+          <button class="bi-tip" data-tip="Link"><svg class="bi-icon bi-icon--s"><use href="#bi-i-link"/></svg></button>
+          <hr>
+          <button class="bi-tip" data-tip="Quote">&ldquo;</button>
+          <button class="bi-tip" data-tip="Image"><svg class="bi-icon bi-icon--s"><use href="#bi-i-image"/></svg></button>
+        </div>
+        <button class="bi-btn bi-btn--ghost" id="previewBtn">Preview</button>
+        <button class="bi-btn bi-btn--primary" id="publishBtn" data-bi-magnetic="0.25">
+          Publish <svg class="bi-icon bi-icon--s"><use href="#bi-i-send"/></svg>
+        </button>
+      </div>
+
+      <div class="bi-split">
+        <!-- story list -->
+        <section class="pane" style="width:404px;flex:none;border-right:1px solid var(--bi-line)">
+          <div class="pane-head" style="gap:8px">
+            <div class="bi-select">
+              <select id="filterSel">
+                <option>All stories</option><option>Drafts</option><option>Scheduled</option><option>Published</option>
+              </select>
+            </div>
+            <span class="grow"></span>
+            <span class="bi-tag" id="rowCount">24 items</span>
+          </div>
+          <div class="pane-body" style="padding:0">
+            <table class="bi-table bi-table--sortable bi-table--sticky bi-table--compact" id="storyTable">
+              <thead>
+                <tr>
+                  <th data-sort="none" data-key="title">Story</th>
+                  <th data-sort="none" data-key="status">Status</th>
+                  <th data-sort="desc" data-key="reads" style="text-align:right">Reads</th>
+                </tr>
+              </thead>
+              <tbody id="storyBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <div class="bi-split-bar" id="splitBar"></div>
+
+        <!-- editor -->
+        <section class="pane" style="flex:1">
+          <div class="bi-tabs" style="padding:0 var(--bi-space-5)">
+            <button class="on" data-tab="write">Write</button>
+            <button data-tab="notes">Notes</button>
+            <button data-tab="history">History</button>
+          </div>
+
+          <div class="pane-body" id="tabWrite">
+            <article class="editor">
+              <div class="bi-kicker">Politics · Investigation</div>
+              <h1>The quiet arithmetic of <em>municipal water</em></h1>
+              <p class="standfirst">Six counties, one aquifer, and a spreadsheet nobody had opened since 2019. What the numbers actually say about the next decade.</p>
+              <div class="byline">
+                <span class="bi-avatar bi-avatar--s">CB</span>
+                <span>CHRIS BUZAID</span>
+                <span>·</span>
+                <span>12 MIN READ</span>
+                <span class="bi-badge">DRAFT</span>
+              </div>
+              <hr class="bi-hr" style="margin-bottom:22px">
+              <p class="drop">The pumping station on Route 9 has a sign that has not been repainted since the Clinton administration. Inside, a technician named Ruth keeps a paper logbook beside a terminal that reports the same numbers, and she trusts the logbook.</p>
+              <p>For eleven years the two records agreed. Then, in the spring of 2019, they stopped — quietly, by about four percent, in a direction that nobody had budgeted for.</p>
+              <blockquote>&ldquo;The meter isn't wrong. The meter has never been wrong. What changed is what we decided the meter was measuring.&rdquo;</blockquote>
+              <p>That distinction — between an instrument and its interpretation — turns out to be the whole story. The county's allocation formula was written when the aquifer was assumed to recharge on a seasonal cycle.</p>
+              <p>What follows is an account of how six municipalities arrived at incompatible answers from a single shared dataset, and what it will cost to reconcile them.</p>
+            </article>
+          </div>
+
+          <div class="pane-body" id="tabNotes" hidden>
+            <div class="editor">
+              <div class="bi-alert bi-alert--warn" style="margin-bottom:18px">
+                <svg class="bi-icon" style="color:var(--bi-warn);margin-top:1px"><use href="#bi-i-alert"/></svg>
+                <div><b>Legal review pending</b><p>Two quotes in section 3 need sourcing before this can leave the queue.</p></div>
+              </div>
+              <ol class="bi-timeline">
+                <li class="done"><time>Mon 14:20</time><b>Fact-check pass one</b><p>All figures in the opening section verified against the county filing.</p></li>
+                <li class="done"><time>Mon 16:05</time><b>Photo desk briefed</b><p>Ruth's logbook is the lead image. Shoot scheduled Thursday.</p></li>
+                <li class="on"><time>Tue 09:30</time><b>Legal read in progress</b><p>Flagged: the direct quote attributed to the water board chair.</p></li>
+                <li><time>—</time><b>Copy edit</b><p>Not started.</p></li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="pane-body" id="tabHistory" hidden>
+            <div class="editor">
+              <table class="bi-table bi-table--zebra">
+                <thead><tr><th>Revision</th><th>Author</th><th>When</th></tr></thead>
+                <tbody>
+                  <tr><td>Added section 4</td><td>C. Buzaid</td><td>2h ago</td></tr>
+                  <tr><td>Standfirst rewrite</td><td>M. Okonjo</td><td>5h ago</td></tr>
+                  <tr><td>Restructured lede</td><td>C. Buzaid</td><td>Yesterday</td></tr>
+                  <tr><td>Imported draft</td><td>C. Buzaid</td><td>Mon</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- inspector -->
+        <aside class="inspector">
+          <section>
+            <div class="insp-label">Performance</div>
+            <div id="readChart"></div>
+          </section>
+          <section>
+            <div class="insp-label">Story</div>
+            <div class="field"><span>Words</span><b>2,418</b></div>
+            <div class="field"><span>Read time</span><b>12 min</b></div>
+            <div class="field"><span>Section</span><b>Politics</b></div>
+            <div class="field"><span>Slug</span><b>/water-math</b></div>
+          </section>
+          <section>
+            <div class="insp-label">Readiness</div>
+            <div class="bi-meter" style="margin-bottom:14px">
+              <header><span>Fact check</span><b>8/10</b></header>
+              <div class="bi-meter-track"><i class="bi-meter-fill" style="width:80%"></i></div>
+            </div>
+            <div class="bi-meter bi-meter--warn" style="margin-bottom:14px">
+              <header><span>Legal</span><b>3/10</b></header>
+              <div class="bi-meter-track"><i class="bi-meter-fill" style="width:30%"></i></div>
+            </div>
+            <div class="bi-meter bi-meter--good">
+              <header><span>Copy</span><b>10/10</b></header>
+              <div class="bi-meter-track"><i class="bi-meter-fill" style="width:100%"></i></div>
+            </div>
+          </section>
+          <section>
+            <div class="insp-label">Tags</div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px">
+              <span class="bi-tag">water</span><span class="bi-tag">county</span>
+              <span class="bi-tag">investigation</span><span class="bi-tag">data</span>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <!-- ── statusbar ───────────────────────────────────────────── -->
+  <div class="bi-statusbar">
+    <span><i></i>Connected</span>
+    <span>Autosaved 12s ago</span>
+    <span>UTF-8</span>
+    <span class="spacer"></span>
+    <span id="statusSel">Ln 24, Col 8</span>
+    <span>Politics / Draft</span>
+    <span class="bi-kbd"><kbd>⌘</kbd><kbd>K</kbd></span>
+  </div>
+</div>
+
+<!-- ── command palette ──────────────────────────────────────── -->
+<div class="cmd-wrap" id="cmdWrap">
+  <div class="bi-command" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div class="search">
+      <svg class="bi-icon bi-icon--l" style="color:var(--bi-text-3)"><use href="#bi-i-search"/></svg>
+      <input id="cmdInput" placeholder="Search stories and commands…" autocomplete="off">
+      <span class="bi-kbd"><kbd>esc</kbd></span>
+    </div>
+    <div id="cmdList" style="max-height:330px;overflow-y:auto"></div>
+    <footer>
+      <span class="bi-kbd"><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+      <span class="bi-kbd"><kbd>↵</kbd> open</span>
+    </footer>
+  </div>
+</div>
+
+<!-- ── activity drawer ──────────────────────────────────────── -->
+<aside class="bi-drawer" id="drawer">
+  <header>
+    <b>Activity</b>
+    <button class="bi-btn bi-btn--ghost" id="drawerClose" style="padding:6px 12px">Close</button>
+  </header>
+  <div>
+    <ol class="bi-timeline">
+      <li class="on"><time>Just now</time><b>Maya pushed a revision</b><p>Section 4 restructured, two figures corrected.</p></li>
+      <li class="done"><time>18 min</time><b>Photo desk uploaded 6 frames</b><p>Awaiting your selection for the lead image.</p></li>
+      <li class="done"><time>1 hour</time><b>Legal opened a query</b><p>On the water board chair's quote.</p></li>
+      <li class="done"><time>3 hours</time><b>Story moved to In Review</b><p>By Chris Buzaid.</p></li>
+      <li class="done"><time>Yesterday</time><b>Draft created</b><p>Imported from field notes.</p></li>
+    </ol>
+  </div>
+</aside>
+<div class="bi-drawer-backdrop" id="drawerBack"></div>
+
+<div class="bi-toasts" id="toasts"></div>
+
+<script type="module">
+import { injectIcons } from '../../src/icons.js';
+import { sparkline, lineChart } from '../../src/charts.js';
+import { initMotion } from '../../src/motion.js';
+import { themer } from '../../src/themer.js';
+
+injectIcons();
+
+/* ── data ──────────────────────────────────────────────────── */
+const STORIES = [
+  { title: 'The quiet arithmetic of municipal water', sec: 'Politics',  status: 'Draft',     dot: 'warn',     reads: 0 },
+  { title: 'What the port strike actually costs',     sec: 'Business',  status: 'Published', dot: 'good',     reads: 41280 },
+  { title: 'Six months inside the transit authority',  sec: 'Politics',  status: 'Review',    dot: 'serious',  reads: 0 },
+  { title: 'The lab that measures silence',            sec: 'Science',   status: 'Published', dot: 'good',     reads: 28940 },
+  { title: 'A field guide to municipal budgets',       sec: 'Politics',  status: 'Scheduled', dot: 'warn',     reads: 0 },
+  { title: 'Why the bees came back',                   sec: 'Science',   status: 'Published', dot: 'good',     reads: 63110 },
+  { title: 'The last independent pharmacy',            sec: 'Features',  status: 'Published', dot: 'good',     reads: 19420 },
+  { title: 'Reading the river gauges',                 sec: 'Science',   status: 'Review',    dot: 'serious',  reads: 0 },
+  { title: 'Nobody audits the auditors',               sec: 'Business',  status: 'Draft',     dot: 'warn',     reads: 0 },
+  { title: 'Three winters on the ridge',               sec: 'Features',  status: 'Published', dot: 'good',     reads: 34870 },
+];
+
+const fmt = (n) => n === 0 ? '—' : n.toLocaleString();
+
+/* ── story table (sortable) ────────────────────────────────── */
+const tbody = document.getElementById('storyBody');
+let sortKey = 'reads', sortDir = 'desc';
+
+function renderRows() {
+  const rows = [...STORIES].sort((a, b) => {
+    const av = a[sortKey], bv = b[sortKey];
+    const cmp = typeof av === 'number' ? av - bv : String(av).localeCompare(String(bv));
+    return sortDir === 'asc' ? cmp : -cmp;
+  });
+
+  tbody.textContent = '';
+  rows.forEach((s, i) => {
+    const tr = document.createElement('tr');
+    tr.className = 'list-row' + (i === 0 && sortKey === 'reads' ? '' : '');
+
+    const td1 = document.createElement('td');
+    const head = document.createElement('div');
+    head.className = 'headline';
+    const b = document.createElement('b'); b.textContent = s.title;
+    const sub = document.createElement('span'); sub.textContent = s.sec;
+    head.append(b, sub); td1.append(head);
+
+    const td2 = document.createElement('td');
+    const cell = document.createElement('div');
+    cell.className = 'bi-cell';
+    const dot = document.createElement('i');
+    dot.className = `bi-cell-dot bi-cell-dot--${s.dot}`;
+    cell.append(dot, document.createTextNode(s.status));
+    td2.append(cell);
+
+    const td3 = document.createElement('td');
+    td3.className = 'num';
+    td3.textContent = fmt(s.reads);
+
+    tr.append(td1, td2, td3);
+    tr.addEventListener('click', () => {
+      tbody.querySelectorAll('tr').forEach((r) => r.classList.remove('on'));
+      tr.classList.add('on');
+      toast(`Opened “${s.title}”`);
+    });
+    tbody.append(tr);
+  });
+  document.getElementById('rowCount').textContent = `${rows.length} items`;
+}
+
+document.querySelectorAll('#storyTable th[data-sort]').forEach((th) => {
+  th.addEventListener('click', () => {
+    const key = th.dataset.key;
+    sortDir = sortKey === key && sortDir === 'desc' ? 'asc' : 'desc';
+    sortKey = key;
+    document.querySelectorAll('#storyTable th[data-sort]').forEach((o) => (o.dataset.sort = 'none'));
+    th.dataset.sort = sortDir;
+    renderRows();
+  });
+});
+renderRows();
+
+/* ── inspector chart ───────────────────────────────────────── */
+lineChart(document.getElementById('readChart'), {
+  categories: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'],
+  series: [{ name: 'Reads', values: [820, 1340, 1180, 2100, 2680, 3120] }],
+  height: 120, area: true, axis: false, grid: false, legend: false,
+});
+
+/* ── tabs ──────────────────────────────────────────────────── */
+const panes = { write: 'tabWrite', notes: 'tabNotes', history: 'tabHistory' };
+document.querySelectorAll('.bi-tabs button').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.bi-tabs button').forEach((b) => b.classList.remove('on'));
+    btn.classList.add('on');
+    Object.entries(panes).forEach(([k, id]) => { document.getElementById(id).hidden = k !== btn.dataset.tab; });
+  });
+});
+
+/* ── sidebar nav ───────────────────────────────────────────── */
+document.querySelectorAll('.bi-sidebar .navitem').forEach((item) => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.bi-sidebar .navitem').forEach((i) => i.classList.remove('on'));
+    item.classList.add('on');
+  });
+});
+document.querySelectorAll('.bi-tree .leaf').forEach((leaf) => {
+  leaf.addEventListener('click', () => {
+    document.querySelectorAll('.bi-tree .leaf').forEach((l) => l.classList.remove('on'));
+    leaf.classList.add('on');
+  });
+});
+
+/* ── command palette ───────────────────────────────────────── */
+const COMMANDS = [
+  { group: 'Actions', label: 'Publish story',        kbd: ['⌘', '⏎'], icon: 'send' },
+  { group: 'Actions', label: 'Schedule for 06:00',   kbd: ['⌘', 'S'], icon: 'clock' },
+  { group: 'Actions', label: 'Request legal review', kbd: [],         icon: 'shield' },
+  { group: 'Actions', label: 'Move to archive',      kbd: [],         icon: 'archive' },
+  { group: 'View',    label: 'Toggle dark mode',     kbd: ['⌘', 'D'], icon: 'moon',  act: 'theme' },
+  { group: 'View',    label: 'Cycle edge style',     kbd: [],         icon: 'sliders', act: 'edges' },
+  { group: 'View',    label: 'Toggle sidebar',       kbd: ['⌘', 'B'], icon: 'menu',  act: 'rail' },
+  ...STORIES.slice(0, 5).map((s) => ({ group: 'Stories', label: s.title, kbd: [], icon: 'file-text' })),
+];
+
+const cmdWrap = document.getElementById('cmdWrap');
+const cmdInput = document.getElementById('cmdInput');
+const cmdList = document.getElementById('cmdList');
+let cmdIndex = 0, cmdShown = [];
+
+function renderCommands(query = '') {
+  const q = query.toLowerCase();
+  cmdShown = COMMANDS.filter((c) => c.label.toLowerCase().includes(q));
+  cmdIndex = 0;
+  cmdList.textContent = '';
+
+  let lastGroup = null;
+  cmdShown.forEach((c, i) => {
+    if (c.group !== lastGroup) {
+      const g = document.createElement('div');
+      g.className = 'group';
+      g.textContent = c.group;
+      cmdList.append(g);
+      lastGroup = c.group;
+    }
+    const item = document.createElement('div');
+    item.className = 'item' + (i === 0 ? ' selected' : '');
+    item.dataset.i = String(i);
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'bi-icon');
+    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    use.setAttribute('href', `#bi-i-${c.icon}`);
+    svg.append(use);
+
+    item.append(svg, document.createTextNode(c.label));
+    if (c.kbd.length) {
+      const kbd = document.createElement('span');
+      kbd.className = 'bi-kbd';
+      c.kbd.forEach((k) => { const el = document.createElement('kbd'); el.textContent = k; kbd.append(el); });
+      item.append(kbd);
+    }
+    item.addEventListener('click', () => runCommand(i));
+    cmdList.append(item);
+  });
+
+  if (!cmdShown.length) {
+    const empty = document.createElement('div');
+    empty.className = 'group';
+    empty.textContent = 'No matches';
+    cmdList.append(empty);
+  }
+}
+
+function highlight() {
+  cmdList.querySelectorAll('.item').forEach((el) => {
+    el.classList.toggle('selected', Number(el.dataset.i) === cmdIndex);
+  });
+  cmdList.querySelector('.item.selected')?.scrollIntoView({ block: 'nearest' });
+}
+
+function runCommand(i) {
+  const c = cmdShown[i];
+  if (!c) return;
+  closeCmd();
+  if (c.act) doAction(c.act);
+  else toast(c.label);
+}
+
+function openCmd() { cmdWrap.classList.add('open'); cmdInput.value = ''; renderCommands(); cmdInput.focus(); }
+function closeCmd() { cmdWrap.classList.remove('open'); }
+
+document.getElementById('cmdOpen').addEventListener('click', openCmd);
+cmdInput.addEventListener('input', () => renderCommands(cmdInput.value));
+cmdWrap.addEventListener('click', (e) => { if (e.target === cmdWrap) closeCmd(); });
+
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); cmdWrap.classList.contains('open') ? closeCmd() : openCmd(); return; }
+  if (!cmdWrap.classList.contains('open')) return;
+  if (e.key === 'Escape') closeCmd();
+  if (e.key === 'ArrowDown') { e.preventDefault(); cmdIndex = Math.min(cmdIndex + 1, cmdShown.length - 1); highlight(); }
+  if (e.key === 'ArrowUp')   { e.preventDefault(); cmdIndex = Math.max(cmdIndex - 1, 0); highlight(); }
+  if (e.key === 'Enter')     { e.preventDefault(); runCommand(cmdIndex); }
+});
+
+/* ── context menu ──────────────────────────────────────────── */
+let ctx = null;
+document.getElementById('storyBody').addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  ctx?.remove();
+  ctx = document.createElement('div');
+  ctx.className = 'bi-ctxmenu';
+  [['Open in editor', 'edit'], ['Duplicate', 'copy'], ['Copy link', 'link'], null, ['Move to trash', 'trash', true]]
+    .forEach((entry) => {
+      if (!entry) { ctx.append(document.createElement('hr')); return; }
+      const [label, icon, danger] = entry;
+      const b = document.createElement('button');
+      if (danger) b.className = 'danger';
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('class', 'bi-icon');
+      const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+      use.setAttribute('href', `#bi-i-${icon}`);
+      svg.append(use);
+      b.append(svg, document.createTextNode(label));
+      b.addEventListener('click', () => { toast(label); ctx.remove(); ctx = null; });
+      ctx.append(b);
+    });
+  ctx.style.left = `${Math.min(e.clientX, innerWidth - 220)}px`;
+  ctx.style.top = `${Math.min(e.clientY, innerHeight - 200)}px`;
+  document.body.append(ctx);
+});
+document.addEventListener('click', () => { ctx?.remove(); ctx = null; });
+
+/* ── resizable split ───────────────────────────────────────── */
+const bar = document.getElementById('splitBar');
+const listPane = bar.previousElementSibling;
+bar.addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  bar.classList.add('on');
+  bar.setPointerCapture(e.pointerId);
+  const startX = e.clientX, startW = listPane.offsetWidth;
+  const move = (ev) => { listPane.style.width = `${Math.max(280, Math.min(660, startW + ev.clientX - startX))}px`; };
+  const up = () => {
+    bar.classList.remove('on');
+    bar.removeEventListener('pointermove', move);
+    bar.removeEventListener('pointerup', up);
+  };
+  bar.addEventListener('pointermove', move);
+  bar.addEventListener('pointerup', up);
+});
+
+/* ── drawer ────────────────────────────────────────────────── */
+const drawer = document.getElementById('drawer');
+const drawerBack = document.getElementById('drawerBack');
+const openDrawer = () => { drawer.classList.add('open'); drawerBack.classList.add('open'); };
+const shutDrawer = () => { drawer.classList.remove('open'); drawerBack.classList.remove('open'); };
+document.getElementById('notifyBtn').addEventListener('click', openDrawer);
+document.getElementById('drawerClose').addEventListener('click', shutDrawer);
+drawerBack.addEventListener('click', shutDrawer);
+
+/* ── toasts ────────────────────────────────────────────────── */
+function toast(message, kind = '') {
+  const t = document.createElement('div');
+  t.className = `bi-toast ${kind}`;
+  t.textContent = message;
+  document.getElementById('toasts').append(t);
+  setTimeout(() => {
+    t.style.transition = 'opacity .3s, transform .3s';
+    t.style.opacity = '0';
+    t.style.transform = 'translateY(8px)';
+    setTimeout(() => t.remove(), 320);
+  }, 2400);
+}
+
+/* ── view actions ──────────────────────────────────────────── */
+const EDGES = ['standard', 'sharp', 'soft'];
+function doAction(act) {
+  const root = document.documentElement;
+  if (act === 'theme') {
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    toast(`${next === 'dark' ? 'Dark' : 'Light'} mode`);
+  }
+  if (act === 'edges') {
+    const now = root.getAttribute('data-radius') || 'standard';
+    const next = EDGES[(EDGES.indexOf(now) + 1) % EDGES.length];
+    root.setAttribute('data-radius', next);
+    toast(`Edges: ${next}`);
+  }
+  if (act === 'rail') document.getElementById('sidebar').classList.toggle('bi-sidebar--rail');
+}
+document.querySelectorAll('[data-act]').forEach((el) => {
+  el.addEventListener('click', () => doAction(el.dataset.act));
+});
+
+document.getElementById('publishBtn').addEventListener('click', () => toast('Story queued for 06:00', 'bi-toast--ok'));
+document.getElementById('previewBtn').addEventListener('click', () => toast('Preview opened in new tab'));
+document.getElementById('banner').querySelector('.close').addEventListener('click', (e) => {
+  e.currentTarget.closest('.bi-banner').remove();
+});
+
+initMotion();
+themer();
+</script>
+</body>
+</html>

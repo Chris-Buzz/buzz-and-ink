@@ -45,6 +45,89 @@ export const ICONS = {
   'info':           '<circle cx="12" cy="12" r="8.8"/><path d="M12 11v5M12 7.8v.4"/>',
   'alert':          '<path d="M12 3.5 2.5 19.5h19z"/><path d="M12 9.5v4.5M12 16.8v.4"/>',
   'trash':          '<path d="M4 7h16M9.5 7V4h5v3M6 7l1 13.5h10L18 7M10 11v6M14 11v6"/>',
+
+  /* ── v0.8 — the application set ────────────────────────────────────────────
+     Everything a real product screen reaches for: editing, filtering, state,
+     navigation, commerce, media. Same grammar as above — 24×24, 1.5 stroke,
+     round caps, geometric, no emoji. ──────────────────────────────────────── */
+
+  /* navigation & direction */
+  'chevron-left':   '<path d="m15 6-6 6 6 6"/>',
+  'chevron-up':     '<path d="m6 15 6-6 6 6"/>',
+  'arrow-up':       '<path d="M12 20V5M6 11l6-6 6 6"/>',
+  'arrow-down':     '<path d="M12 4v15M6 13l6 6 6-6"/>',
+  'sort':           '<path d="M7 4v16M4 17l3 3 3-3M17 20V4M14 7l3-3 3 3"/>',
+  'expand':         '<path d="M9 4H4v5M15 4h5v5M15 20h5v-5M9 20H4v-5"/>',
+  'collapse':       '<path d="M4 9h5V4M20 9h-5V4M20 15h-5v5M4 15h5v5"/>',
+  'more-h':         '<circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/>',
+  'more-v':         '<circle cx="12" cy="5.5" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="12" cy="18.5" r="1.4"/>',
+
+  /* editing */
+  'edit':           '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m14.5 5.5 4 4"/>',
+  'copy':           '<rect x="9" y="9" width="11" height="11" rx="1.5"/><path d="M15 6.5V5a1.5 1.5 0 0 0-1.5-1.5h-9A1.5 1.5 0 0 0 3 5v9A1.5 1.5 0 0 0 4.5 15H6"/>',
+  'clipboard':      '<path d="M9 4.5H7A1.5 1.5 0 0 0 5.5 6v13A1.5 1.5 0 0 0 7 20.5h10A1.5 1.5 0 0 0 18.5 19V6A1.5 1.5 0 0 0 17 4.5h-2"/><rect x="9" y="2.8" width="6" height="3.4" rx="1"/>',
+  'save':           '<path d="M5 4.5h11L19.5 8v11.5a.5.5 0 0 1-.5.5H5a.5.5 0 0 1-.5-.5v-15a.5.5 0 0 1 .5-.5z"/><path d="M8 4.5v5h7M8 20v-5.5h8V20"/>',
+  'undo':           '<path d="M4 9h11a4.5 4.5 0 0 1 0 9h-6"/><path d="m7.5 5.5-3.5 3.5 3.5 3.5"/>',
+  'redo':           '<path d="M20 9H9a4.5 4.5 0 0 0 0 9h6"/><path d="m16.5 5.5 3.5 3.5-3.5 3.5"/>',
+
+  /* data & filtering */
+  'filter':         '<path d="M3.5 5h17l-6.5 7.5V20l-4-2.5v-5z"/>',
+  'sliders':        '<path d="M4 8h9M17 8h3M4 16h3M11 16h9"/><circle cx="15" cy="8" r="2.2"/><circle cx="9" cy="16" r="2.2"/>',
+  'grid':           '<rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><rect x="13.5" y="13.5" width="7" height="7" rx="1"/>',
+  'list':           '<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4.2" cy="6" r="1.2"/><circle cx="4.2" cy="12" r="1.2"/><circle cx="4.2" cy="18" r="1.2"/>',
+  'table':          '<rect x="3.5" y="4.5" width="17" height="15" rx="1.5"/><path d="M3.5 9.5h17M9.5 9.5v10M15 9.5v10"/>',
+  'pie':            '<path d="M12 3.2v8.8h8.8A8.8 8.8 0 0 0 12 3.2z"/><path d="M20.3 15A8.8 8.8 0 1 1 9 3.7"/>',
+  'activity':       '<path d="M3 12h4l3-7 4 14 3-7h4"/>',
+  'trending-up':    '<path d="M3 17 9.5 10.5l4 4L21 7"/><path d="M15.5 7H21v5.5"/>',
+  'trending-down':  '<path d="M3 7 9.5 13.5l4-4L21 17"/><path d="M15.5 17H21v-5.5"/>',
+  'database':       '<ellipse cx="12" cy="6" rx="7.5" ry="3"/><path d="M4.5 6v12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V6"/><path d="M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/>',
+  'layers':         '<path d="m12 3 8.5 4.5L12 12 3.5 7.5z"/><path d="m3.5 12 8.5 4.5L20.5 12"/><path d="m3.5 16.5 8.5 4.5 8.5-4.5"/>',
+
+  /* files & storage */
+  'download':       '<path d="M12 3.5v11"/><path d="m7.5 10 4.5 4.5 4.5-4.5"/><path d="M4.5 17v2.5h15V17"/>',
+  'upload':         '<path d="M12 15V3.5"/><path d="M7.5 8 12 3.5 16.5 8"/><path d="M4.5 17v2.5h15V17"/>',
+  'archive':        '<rect x="3.5" y="4" width="17" height="4.5" rx="1"/><path d="M5.5 8.5V19a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V8.5"/><path d="M10 12h4"/>',
+  'inbox':          '<path d="M3.5 13.5h5l1.5 3h4l1.5-3h5"/><path d="M6 4.5h12l2.5 9V19a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1v-5.5z"/>',
+  'box':            '<path d="M20.5 8.5 12 12 3.5 8.5 12 5z"/><path d="M3.5 8.5V16l8.5 3.5 8.5-3.5V8.5"/><path d="M12 12v7.5"/>',
+  'link':           '<path d="M10 13.5a3.5 3.5 0 0 0 5 0l3-3a3.54 3.54 0 0 0-5-5l-1.5 1.5"/><path d="M14 10.5a3.5 3.5 0 0 0-5 0l-3 3a3.54 3.54 0 0 0 5 5l1.5-1.5"/>',
+  'image':          '<rect x="3.5" y="4.5" width="17" height="15" rx="1.5"/><circle cx="9" cy="10" r="1.8"/><path d="m4.5 17.5 5-5 4.5 4.5 3-2.5 3.5 3.5"/>',
+  'file-text':      '<path d="M6 3h8l4 4.5V21H6z"/><path d="M14 3v4.5h4"/><path d="M9 12.5h6M9 16h4"/>',
+
+  /* state & feedback */
+  'bell':           '<path d="M6.5 10a5.5 5.5 0 0 1 11 0c0 4.5 1.5 6 1.5 6h-14s1.5-1.5 1.5-6z"/><path d="M10.2 19a2 2 0 0 0 3.6 0"/>',
+  'eye':            '<path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/>',
+  'eye-off':        '<path d="M9.6 6.2A8.5 8.5 0 0 1 12 5.8c6 0 9.5 6.2 9.5 6.2a17 17 0 0 1-3.2 4M6.2 8A17 17 0 0 0 2.5 12S6 18.2 12 18.2a8.8 8.8 0 0 0 3.6-.75"/><path d="m4 4 16 16"/>',
+  'lock':           '<rect x="4.5" y="10" width="15" height="10.5" rx="1.5"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10"/>',
+  'unlock':         '<rect x="4.5" y="10" width="15" height="10.5" rx="1.5"/><path d="M8 10V7.5a4 4 0 0 1 7.6-1.7"/>',
+  'shield':         '<path d="M12 3 4.5 6v6c0 4.6 3.1 7.8 7.5 9 4.4-1.2 7.5-4.4 7.5-9V6z"/><path d="m9 12 2.2 2.2L15.5 10"/>',
+  'help':           '<circle cx="12" cy="12" r="8.8"/><path d="M9.6 9.6a2.5 2.5 0 1 1 3.3 2.4c-.6.2-.9.8-.9 1.4v.4M12 16.6v.4"/>',
+  'flag':           '<path d="M5.5 21V4"/><path d="M5.5 5h9l-1.2 3 1.2 3h-9z"/>',
+  'award':          '<circle cx="12" cy="9" r="5.5"/><path d="m8.6 13.6-1.1 7 4.5-2.4 4.5 2.4-1.1-7"/>',
+
+  /* commerce & people */
+  'users':          '<circle cx="9.5" cy="8" r="3.4"/><path d="M3.5 20c1.1-3.2 3.3-4.8 6-4.8s4.9 1.6 6 4.8"/><path d="M16.5 5.2a3.4 3.4 0 0 1 0 5.6M17.5 15.6c1.7.6 2.9 2 3.6 4.4"/>',
+  'credit-card':    '<rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M2.5 10h19M6 14.5h3"/>',
+  'dollar':         '<path d="M12 2.8v18.4"/><path d="M16.5 7.2c-.7-1.6-2.4-2.4-4.5-2.4-2.5 0-4.2 1.2-4.2 3.1 0 4.6 9.2 2.4 9.2 7.2 0 2-1.9 3.3-4.7 3.3-2.4 0-4.2-.9-5-2.6"/>',
+  'tag':            '<path d="M11.5 3.5H20V12l-8.8 8.8a1.5 1.5 0 0 1-2.1 0l-6.4-6.4a1.5 1.5 0 0 1 0-2.1z"/><circle cx="16.2" cy="7.8" r="1.4"/>',
+  'pin':            '<path d="M12 21v-6.5"/><path d="M8 3.5h8l-1 5 2.5 2.5v1.5h-11V11L9 8.5z"/>',
+  'bookmark':       '<path d="M6.5 3.5h11v17l-5.5-4-5.5 4z"/>',
+  'heart':          '<path d="M12 20.2 4.9 13a4.6 4.6 0 0 1 7.1-5.7A4.6 4.6 0 0 1 19.1 13z"/>',
+  'share':          '<circle cx="18" cy="5.5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="18.5" r="2.6"/><path d="m8.4 10.7 7.2-3.9M8.4 13.3l7.2 3.9"/>',
+  'log-out':        '<path d="M14 4.5H6a1.5 1.5 0 0 0-1.5 1.5v12A1.5 1.5 0 0 0 6 19.5h8"/><path d="M17 8.5 20.5 12 17 15.5M20.5 12H10"/>',
+  'key':            '<circle cx="7.5" cy="12" r="3.8"/><path d="M11.3 12H21M18 12v3M15 12v2.2"/>',
+
+  /* media & device */
+  'play':           '<path d="M7.5 4.8 19 12 7.5 19.2z"/>',
+  'pause':          '<path d="M9 5v14M15 5v14"/>',
+  'refresh':        '<path d="M20.5 12a8.5 8.5 0 1 1-2.5-6"/><path d="M20.5 4v5h-5"/>',
+  'globe':          '<circle cx="12" cy="12" r="8.8"/><path d="M3.4 12h17.2"/><path d="M12 3.2a13 13 0 0 1 0 17.6 13 13 0 0 1 0-17.6z"/>',
+  'map-pin':        '<path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/>',
+  'phone':          '<path d="M7.5 3.5 10 8l-2.2 2a12 12 0 0 0 6.2 6.2L16 14l4.5 2.5v3A1.5 1.5 0 0 1 19 21C10.4 20.4 3.6 13.6 3 5a1.5 1.5 0 0 1 1.5-1.5z"/>',
+  'camera':         '<path d="M3.5 7.5h3.8L9 5h6l1.7 2.5h3.8a1 1 0 0 1 1 1V19a1 1 0 0 1-1 1h-17a1 1 0 0 1-1-1V8.5a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.6"/>',
+  'message':        '<path d="M20.5 15a1.5 1.5 0 0 1-1.5 1.5H8L4 20V5a1.5 1.5 0 0 1 1.5-1.5H19A1.5 1.5 0 0 1 20.5 5z"/>',
+  'wifi':           '<path d="M2.5 9a14 14 0 0 1 19 0M5.8 12.5a9.4 9.4 0 0 1 12.4 0M9 16a4.7 4.7 0 0 1 6 0"/><circle cx="12" cy="19.3" r="1.1"/>',
+  'terminal':       '<rect x="3" y="4.5" width="18" height="15" rx="1.5"/><path d="m7 10 2.5 2.5L7 15M12.5 15.5H17"/>',
+  'printer':        '<path d="M7 8.5V3.5h10v5"/><rect x="3.5" y="8.5" width="17" height="7.5" rx="1.5"/><path d="M7 13.5h10V21H7z"/>',
 };
 
 const wrap = (name, inner, attrs = '') =>

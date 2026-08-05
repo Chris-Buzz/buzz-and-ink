@@ -703,18 +703,10 @@
 
 /* ==========================================================================
    v0.5 — MOTION
+   Superseded by the v0.8 MOTION section at the end of this file, which keeps
+   the same data-bi-reveal contract and adds direction/scale/blur/clip
+   variants, split text, and the pointer effects.
    ========================================================================== */
-
-/* ── scroll reveal (opt-in) ───────────────────────────────────────────────
-   Mark elements with data-bi-reveal (optionally data-bi-reveal="120" for a
-   stagger delay in ms) and call reveal() from 'buzz-and-ink/motion'. The
-   hidden state only applies once the script adds .bi-motion to <html>, so
-   content stays fully visible without JavaScript. ─────────────────────────── */
-.bi-motion [data-bi-reveal]{
-  opacity:0;transform:translateY(14px);
-  transition:opacity var(--bi-dur-4) var(--bi-ease-out),transform var(--bi-dur-4) var(--bi-ease-out);
-}
-.bi-motion [data-bi-reveal].in{opacity:1;transform:none}
 
 /* ==========================================================================
    v0.7 — ICONS
@@ -809,3 +801,587 @@
   .bi *,.bi-btn,.bi-card{transition-duration:.01ms !important}
 }
 
+
+/* ==========================================================================
+   v0.8 â€” CHARTS
+   The SVG chart module (buzz-and-ink/charts) paints its marks with
+   var(--bi-series-N), so everything here is geometry and chrome â€” the color
+   arrives from the cascade and re-inks on every theme/voice flip for free.
+   ========================================================================== */
+
+.bi-chart{position:relative;display:flex;flex-direction:column;gap:10px}
+.bi-chart-title{
+  font-family:var(--bi-font-mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--bi-text-3);
+}
+.bi-chart-plot{position:relative;width:100%}
+.bi-chart-plot svg{display:block;overflow:visible}
+.bi-chart-plot--center{display:flex;align-items:center;justify-content:center}
+
+/* grid + axis stay recessive â€” the data is the loud part */
+.bi-chart-grid{stroke:var(--bi-line-soft);stroke-width:1;shape-rendering:crispEdges}
+.bi-chart-atick{
+  font-family:var(--bi-font-mono);font-size:9.5px;letter-spacing:.06em;
+  fill:var(--bi-text-3);
+}
+
+/* marks */
+.bi-chart-bar{transition:opacity var(--bi-dur-2) var(--bi-ease-out)}
+.bi-chart-bar.is-hot{opacity:.78}
+.bi-chart-line{stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bi-chart-area{pointer-events:none}
+.bi-chart-dot{
+  stroke:var(--bi-surface);stroke-width:2;
+  transition:r var(--bi-dur-1) var(--bi-ease-out);
+}
+.bi-chart-dot.is-hot{r:6}
+.bi-chart-track{stroke:var(--bi-line-soft)}
+.bi-chart-slice{transition:opacity var(--bi-dur-2) var(--bi-ease-out)}
+.bi-chart-slice.is-hot{opacity:.8}
+.bi-chart-center{
+  position:absolute;display:flex;flex-direction:column;align-items:center;gap:2px;
+  pointer-events:none;text-align:center;
+}
+.bi-chart-center b{
+  font-family:var(--bi-font-mono);font-weight:700;font-size:24px;line-height:1;
+  color:var(--bi-text);letter-spacing:-.02em;
+}
+.bi-chart-center span{
+  font-family:var(--bi-font-mono);font-size:9px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--bi-text-3);
+}
+
+/* legend â€” identity never rides on color alone */
+.bi-chart-legend{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center}
+.bi-chart-legend-item{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:var(--bi-font-mono);font-size:10.5px;letter-spacing:.06em;
+  color:var(--bi-text-2);
+}
+.bi-chart-legend-item i{width:9px;height:9px;border-radius:2px;flex:none}
+
+/* tooltip */
+.bi-chart-tip{
+  position:absolute;z-index:var(--bi-z-tip);pointer-events:none;
+  display:flex;flex-direction:column;gap:2px;
+  background:var(--bi-text);color:var(--bi-bg);
+  border-radius:var(--bi-r-s);padding:7px 11px;
+  box-shadow:var(--bi-shadow-m);
+  animation:biFadeIn var(--bi-dur-1) var(--bi-ease-out);
+}
+.bi-chart-tip b{font-family:var(--bi-font-body);font-size:11.5px;font-weight:600}
+.bi-chart-tip span{font-family:var(--bi-font-mono);font-size:11px;opacity:.75}
+/* A class-level `display` outranks the UA sheet's [hidden]{display:none}, so
+   the attribute alone would leave an empty tooltip parked on the chart. */
+.bi-chart-tip[hidden]{display:none}
+
+/* entrance animation */
+.bi-chart-grow{transform-box:fill-box;transform-origin:bottom;animation:biGrow var(--bi-dur-4) var(--bi-ease-out) backwards}
+@keyframes biGrow{from{transform:scaleY(0);opacity:.4}}
+.bi-chart-draw{animation:biDraw 1s var(--bi-ease-out) forwards}
+@keyframes biDraw{to{stroke-dashoffset:0}}
+.bi-chart-pop{transform-box:fill-box;transform-origin:center;animation:biPopIn var(--bi-dur-3) var(--bi-ease-spring) backwards}
+@keyframes biPopIn{from{transform:scale(0)}}
+.bi-chart-sweep{animation:biSweep var(--bi-dur-4) var(--bi-ease-out) backwards;animation-delay:calc(var(--bi-i,0) * 90ms)}
+@keyframes biSweep{from{opacity:0;stroke-dasharray:0 9999}}
+
+/* sparkline â€” inline, axis-free, for table cells and stat tiles */
+.bi-spark{display:inline-flex;align-items:center;line-height:0}
+.bi-spark svg{display:block}
+
+/* ==========================================================================
+   v0.8 â€” TABLE UPGRADES
+   ========================================================================== */
+
+.bi-table--zebra tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--bi-text) 2.5%,transparent)}
+.bi-table--compact th{padding:7px 10px}
+.bi-table--compact td{padding:8px 10px}
+.bi-table--roomy th{padding:14px 18px}
+.bi-table--roomy td{padding:18px 18px}
+
+/* numbers align right and share one width so columns compare by eye */
+.bi-table .num,
+.bi-table--numeric td:not(:first-child),
+.bi-table--numeric th:not(:first-child){
+  text-align:right;font-family:var(--bi-font-mono);font-variant-numeric:tabular-nums;
+}
+
+/* sticky header for long scrolling bodies */
+.bi-table--sticky thead th{
+  position:sticky;top:0;z-index:2;background:var(--bi-surface);
+  box-shadow:inset 0 -1px 0 var(--bi-line);
+}
+
+/* sortable headers */
+.bi-table--sortable th[data-sort]{cursor:pointer;user-select:none;white-space:nowrap}
+.bi-table--sortable th[data-sort]:hover{color:var(--bi-text-2)}
+.bi-table--sortable th[data-sort]::after{
+  content:'';display:inline-block;width:0;height:0;margin-left:7px;vertical-align:1px;
+  border-left:3.5px solid transparent;border-right:3.5px solid transparent;
+  border-top:4.5px solid var(--bi-line);
+  transition:border-color var(--bi-dur-1) var(--bi-ease-out),transform var(--bi-dur-2) var(--bi-ease-out);
+}
+.bi-table--sortable th[data-sort="asc"]::after{border-top-color:var(--bi-accent);transform:rotate(180deg)}
+.bi-table--sortable th[data-sort="desc"]::after{border-top-color:var(--bi-accent)}
+
+/* selectable rows */
+.bi-table tr.on td{background:var(--bi-accent-soft)}
+.bi-table td .bi-cell{display:flex;align-items:center;gap:10px}
+
+/* a status dot inside a cell â€” always paired with its label, never color alone */
+.bi-cell-dot{width:7px;height:7px;border-radius:99px;flex:none;background:var(--bi-text-3)}
+.bi-cell-dot--good{background:var(--bi-good)}
+.bi-cell-dot--warn{background:var(--bi-warn)}
+.bi-cell-dot--serious{background:var(--bi-serious)}
+.bi-cell-dot--critical{background:var(--bi-critical)}
+
+/* wrapper that lets a wide table scroll without pushing the page sideways */
+.bi-table-scroll{overflow-x:auto;max-width:100%}
+
+/* ==========================================================================
+   v0.8 â€” STAT DELTA
+   ========================================================================== */
+
+.bi-stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:var(--bi-space-3)}
+.bi-stat header{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.bi-stat .bi-spark{margin-top:4px;opacity:.9}
+.bi-stat-delta{
+  display:inline-flex;align-items:center;gap:4px;
+  font-family:var(--bi-font-mono);font-size:10.5px;font-weight:500;letter-spacing:.04em;
+  border-radius:var(--bi-r-s);padding:2px 7px;
+  color:var(--bi-text-2);background:color-mix(in srgb,var(--bi-text) 6%,transparent);
+}
+/* the arrow is a glyph, so direction survives grayscale and colorblindness */
+.bi-stat-delta::before{content:'\2192';font-size:11px;line-height:1}
+.bi-stat-delta--up{color:var(--bi-good);background:color-mix(in srgb,var(--bi-good) 13%,transparent)}
+.bi-stat-delta--up::before{content:'\2191'}
+.bi-stat-delta--down{color:var(--bi-critical);background:color-mix(in srgb,var(--bi-critical) 12%,transparent)}
+.bi-stat-delta--down::before{content:'\2193'}
+[data-theme="dark"] .bi-stat-delta--down{color:#E98080}
+
+/* ==========================================================================
+   v0.8 â€” APP SHELL (desktop)
+   ========================================================================== */
+
+/* full-height application frame: menubar / body / statusbar */
+.bi-app{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden;background:var(--bi-bg)}
+.bi-app-body{display:flex;flex:1;min-height:0}
+.bi-app-main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+.bi-app-scroll{flex:1;overflow-y:auto;overflow-x:hidden}
+
+/* â”€â”€ sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bi-sidebar{
+  width:var(--bi-sidebar-w,232px);flex:none;display:flex;flex-direction:column;
+  background:var(--bi-bg-deep);border-right:1px solid var(--bi-line);
+  overflow-y:auto;transition:width var(--bi-dur-3) var(--bi-ease-out);
+}
+.bi-sidebar header{display:flex;align-items:center;gap:10px;padding:14px var(--bi-space-4) 10px}
+.bi-sidebar header b{font-family:var(--bi-font-display);font-weight:500;font-size:16px;letter-spacing:-.01em}
+.bi-sidebar-label{
+  font-family:var(--bi-font-mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--bi-text-3);padding:14px var(--bi-space-4) 5px;
+}
+.bi-sidebar a,.bi-sidebar .navitem{
+  display:flex;align-items:center;gap:10px;margin:1px 8px;padding:8px 10px;
+  font-family:var(--bi-font-body);font-size:13.5px;color:var(--bi-text-2);
+  background:transparent;border:none;border-radius:var(--bi-r-s);cursor:pointer;
+  text-decoration:none;text-align:left;width:calc(100% - 16px);
+  transition:background var(--bi-dur-1) var(--bi-ease-out),color var(--bi-dur-1) var(--bi-ease-out);
+}
+.bi-sidebar a:hover,.bi-sidebar .navitem:hover{background:var(--bi-surface);color:var(--bi-text)}
+.bi-sidebar a.on,.bi-sidebar .navitem.on{background:var(--bi-accent-soft);color:var(--bi-accent-deep);font-weight:500}
+.bi-sidebar .navitem .count{
+  margin-left:auto;font-family:var(--bi-font-mono);font-size:10px;color:var(--bi-text-3);
+}
+.bi-sidebar footer{margin-top:auto;padding:12px var(--bi-space-4);border-top:1px solid var(--bi-line-soft)}
+
+/* collapsed rail */
+.bi-sidebar--rail{--bi-sidebar-w:60px}
+.bi-sidebar--rail .bi-sidebar-label,
+.bi-sidebar--rail header b,
+.bi-sidebar--rail .navitem span,
+.bi-sidebar--rail a span,
+.bi-sidebar--rail .count{display:none}
+.bi-sidebar--rail a,.bi-sidebar--rail .navitem{justify-content:center;padding:9px 0}
+
+/* â”€â”€ menubar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bi-menubar{
+  display:flex;align-items:center;gap:2px;flex:none;
+  background:var(--bi-surface);border-bottom:1px solid var(--bi-line);
+  padding:4px 8px;user-select:none;
+}
+.bi-menubar > button,.bi-menubar > .bi-dropdown > summary{
+  font-family:var(--bi-font-body);font-size:12.5px;color:var(--bi-text-2);
+  background:transparent;border:none;border-radius:var(--bi-r-s);cursor:pointer;
+  padding:5px 10px;transition:background var(--bi-dur-1),color var(--bi-dur-1);
+}
+.bi-menubar > button:hover,
+.bi-menubar > .bi-dropdown[open] > summary,
+.bi-menubar > .bi-dropdown > summary:hover{background:var(--bi-bg-deep);color:var(--bi-text)}
+.bi-menubar .spacer{flex:1}
+.bi-menubar .brand{
+  font-family:var(--bi-font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--bi-text);padding:0 10px 0 4px;
+}
+.bi-menubar .brand b{color:var(--bi-accent);font-weight:500}
+
+/* â”€â”€ context menu â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bi-ctxmenu{
+  position:fixed;z-index:var(--bi-z-command);min-width:200px;
+  background:var(--bi-surface);border:1px solid var(--bi-line);border-radius:var(--bi-r-m);
+  box-shadow:var(--bi-shadow-m);padding:6px;
+  animation:biMenuIn var(--bi-dur-2) var(--bi-ease-out);
+}
+.bi-ctxmenu button{
+  display:flex;align-items:center;gap:10px;width:100%;
+  font-family:var(--bi-font-body);font-size:var(--bi-text-s);color:var(--bi-text);text-align:left;
+  background:transparent;border:none;cursor:pointer;
+  padding:8px 11px;border-radius:var(--bi-r-s);transition:background .12s;
+}
+.bi-ctxmenu button:hover{background:var(--bi-accent-soft)}
+.bi-ctxmenu button.danger{color:var(--bi-critical)}
+.bi-ctxmenu button .bi-kbd{margin-left:auto}
+.bi-ctxmenu hr{border:none;height:1px;background:var(--bi-line-soft);margin:5px 4px}
+
+/* â”€â”€ split panes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bi-split{display:flex;flex:1;min-height:0;min-width:0}
+.bi-split > *{min-width:0;min-height:0}
+.bi-split--v{flex-direction:column}
+.bi-split-bar{
+  flex:none;background:var(--bi-line);position:relative;
+  transition:background var(--bi-dur-1) var(--bi-ease-out);
+}
+.bi-split:not(.bi-split--v) > .bi-split-bar{width:1px;cursor:col-resize}
+.bi-split--v > .bi-split-bar{height:1px;cursor:row-resize}
+.bi-split-bar:hover,.bi-split-bar.on{background:var(--bi-accent)}
+/* invisible widened hit area â€” 1px is correct visually, unusable with a mouse */
+.bi-split-bar::after{content:'';position:absolute;inset:-3px}
+.bi-split:not(.bi-split--v) > .bi-split-bar::after{inset:0 -3px}
+.bi-split--v > .bi-split-bar::after{inset:-3px 0}
+
+/* ==========================================================================
+   v0.8 â€” DATA DISPLAY
+   ========================================================================== */
+
+/* â”€â”€ timeline / activity feed â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bi-timeline{list-style:none;margin:0;padding:0;position:relative}
+.bi-timeline li{position:relative;padding:0 0 var(--bi-space-5) var(--bi-space-6)}
+.bi-timeline li::before{
+  content:'';position:absolute;left:5px;top:5px;width:9px;height:9px;
+  border-radius:99px;background:var(--bi-surface);
+  border:1.5px solid var(--bi-line);box-sizing:border-box;z-index:1;
+}
+.bi-timeline li::after{
+  content:'';position:absolute;left:9.2px;top:14px;bottom:0;width:1px;background:var(--bi-line-soft);
+}
+.bi-timeline li:last-child{padding-bottom:0}
+.bi-timeline li:last-child::after{display:none}
+.bi-timeline li.on::before{border-color:var(--bi-accent);background:var(--bi-accent)}
+.bi-timeline li.done::before{border-color:var(--bi-good);background:var(--bi-good)}
+.bi-timeline time{
+  display:block;font-family:var(--bi-font-mono);font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--bi-text-3);margin-bottom:3px;
+}
+.bi-timeline b{display:block;font-size:var(--bi-text-s);font-weight:600;margin-bottom:2px}
+.bi-timeline p{margin:0;font-size:var(--bi-text-s);color:var(--bi-text-2);line-height:1.55}
+
+/* â”€â”€ calendar / date grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bi-calendar{background:var(--bi-surface);border:1px solid var(--bi-line);border-radius:var(--bi-r-m);padding:var(--bi-space-4)}
+.bi-calendar header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.bi-calendar header b{font-family:var(--bi-font-display);font-weight:500;font-size:16px}
+.bi-calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.bi-calendar-grid span{
+  font-family:var(--bi-font-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--bi-text-3);text-align:center;padding-bottom:6px;
+}
+.bi-calendar-grid button{
+  aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  font-family:var(--bi-font-mono);font-size:12px;color:var(--bi-text-2);
+  background:transparent;border:1px solid transparent;border-radius:var(--bi-r-s);cursor:pointer;
+  transition:background var(--bi-dur-1),border-color var(--bi-dur-1),color var(--bi-dur-1);
+}
+.bi-calendar-grid button:hover{background:var(--bi-bg-deep);color:var(--bi-text)}
+.bi-calendar-grid button.dim{color:var(--bi-text-3);opacity:.45}
+.bi-calendar-grid button.today{border-color:var(--bi-accent);color:var(--bi-accent-deep);font-weight:700}
+.bi-calendar-grid button.on{background:var(--bi-accent);color:var(--bi-cream-0);border-color:var(--bi-accent)}
+.bi-calendar-grid button i{width:4px;height:4px;border-radius:99px;background:var(--bi-accent)}
+.bi-calendar-grid button.on i{background:var(--bi-cream-0)}
+
+/* â”€â”€ meter (labelled bar with a target) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bi-meter{display:flex;flex-direction:column;gap:6px}
+.bi-meter header{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.bi-meter header span{
+  font-family:var(--bi-font-mono);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--bi-text-3);
+}
+.bi-meter header b{font-family:var(--bi-font-mono);font-size:12.5px;color:var(--bi-text);font-variant-numeric:tabular-nums}
+.bi-meter-track{
+  position:relative;height:8px;border-radius:99px;overflow:hidden;
+  background:var(--bi-bg-deep);border:1px solid var(--bi-line-soft);
+}
+.bi-meter-fill{
+  display:block;height:100%;border-radius:inherit;background:var(--bi-accent);
+  transition:width var(--bi-dur-4) var(--bi-ease);
+}
+.bi-meter--good .bi-meter-fill{background:var(--bi-good)}
+.bi-meter--warn .bi-meter-fill{background:var(--bi-warn)}
+.bi-meter--critical .bi-meter-fill{background:var(--bi-critical)}
+.bi-meter-mark{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--bi-text);opacity:.5}
+
+/* â”€â”€ rating â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bi-rating{display:inline-flex;align-items:center;gap:3px}
+.bi-rating i{width:14px;height:14px;color:var(--bi-line);transition:color var(--bi-dur-1)}
+.bi-rating i.on{color:var(--bi-accent)}
+.bi-rating b{
+  margin-left:6px;font-family:var(--bi-font-mono);font-size:11px;color:var(--bi-text-2);
+  font-variant-numeric:tabular-nums;
+}
+
+/* â”€â”€ banner (page-width announcement) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bi-banner{
+  display:flex;align-items:center;gap:14px;
+  font-size:var(--bi-text-s);color:var(--bi-text);
+  background:var(--bi-accent-soft);border-bottom:1px solid var(--bi-line);
+  padding:11px var(--bi-space-5);
+}
+.bi-banner b{font-weight:600}
+.bi-banner p{margin:0;color:var(--bi-text-2)}
+.bi-banner .close{
+  margin-left:auto;background:transparent;border:none;cursor:pointer;
+  color:var(--bi-text-3);padding:4px;border-radius:var(--bi-r-s);line-height:0;
+}
+.bi-banner .close:hover{color:var(--bi-text)}
+.bi-banner--ink{background:var(--bi-text);color:var(--bi-bg);border-color:var(--bi-text)}
+.bi-banner--ink p{color:color-mix(in srgb,var(--bi-bg) 72%,transparent)}
+.bi-banner--ink .close{color:color-mix(in srgb,var(--bi-bg) 60%,transparent)}
+
+/* ==========================================================================
+   v0.8 â€” MOTION
+   The resting states for buzz-and-ink/motion. Everything here is gated behind
+   .bi-motion, which only the script adds â€” so with JavaScript off the page
+   renders complete and readable, and nothing is ever trapped at opacity:0.
+
+   Every effect drives transform / opacity / filter only, so it runs on the
+   compositor rather than forcing layout.
+   ========================================================================== */
+
+/* â”€â”€ reveal variants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   <div data-bi-reveal>            rise + fade (default)
+   <div data-bi-reveal="left">     slide from the left
+   <div data-bi-reveal="scale">    settle up from 96%
+   <div data-bi-reveal="blur">     focus-pull
+   <div data-bi-reveal="clip">     wipe up behind a mask
+   <ul  data-bi-stagger="60">      cascade the children
+   ------------------------------------------------------------------------ */
+.bi-motion [data-bi-reveal]{
+  opacity:0;transform:translateY(14px);
+  transition:opacity var(--bi-dur-4) var(--bi-ease-out),
+             transform var(--bi-dur-4) var(--bi-ease-out),
+             filter var(--bi-dur-4) var(--bi-ease-out),
+             clip-path var(--bi-dur-4) var(--bi-ease-out);
+  will-change:transform,opacity;
+}
+.bi-motion [data-bi-reveal="down"]{transform:translateY(-14px)}
+.bi-motion [data-bi-reveal="left"]{transform:translateX(-24px)}
+.bi-motion [data-bi-reveal="right"]{transform:translateX(24px)}
+.bi-motion [data-bi-reveal="scale"]{transform:scale(.96)}
+.bi-motion [data-bi-reveal="blur"]{filter:blur(9px);transform:none}
+.bi-motion [data-bi-reveal="clip"]{clip-path:inset(100% 0 0 0);transform:none;opacity:1}
+.bi-motion [data-bi-reveal].in{
+  opacity:1;transform:none;filter:none;clip-path:inset(0 0 0 0);
+  will-change:auto;
+}
+
+/* â”€â”€ split text â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   splitText() wraps each word (or char) so the line can cascade. The outer
+   span clips; the inner one is what actually moves â€” that overflow:hidden is
+   what makes the words rise out of nothing instead of sliding over the page.
+   ------------------------------------------------------------------------ */
+.bi-split-part{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
+.bi-split-inner{display:inline-block;will-change:transform}
+.bi-motion [data-bi-split] .bi-split-inner{
+  transform:translateY(110%);
+  transition:transform var(--bi-dur-4) var(--bi-ease);
+  transition-delay:calc(var(--bi-i,0) * 42ms);
+}
+.bi-motion [data-bi-split].in .bi-split-inner{transform:none}
+
+/* â”€â”€ pointer effects â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* magnetic â€” the script writes the transform; the transition covers the
+   release, so letting go eases home instead of snapping. */
+.bi-magnetic{transition:transform var(--bi-dur-3) var(--bi-ease-spring)}
+.bi-magnetic:active{transition-duration:var(--bi-dur-1)}
+
+/* tilt â€” perspective lives in the transform the script writes */
+.bi-tilt{transition:transform var(--bi-dur-3) var(--bi-ease-out);transform-style:preserve-3d}
+.bi-tilt-glare{
+  position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  opacity:0;transition:opacity var(--bi-dur-2) var(--bi-ease-out);
+  background:radial-gradient(circle at calc(var(--bi-mx,.5) * 100%) calc(var(--bi-my,.5) * 100%),
+             color-mix(in srgb,var(--bi-cream-0) 34%,transparent) 0%,transparent 55%);
+}
+.bi-tilt:hover .bi-tilt-glare{opacity:1}
+
+/* spotlight â€” a glow that follows the cursor across a surface */
+.bi-spotlight{position:relative;isolation:isolate}
+.bi-spotlight::before{
+  content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+  opacity:0;transition:opacity var(--bi-dur-3) var(--bi-ease-out);
+  background:radial-gradient(380px circle at var(--bi-spot-x,50%) var(--bi-spot-y,50%),
+             var(--bi-accent-glow) 0%,transparent 68%);
+}
+.bi-spotlight:hover::before{opacity:1}
+
+/* â”€â”€ scroll progress â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   scrollProgress() writes --bi-progress (0â€“1); this paints it as a bar.
+   ------------------------------------------------------------------------ */
+.bi-scrollbar{
+  position:fixed;top:0;left:0;right:0;height:2px;z-index:var(--bi-z-toast);
+  transform-origin:0 50%;transform:scaleX(var(--bi-progress,0));
+  background:linear-gradient(90deg,var(--bi-accent-deep),var(--bi-buzz-400));
+}
+
+/* â”€â”€ hover lifts â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.bi-lift{transition:transform var(--bi-dur-2) var(--bi-ease-out),box-shadow var(--bi-dur-2) var(--bi-ease-out)}
+.bi-lift:hover{transform:translateY(-3px);box-shadow:var(--bi-shadow-m)}
+
+/* a link whose underline sweeps in from the left */
+.bi-sweep{position:relative;text-decoration:none;background-image:linear-gradient(var(--bi-accent),var(--bi-accent));
+  background-size:0% 1.5px;background-position:0 100%;background-repeat:no-repeat;
+  transition:background-size var(--bi-dur-3) var(--bi-ease)}
+.bi-sweep:hover{background-size:100% 1.5px}
+
+/* â”€â”€ surface treatments â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* text that carries the accent as a gradient */
+.bi-gradient-text{
+  background:linear-gradient(100deg,var(--bi-text) 12%,var(--bi-accent) 52%,var(--bi-text) 88%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  background-size:220% 100%;
+}
+.bi-gradient-text--live{animation:biShine 5.5s linear infinite}
+@keyframes biShine{to{background-position:-220% 0}}
+
+/* a soft aurora behind a hero â€” one decoration, not five */
+.bi-aurora{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.bi-aurora::before,.bi-aurora::after{
+  content:'';position:absolute;width:60vw;height:60vw;border-radius:50%;
+  filter:blur(90px);opacity:.5;
+}
+.bi-aurora::before{
+  top:-28%;left:-10%;background:radial-gradient(circle,var(--bi-accent-glow) 0%,transparent 68%);
+  animation:biDrift 19s var(--bi-ease-out) infinite alternate;
+}
+.bi-aurora::after{
+  bottom:-34%;right:-12%;
+  background:radial-gradient(circle,color-mix(in srgb,var(--bi-series-2) 15%,transparent) 0%,transparent 68%);
+  animation:biDrift 23s var(--bi-ease-out) infinite alternate-reverse;
+}
+@keyframes biDrift{to{transform:translate3d(9%,7%,0) scale(1.14)}}
+
+/* a hairline that draws itself across a section */
+.bi-rule-draw{height:1px;background:var(--bi-line);transform-origin:0 50%;transform:scaleX(0);
+  transition:transform var(--bi-dur-4) var(--bi-ease)}
+.bi-motion .in > .bi-rule-draw,.bi-rule-draw.in{transform:scaleX(1)}
+
+/* pulsing live dot */
+.bi-pulse{position:relative}
+.bi-pulse::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:inherit;animation:biPulse 2s var(--bi-ease-out) infinite;
+}
+@keyframes biPulse{to{transform:scale(2.4);opacity:0}}
+
+/* â”€â”€ reduced motion: hold every resting state open â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+@media (prefers-reduced-motion: reduce){
+  .bi-motion [data-bi-reveal],
+  .bi-motion [data-bi-reveal].in{
+    opacity:1;transform:none;filter:none;clip-path:none;transition:none;
+  }
+  .bi-motion [data-bi-split] .bi-split-inner{transform:none;transition:none}
+  .bi-gradient-text--live,.bi-aurora::before,.bi-aurora::after,.bi-pulse::after{animation:none}
+  .bi-rule-draw{transform:scaleX(1)}
+  .bi-chart-grow,.bi-chart-draw,.bi-chart-pop,.bi-chart-sweep{animation:none}
+  .bi-chart-draw{stroke-dashoffset:0 !important}
+}
+
+/* ==========================================================================
+   v0.8 â€” THEMER
+   Chrome for buzz-and-ink/themer. Styled from the same tokens it edits, so
+   the panel re-inks along with everything else while you drag the picker.
+   ========================================================================== */
+
+.bi-themer-toggle{
+  position:fixed;right:18px;bottom:18px;z-index:var(--bi-z-fab);
+  width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--bi-cream-0);background:var(--bi-accent);border:none;
+  border-radius:calc(var(--bi-r-s) + 10px);box-shadow:var(--bi-shadow-raise);
+  transition:transform var(--bi-dur-2) var(--bi-ease-out),box-shadow var(--bi-dur-2) var(--bi-ease-out);
+}
+.bi-themer-toggle:hover{transform:translate(-2px,-2px);box-shadow:var(--bi-shadow-raise-hover)}
+[data-radius="soft"] .bi-themer-toggle{border-radius:99px}
+[data-radius="soft"] .bi-themer-toggle:hover{transform:translateY(-2px)}
+
+.bi-themer{
+  display:flex;flex-direction:column;width:min(292px,92vw);
+  background:var(--bi-surface);border:1px solid var(--bi-line);
+  border-radius:var(--bi-r-m);box-shadow:var(--bi-shadow-m);overflow:hidden;
+}
+.bi-themer--float{
+  position:fixed;right:18px;bottom:72px;z-index:var(--bi-z-drawer);
+  opacity:0;pointer-events:none;transform:translateY(10px) scale(.97);transform-origin:100% 100%;
+  transition:opacity var(--bi-dur-2) var(--bi-ease-out),transform var(--bi-dur-2) var(--bi-ease-out);
+}
+.bi-themer--float.open{opacity:1;pointer-events:auto;transform:none}
+
+.bi-themer header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px var(--bi-space-4);border-bottom:1px solid var(--bi-line-soft);
+}
+.bi-themer header b{font-family:var(--bi-font-display);font-weight:500;font-size:16px}
+.bi-themer header .x{
+  background:transparent;border:none;cursor:pointer;color:var(--bi-text-3);
+  font-size:19px;line-height:1;padding:0 2px;
+}
+.bi-themer header .x:hover{color:var(--bi-text)}
+
+.bi-themer-body{padding:var(--bi-space-4);display:flex;flex-direction:column;gap:9px;overflow-y:auto;max-height:min(68vh,560px)}
+.bi-themer-label{
+  font-family:var(--bi-font-mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--bi-text-3);margin-top:4px;
+}
+
+.bi-themer-presets{display:flex;flex-wrap:wrap;gap:5px}
+.bi-themer-preset{
+  display:inline-flex;align-items:center;gap:6px;cursor:pointer;
+  font-family:var(--bi-font-mono);font-size:9.5px;letter-spacing:.06em;color:var(--bi-text-2);
+  background:var(--bi-bg-deep);border:1px solid var(--bi-line);border-radius:var(--bi-r-s);
+  padding:4px 8px;transition:border-color var(--bi-dur-1),color var(--bi-dur-1);
+}
+.bi-themer-preset:hover{border-color:var(--bi-accent);color:var(--bi-text)}
+.bi-themer-preset i{width:9px;height:9px;border-radius:2px;flex:none}
+
+.bi-themer-row{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.bi-themer-row > span{
+  font-family:var(--bi-font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--bi-text-3);flex:none;min-width:58px;
+}
+.bi-themer-hex{
+  flex:1;min-width:0;font-family:var(--bi-font-mono);font-size:11px;color:var(--bi-text);
+  background:var(--bi-bg-deep);border:1px solid var(--bi-line);border-radius:var(--bi-r-s);
+  padding:6px 8px;
+}
+.bi-themer-hex:focus{outline:none;border-color:var(--bi-accent)}
+/* strip the native color-input chrome so it reads as a swatch, not a widget */
+.bi-themer-color{
+  width:30px;height:28px;flex:none;padding:0;cursor:pointer;
+  background:transparent;border:1px solid var(--bi-line);border-radius:var(--bi-r-s);
+}
+.bi-themer-color::-webkit-color-swatch-wrapper{padding:2px}
+.bi-themer-color::-webkit-color-swatch{border:none;border-radius:calc(var(--bi-r-s) - 1px)}
+.bi-themer-color::-moz-color-swatch{border:none;border-radius:calc(var(--bi-r-s) - 1px)}
+
+.bi-themer-row .bi-seg{flex:1;justify-content:stretch}
+.bi-themer-row .bi-seg button{flex:1;padding:6px 8px;font-size:9.5px}
+
+.bi-themer-actions{display:flex;gap:8px;margin-top:8px}
+.bi-themer-actions .bi-btn{flex:1;justify-content:center;padding:9px 12px;font-size:11.5px}

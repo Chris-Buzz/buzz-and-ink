@@ -1,7 +1,7 @@
 {
   "name": "buzz-and-ink",
-  "version": "0.7.0",
-  "description": "Buzz & Ink — an editorial design system in warm cream, working orange, and rich ink. Tokens-first, framework-agnostic CSS with switchable edge personalities.",
+  "version": "0.8.0",
+  "description": "Buzz & Ink — an editorial design system in warm cream, working orange, and rich ink. Tokens-first, framework-agnostic CSS with switchable edge personalities, OKLCH bring-your-own-color theming, a motion layer, and token-driven charts.",
   "license": "MIT",
   "type": "module",
   "author": "Christopher Buzaid <cjpbuzaid@gmail.com>",
@@ -15,7 +15,12 @@
     "css",
     "design-tokens",
     "ui",
-    "editorial"
+    "editorial",
+    "charts",
+    "motion",
+    "theming",
+    "animation",
+    "dataviz"
   ],
   "files": [
     "src",
@@ -42,6 +47,14 @@
     "./icons": {
       "types": "./src/icons.d.ts",
       "default": "./src/icons.js"
+    },
+    "./charts": {
+      "types": "./src/charts.d.ts",
+      "default": "./src/charts.js"
+    },
+    "./themer": {
+      "types": "./src/themer.d.ts",
+      "default": "./src/themer.js"
     }
   },
   "scripts": {
