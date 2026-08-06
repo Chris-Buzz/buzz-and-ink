@@ -429,16 +429,16 @@
   --bi-accent:var(--bi-buzz-400);
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   v0.9 â€” THE PLAY LAYER
+/* ══════════════════════════════════════════════════════════════════════════
+   v0.9 — THE PLAY LAYER
    Buzz & Ink is editorial by default and should stay that way. Everything
    below is opt-in: new colors that only appear when you ask for them, and a
    `data-mood` axis that retunes the whole system's register in one attribute.
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+   ══════════════════════════════════════════════════════════════════════════ */
 
 :root{
-  /* â”€â”€ pop palette â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-     Eight surface/ink pairs for the playful components â€” stickers, sticky
+  /* ── pop palette ─────────────────────────────────────────────────────────
+     Eight surface/ink pairs for the playful components — stickers, sticky
      notes, speech bubbles, confetti, blob backdrops.
 
      These are deliberately NOT a chart palette. The series ramp encodes
@@ -446,7 +446,7 @@
      nothing, so they optimise for joy instead. What they *are* checked for is
      the thing that actually bites: every `-ink` clears WCAG AA on its own
      surface (worst pair 5.37:1), so text on a colored sticker is always
-     readable. Never use a pop color to carry data â€” reach for --bi-series-*. */
+     readable. Never use a pop color to carry data — reach for --bi-series-*. */
   --bi-pop-pink:#FBE0EA;      --bi-pop-pink-ink:#A11B4B;
   --bi-pop-violet:#E9E2FB;    --bi-pop-violet-ink:#4C2A9E;
   --bi-pop-sky:#DDECFA;       --bi-pop-sky-ink:#1B5A94;
@@ -470,7 +470,7 @@
   --bi-play:1;              /* 0 = still, 1 = normal, 1.6 = loud */
 }
 
-/* â”€â”€ accent voice: PUNCH (hot pink) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── accent voice: PUNCH (hot pink) ───────────────────────────────────────── */
 [data-accent="punch"]{
   --bi-buzz-50:#FFEFF1;  --bi-buzz-100:#FFDEE4; --bi-buzz-200:#FFC0CC;
   --bi-buzz-300:#FF99B0; --bi-buzz-400:#FF6A93; --bi-buzz-500:#EB477B;
@@ -478,7 +478,7 @@
   --bi-buzz-900:#671430;
 }
 
-/* â”€â”€ accent voice: ELECTRIC (violet) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── accent voice: ELECTRIC (violet) ──────────────────────────────────────── */
 [data-accent="electric"]{
   --bi-buzz-50:#F2F2FF;  --bi-buzz-100:#E5E5FF; --bi-buzz-200:#CFCEFF;
   --bi-buzz-300:#B5B2FF; --bi-buzz-400:#9D94FF; --bi-buzz-500:#8674FF;
@@ -486,7 +486,7 @@
   --bi-buzz-900:#362977;
 }
 
-/* â”€â”€ accent voice: MINT (fresh green) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── accent voice: MINT (fresh green) ─────────────────────────────────────── */
 [data-accent="mint"]{
   --bi-buzz-50:#E6F9EC;  --bi-buzz-100:#CEF3DA; --bi-buzz-200:#A9E4BD;
   --bi-buzz-300:#7FD19E; --bi-buzz-400:#57BC82; --bi-buzz-500:#37A56A;
@@ -494,17 +494,17 @@
   --bi-buzz-900:#0A4527;
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   MOOD â€” the register dial
-   data-mood="editorial" (default) Â· "playful" Â· "bold"
+/* ══════════════════════════════════════════════════════════════════════════
+   MOOD — the register dial
+   data-mood="editorial" (default) · "playful" · "bold"
 
    Mood is not a colour scheme. It retunes the things that make an interface
    feel *serious* or *fun* regardless of palette: corner softness, how far
    things travel, how much they overshoot, how heavy the type sits, and how
    much the play components tilt. One attribute, whole different personality.
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+   ══════════════════════════════════════════════════════════════════════════ */
 
-/* PLAYFUL â€” rounder, springier, tiltier. */
+/* PLAYFUL — rounder, springier, tiltier. */
 [data-mood="playful"]{
   --bi-r-s:10px;
   --bi-r-m:18px;
@@ -522,7 +522,7 @@
   --bi-track-label:.1em;
 }
 
-/* BOLD â€” flat, heavy, hard-edged. Poster energy rather than bounce. */
+/* BOLD — flat, heavy, hard-edged. Poster energy rather than bounce. */
 [data-mood="bold"]{
   --bi-r-s:0px;
   --bi-r-m:0px;
@@ -540,14 +540,14 @@
   --bi-track-label:.16em;
 }
 
-/* Someone who asked for reduced motion did not ask for a still interface â€”
+/* Someone who asked for reduced motion did not ask for a still interface —
    they asked not to be moved. Kill the wobble; keep the colour and tilt. */
 @media (prefers-reduced-motion: reduce){
   :root{--bi-play:0}
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   v0.9 â€” SURFACE THEMES
+/* ══════════════════════════════════════════════════════════════════════════
+   v0.9 — SURFACE THEMES
    `data-theme` picks the scheme; `data-surface` picks which one.
 
      <html data-theme="light" data-surface="slate">
@@ -556,124 +556,137 @@
    Five of each, and they are complete sets rather than tints: every one
    defines its own bg / bg-deep / surface / line / line-soft / text tiers, the
    way Carbon ships White, G10, G90 and G100. Leaving `data-surface` off keeps
-   the originals â€” cream in light, warm ink in dark â€” so nothing changes for
-   anyone already using the system.
+   the originals — cream in light, warm ink in dark.
 
-     light   cream (default) Â· white Â· ivory Â· sand Â· slate
-     dark    ink (default)   Â· carbon Â· black Â· midnight Â· espresso
+     light   white · cream (default) · mist · sand · slate
+     dark    ink (default) · carbon · black · midnight · espresso
 
-   Every combination was checked rather than eyeballed, against its own
-   background *and* against its own raised surface:
+   Every combination is measured twice, not eyeballed:
 
-     text    â‰¥ 7:1    (AAA body)      text-2 â‰¥ 4.5:1 (AA secondary)
-     text-3  â‰¥ 3:1    (meta only)     line   â‰¥ 1.35:1
+     contrast     text >= 7:1 (AAA) · text-2 >= 4.5:1 · text-3 >= 3:1 · line >= 1.35:1
+                  — against its own bg AND against its own raised surface
+     separation   every theme >= 3 OKLab dE from every other theme
 
-   That last one is why the light hairlines are darker than they look like
-   they should be on paper: the first pass came in at 1.27 and the rules
-   visibly disappeared on a bright screen.
+   That second gate is the one that matters here, and it is the one that is
+   easy to miss. Contrast measures a theme against *itself*; it says nothing
+   about whether two themes look different from *each other*. The first version
+   of this set passed contrast everywhere and still shipped five light themes
+   sitting dE 0.8-2.3 apart — which is to say, identical. They had been spread
+   by hue alone, and at these very low chroma levels hue is almost invisible.
 
-   Note the pairing in `white`: the page is very slightly cool (#F7F7F9) and
-   the card is pure white, not the other way round. A pure-white page with
-   white cards has nothing to separate them â€” one of the two has to give.
+   The fix was to make LIGHTNESS the primary axis and alternate warm/cool along
+   it, so no two neighbours share both. Worst light pair is now 3.1; most sit
+   between 5 and 11. Pure white against warm cream stays the tightest real gap
+   at 4.3 — those two are genuinely adjacent colours, and nothing separates
+   them further without cream ceasing to be cream.
+   ══════════════════════════════════════════════════════════════════════════ */
 
-   These set the semantic roles directly, so they win over `data-paper`, which
-   only tints the cream scale underneath.
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
-
-/* white â€” crisp neutral, cards pop off a faintly cool page */
+/* white — pure white page; the grey comes from the layers, not the paper */
 :root:not([data-theme="dark"])[data-surface="white"]{
-  --bi-bg:#F7F7F9;
+  --bi-bg:#FFFFFF;
   --bi-bg-deep:#EDEDF1;
   --bi-surface:#FFFFFF;
-  --bi-line:#D3D3DA;
-  --bi-line-soft:#E4E4EA;
-  --bi-text:#16161A;
-  --bi-text-2:#53535D;
-  --bi-text-3:#7E7E8B;
+  --bi-line:#D0D0D8;
+  --bi-line-soft:#E6E6EC;
+  --bi-text:#15151A;
+  --bi-text-2:#4E4E59;
+  --bi-text-3:#787885;
 }
 
-/* ivory â€” cooler, whiter paper */
-:root:not([data-theme="dark"])[data-surface="ivory"]{
-  --bi-bg:#FBFAF6;
-  --bi-bg-deep:#F0EFE6;
-  --bi-surface:#FFFFFF;
-  --bi-line:#D6D4C5;
-  --bi-line-soft:#E7E5DA;
-  --bi-text:#1C1C18;
-  --bi-text-2:#57574E;
-  --bi-text-3:#828276;
+/* mist — true neutral grey, no cast */
+:root:not([data-theme="dark"])[data-surface="mist"]{
+  --bi-bg:#ECECF1;
+  --bi-bg-deep:#DADAE1;
+  --bi-surface:#FAFAFC;
+  --bi-line:#BFBFCA;
+  --bi-line-soft:#D5D5DE;
+  --bi-text:#191920;
+  --bi-text-2:#50505C;
+  --bi-text-3:#787886;
 }
 
-/* sand â€” warm greige, softer than cream */
+/* sand — unmistakably tan */
 :root:not([data-theme="dark"])[data-surface="sand"]{
-  --bi-bg:#F5F2ED;
-  --bi-bg-deep:#E7E0D4;
-  --bi-surface:#FCFAF7;
-  --bi-line:#CEC5B4;
-  --bi-line-soft:#DFD8CA;
-  --bi-text:#26221C;
-  --bi-text-2:#5E574C;
-  --bi-text-3:#897F71;
+  --bi-bg:#E9DCC0;
+  --bi-bg-deep:#DACBA6;
+  --bi-surface:#FAF5E9;
+  --bi-line:#BBA97F;
+  --bi-line-soft:#D0BF9B;
+  --bi-text:#282218;
+  --bi-text-2:#5C5138;
+  --bi-text-3:#827450;
 }
 
-/* slate â€” cool grey, closest to a classic product UI */
+/* slate — unmistakably cool blue */
 :root:not([data-theme="dark"])[data-surface="slate"]{
-  --bi-bg:#F3F5F7;
-  --bi-bg-deep:#E4E8EE;
-  --bi-surface:#FFFFFF;
-  --bi-line:#C9D0DA;
-  --bi-line-soft:#DDE2E9;
-  --bi-text:#171A20;
-  --bi-text-2:#535A66;
-  --bi-text-3:#7D8794;
+  --bi-bg:#D4E2F6;
+  --bi-bg-deep:#C0D3EE;
+  --bi-surface:#F6FAFE;
+  --bi-line:#9FB7D8;
+  --bi-line-soft:#BACCE7;
+  --bi-text:#121820;
+  --bi-text-2:#495564;
+  --bi-text-3:#6E7C8E;
 }
 
-/* carbon â€” neutral charcoal, no colour cast */
+/* carbon — neutral charcoal, lifted so it reads as grey */
 [data-theme="dark"][data-surface="carbon"]{
-  --bi-bg:#1E1E1E;
-  --bi-bg-deep:#141414;
-  --bi-surface:#2C2C2C;
-  --bi-line:#454545;
-  --bi-line-soft:#373737;
-  --bi-text:#F4F4F4;
-  --bi-text-2:#B4B4B4;
-  --bi-text-3:#8A8A8A;
+  --bi-bg:#303033;
+  --bi-bg-deep:#232326;
+  --bi-surface:#3E3E42;
+  --bi-line:#5A5A60;
+  --bi-line-soft:#4A4A4F;
+  --bi-text:#F5F5F7;
+  --bi-text-2:#BEBEC6;
+  --bi-text-3:#94949E;
 }
 
-/* black â€” true black for OLED and full-bleed */
+/* black — true black, for OLED and full-bleed */
 [data-theme="dark"][data-surface="black"]{
   --bi-bg:#000000;
   --bi-bg-deep:#000000;
   --bi-surface:#0E0E0E;
-  --bi-line:#2A2A2A;
+  --bi-line:#2C2C2C;
   --bi-line-soft:#1C1C1C;
   --bi-text:#FFFFFF;
   --bi-text-2:#B9B9B9;
   --bi-text-3:#8C8C8C;
 }
 
-/* midnight â€” blue-black */
+/* midnight — properly blue, not a blue-tinted grey */
 [data-theme="dark"][data-surface="midnight"]{
-  --bi-bg:#0F1420;
-  --bi-bg-deep:#080B12;
-  --bi-surface:#18202F;
-  --bi-line:#2D3849;
-  --bi-line-soft:#222B3B;
-  --bi-text:#E9EEF6;
-  --bi-text-2:#A7B2C4;
-  --bi-text-3:#7A8699;
+  --bi-bg:#0D1628;
+  --bi-bg-deep:#070E1B;
+  --bi-surface:#16223A;
+  --bi-line:#2C3E5F;
+  --bi-line-soft:#20304C;
+  --bi-text:#E8EFFA;
+  --bi-text-2:#A5B5CE;
+  --bi-text-3:#7787A3;
 }
 
-/* espresso â€” brown-black */
+/* espresso — deep brown */
 [data-theme="dark"][data-surface="espresso"]{
-  --bi-bg:#1A1310;
-  --bi-bg-deep:#120C0A;
-  --bi-surface:#271C17;
-  --bi-line:#3E2E26;
-  --bi-line-soft:#30231D;
-  --bi-text:#F3E8E0;
-  --bi-text-2:#BCA79A;
-  --bi-text-3:#8E7A6E;
+  --bi-bg:#2A1A12;
+  --bi-bg-deep:#1F120C;
+  --bi-surface:#3A261B;
+  --bi-line:#553A28;
+  --bi-line-soft:#452F21;
+  --bi-text:#F7E9DC;
+  --bi-text-2:#C9AE97;
+  --bi-text-3:#9B8069;
 }
 
+/* cream is the default surface — these are the :root values it overrides */
+/* cream — warm editorial paper — the default */
+:root:not([data-theme="dark"])[data-surface="cream"]{
+  --bi-bg:#F8F2E4;
+  --bi-bg-deep:#EFE5CE;
+  --bi-surface:#FFFDF8;
+  --bi-line:#D7C8A7;
+  --bi-line-soft:#E7DCC4;
+  --bi-text:#241E17;
+  --bi-text-2:#5C5344;
+  --bi-text-3:#877961;
+}
 

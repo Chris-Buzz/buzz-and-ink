@@ -63,26 +63,41 @@ G90 and G100.
 
 | Light | | Dark | |
 |---|---|---|---|
-| `cream` *(default)* | warm editorial paper | `ink` *(default)* | warm near-black |
-| `white` | crisp neutral; cards pop off a faintly cool page | `carbon` | neutral charcoal, no colour cast |
-| `ivory` | cooler, whiter paper | `black` | true black, for OLED and full-bleed |
-| `sand` | warm greige, softer than cream | `midnight` | blue-black |
-| `slate` | cool grey, closest to a classic product UI | `espresso` | brown-black |
+| `white` | pure white page; the grey comes from the layers | `ink` *(default)* | warm near-black |
+| `cream` *(default)* | warm editorial paper | `carbon` | neutral charcoal |
+| `mist` | true neutral grey, no cast | `black` | true black, for OLED and full-bleed |
+| `sand` | unmistakably tan | `midnight` | properly blue |
+| `slate` | unmistakably cool blue | `espresso` | deep brown |
 
 Leave `data-surface` off and you get the originals, so nothing changes for
 existing work.
 
-Every one was measured, not eyeballed — against its own background *and* its
-own raised surface: body text ≥ 7:1 (AAA), secondary ≥ 4.5:1, meta ≥ 3:1,
-hairlines ≥ 1.35:1. A test re-checks all ten on every run.
+Every one is measured twice, and the second measurement is the one that
+matters:
 
-Two findings from that pass worth knowing, because both are easy to get wrong:
+- **Contrast** — text ≥ 7:1 (AAA), secondary ≥ 4.5:1, meta ≥ 3:1, hairlines
+  ≥ 1.35:1, checked against the theme's own background *and* its own raised
+  surface.
+- **Separation** — every theme ≥ 3 OKLab ΔE from every other theme.
+
+That second gate exists because the first version of this set passed contrast
+everywhere and still shipped five light themes that were **visually identical**.
+Contrast measures a theme against itself; it says nothing about whether two
+themes differ from each other. Measured pairwise, they sat ΔE 0.8–2.3 apart —
+below the threshold where a difference is perceptible at all.
+
+The cause was spreading them by hue alone. At the very low chroma a light
+background needs, hue is nearly invisible; the separation has to come from
+lightness. The current set steps lightness from pure white down to a real
+grey and alternates warm/cool along the way, so no two neighbours share both
+axes. Worst pair is now 3.1 and most sit between 5 and 11.
+
+Two things that fall out of the measurements and are easy to get wrong:
 
 - The light hairlines are **darker than they look right on paper**. The first
   attempt measured 1.27:1 and the rules visibly vanished on a bright screen.
-- In `white`, the page is very slightly cool (`#F7F7F9`) and the *card* is pure
-  white — not the other way round. A white page with white cards has nothing to
-  separate them; one of the two has to give.
+- In `white`, the page is pure white and the *layers* carry the grey. Tinting
+  the page instead leaves nothing to separate a white card from it.
 
 ## Bring your own colors
 

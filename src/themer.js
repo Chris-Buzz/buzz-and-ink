@@ -23,7 +23,7 @@ const KEY = 'bi-themer';
 
 /** Surface themes, per scheme. Picking one is picking a whole palette. */
 export const SURFACES = {
-  light: ['cream', 'white', 'ivory', 'sand', 'slate'],
+  light: ['white', 'cream', 'mist', 'sand', 'slate'],
   dark:  ['ink', 'carbon', 'black', 'midnight', 'espresso'],
 };
 

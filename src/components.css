@@ -803,9 +803,9 @@
 
 
 /* ==========================================================================
-   v0.8 â€” CHARTS
+   v0.8 — CHARTS
    The SVG chart module (buzz-and-ink/charts) paints its marks with
-   var(--bi-series-N), so everything here is geometry and chrome â€” the color
+   var(--bi-series-N), so everything here is geometry and chrome — the color
    arrives from the cascade and re-inks on every theme/voice flip for free.
    ========================================================================== */
 
@@ -818,7 +818,7 @@
 .bi-chart-plot svg{display:block;overflow:visible}
 .bi-chart-plot--center{display:flex;align-items:center;justify-content:center}
 
-/* grid + axis stay recessive â€” the data is the loud part */
+/* grid + axis stay recessive — the data is the loud part */
 .bi-chart-grid{stroke:var(--bi-line-soft);stroke-width:1;shape-rendering:crispEdges}
 .bi-chart-atick{
   font-family:var(--bi-font-mono);font-size:var(--bi-text-2xs);letter-spacing:.06em;
@@ -851,7 +851,7 @@
   text-transform:uppercase;color:var(--bi-text-3);
 }
 
-/* legend â€” identity never rides on color alone */
+/* legend — identity never rides on color alone */
 .bi-chart-legend{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center}
 .bi-chart-legend-item{
   display:inline-flex;align-items:center;gap:7px;
@@ -885,12 +885,12 @@
 .bi-chart-sweep{animation:biSweep var(--bi-dur-4) var(--bi-ease-out) backwards;animation-delay:calc(var(--bi-i,0) * 90ms)}
 @keyframes biSweep{from{opacity:0;stroke-dasharray:0 9999}}
 
-/* sparkline â€” inline, axis-free, for table cells and stat tiles */
+/* sparkline — inline, axis-free, for table cells and stat tiles */
 .bi-spark{display:inline-flex;align-items:center;line-height:0}
 .bi-spark svg{display:block}
 
 /* ==========================================================================
-   v0.8 â€” TABLE UPGRADES
+   v0.8 — TABLE UPGRADES
    ========================================================================== */
 
 .bi-table--zebra tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--bi-text) 2.5%,transparent)}
@@ -928,7 +928,7 @@
 .bi-table tr.on td{background:var(--bi-accent-soft)}
 .bi-table td .bi-cell{display:flex;align-items:center;gap:10px}
 
-/* a status dot inside a cell â€” always paired with its label, never color alone */
+/* a status dot inside a cell — always paired with its label, never color alone */
 .bi-cell-dot{width:7px;height:7px;border-radius:99px;flex:none;background:var(--bi-text-3)}
 .bi-cell-dot--good{background:var(--bi-good)}
 .bi-cell-dot--warn{background:var(--bi-warn)}
@@ -962,7 +962,7 @@
 .bi-table--roomy td .bi-cell{min-height:38px}
 
 /* ==========================================================================
-   v0.8 â€” STAT DELTA
+   v0.8 — STAT DELTA
    ========================================================================== */
 
 .bi-stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:var(--bi-space-3)}
@@ -983,7 +983,7 @@
 [data-theme="dark"] .bi-stat-delta--down{color:#E98080}
 
 /* ==========================================================================
-   v0.8 â€” APP SHELL (desktop)
+   v0.8 — APP SHELL (desktop)
    ========================================================================== */
 
 /* full-height application frame: menubar / body / statusbar */
@@ -992,7 +992,7 @@
 .bi-app-main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
 .bi-app-scroll{flex:1;overflow-y:auto;overflow-x:hidden}
 
-/* â”€â”€ sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── sidebar ─────────────────────────────────────────────────────────────── */
 .bi-sidebar{
   width:var(--bi-sidebar-w,232px);flex:none;display:flex;flex-direction:column;
   background:var(--bi-bg-deep);border-right:1px solid var(--bi-line);
@@ -1027,7 +1027,7 @@
 .bi-sidebar--rail .count{display:none}
 .bi-sidebar--rail a,.bi-sidebar--rail .navitem{justify-content:center;padding:9px 0}
 
-/* â”€â”€ menubar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── menubar ─────────────────────────────────────────────────────────────── */
 .bi-menubar{
   display:flex;align-items:center;gap:2px;flex:none;
   background:var(--bi-surface);border-bottom:1px solid var(--bi-line);
@@ -1048,7 +1048,7 @@
 }
 .bi-menubar .brand b{color:var(--bi-accent);font-weight:500}
 
-/* â”€â”€ context menu â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── context menu ────────────────────────────────────────────────────────── */
 .bi-ctxmenu{
   position:fixed;z-index:var(--bi-z-command);min-width:200px;
   background:var(--bi-surface);border:1px solid var(--bi-line);border-radius:var(--bi-r-m);
@@ -1066,7 +1066,7 @@
 .bi-ctxmenu button .bi-kbd{margin-left:auto}
 .bi-ctxmenu hr{border:none;height:1px;background:var(--bi-line-soft);margin:5px 4px}
 
-/* â”€â”€ split panes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── split panes ─────────────────────────────────────────────────────────── */
 .bi-split{display:flex;flex:1;min-height:0;min-width:0}
 .bi-split > *{min-width:0;min-height:0}
 .bi-split--v{flex-direction:column}
@@ -1077,16 +1077,16 @@
 .bi-split:not(.bi-split--v) > .bi-split-bar{width:1px;cursor:col-resize}
 .bi-split--v > .bi-split-bar{height:1px;cursor:row-resize}
 .bi-split-bar:hover,.bi-split-bar.on{background:var(--bi-accent)}
-/* invisible widened hit area â€” 1px is correct visually, unusable with a mouse */
+/* invisible widened hit area — 1px is correct visually, unusable with a mouse */
 .bi-split-bar::after{content:'';position:absolute;inset:-3px}
 .bi-split:not(.bi-split--v) > .bi-split-bar::after{inset:0 -3px}
 .bi-split--v > .bi-split-bar::after{inset:-3px 0}
 
 /* ==========================================================================
-   v0.8 â€” DATA DISPLAY
+   v0.8 — DATA DISPLAY
    ========================================================================== */
 
-/* â”€â”€ timeline / activity feed â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── timeline / activity feed ────────────────────────────────────────────── */
 .bi-timeline{list-style:none;margin:0;padding:0;position:relative}
 .bi-timeline li{position:relative;padding:0 0 var(--bi-space-5) var(--bi-space-6)}
 .bi-timeline li::before{
@@ -1108,7 +1108,7 @@
 .bi-timeline b{display:block;font-size:var(--bi-text-s);font-weight:600;margin-bottom:2px}
 .bi-timeline p{margin:0;font-size:var(--bi-text-s);color:var(--bi-text-2);line-height:1.55}
 
-/* â”€â”€ calendar / date grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── calendar / date grid ────────────────────────────────────────────────── */
 .bi-calendar{background:var(--bi-surface);border:1px solid var(--bi-line);border-radius:var(--bi-r-m);padding:var(--bi-space-4)}
 .bi-calendar header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
 .bi-calendar header b{font-family:var(--bi-font-display);font-weight:500;font-size:var(--bi-text-m)}
@@ -1130,7 +1130,7 @@
 .bi-calendar-grid button i{width:4px;height:4px;border-radius:99px;background:var(--bi-accent)}
 .bi-calendar-grid button.on i{background:var(--bi-cream-0)}
 
-/* â”€â”€ meter (labelled bar with a target) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── meter (labelled bar with a target) ──────────────────────────────────── */
 .bi-meter{display:flex;flex-direction:column;gap:6px}
 .bi-meter header{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
 .bi-meter header span{
@@ -1151,7 +1151,7 @@
 .bi-meter--critical .bi-meter-fill{background:var(--bi-critical)}
 .bi-meter-mark{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--bi-text);opacity:.5}
 
-/* â”€â”€ rating â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── rating ──────────────────────────────────────────────────────────────── */
 .bi-rating{display:inline-flex;align-items:center;gap:3px}
 .bi-rating i{width:14px;height:14px;color:var(--bi-line);transition:color var(--bi-dur-1)}
 .bi-rating i.on{color:var(--bi-accent)}
@@ -1160,7 +1160,7 @@
   font-variant-numeric:tabular-nums;
 }
 
-/* â”€â”€ banner (page-width announcement) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── banner (page-width announcement) ────────────────────────────────────── */
 .bi-banner{
   display:flex;align-items:center;gap:14px;
   font-size:var(--bi-text-s);color:var(--bi-text);
@@ -1179,16 +1179,16 @@
 .bi-banner--ink .close{color:color-mix(in srgb,var(--bi-bg) 60%,transparent)}
 
 /* ==========================================================================
-   v0.8 â€” MOTION
+   v0.8 — MOTION
    The resting states for buzz-and-ink/motion. Everything here is gated behind
-   .bi-motion, which only the script adds â€” so with JavaScript off the page
+   .bi-motion, which only the script adds — so with JavaScript off the page
    renders complete and readable, and nothing is ever trapped at opacity:0.
 
    Every effect drives transform / opacity / filter only, so it runs on the
    compositor rather than forcing layout.
    ========================================================================== */
 
-/* â”€â”€ reveal variants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+/* ── reveal variants ──────────────────────────────────────────────────────
    <div data-bi-reveal>            rise + fade (default)
    <div data-bi-reveal="left">     slide from the left
    <div data-bi-reveal="scale">    settle up from 96%
@@ -1222,9 +1222,9 @@
   will-change:auto;
 }
 
-/* â”€â”€ split text â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+/* ── split text ───────────────────────────────────────────────────────────
    splitText() wraps each word (or char) so the line can cascade. The outer
-   span clips; the inner one is what actually moves â€” that overflow:hidden is
+   span clips; the inner one is what actually moves — that overflow:hidden is
    what makes the words rise out of nothing instead of sliding over the page.
    ------------------------------------------------------------------------ */
 .bi-split-part{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
@@ -1236,13 +1236,13 @@
 }
 .bi-motion [data-bi-split].in .bi-split-inner{transform:none}
 
-/* â”€â”€ pointer effects â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-/* magnetic â€” the script writes the transform; the transition covers the
+/* ── pointer effects ──────────────────────────────────────────────────────── */
+/* magnetic — the script writes the transform; the transition covers the
    release, so letting go eases home instead of snapping. */
 .bi-magnetic{transition:transform var(--bi-dur-3) var(--bi-ease-spring)}
 .bi-magnetic:active{transition-duration:var(--bi-dur-1)}
 
-/* tilt â€” perspective lives in the transform the script writes */
+/* tilt — perspective lives in the transform the script writes */
 .bi-tilt{transition:transform var(--bi-dur-3) var(--bi-ease-out);transform-style:preserve-3d}
 .bi-tilt-glare{
   position:absolute;inset:0;pointer-events:none;border-radius:inherit;
@@ -1252,7 +1252,7 @@
 }
 .bi-tilt:hover .bi-tilt-glare{opacity:1}
 
-/* spotlight â€” a glow that follows the cursor across a surface */
+/* spotlight — a glow that follows the cursor across a surface */
 .bi-spotlight{position:relative;isolation:isolate}
 .bi-spotlight::before{
   content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
@@ -1262,8 +1262,8 @@
 }
 .bi-spotlight:hover::before{opacity:1}
 
-/* â”€â”€ scroll progress â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-   scrollProgress() writes --bi-progress (0â€“1); this paints it as a bar.
+/* ── scroll progress ──────────────────────────────────────────────────────
+   scrollProgress() writes --bi-progress (0–1); this paints it as a bar.
    ------------------------------------------------------------------------ */
 .bi-scrollbar{
   position:fixed;top:0;left:0;right:0;height:2px;z-index:var(--bi-z-toast);
@@ -1271,7 +1271,7 @@
   background:linear-gradient(90deg,var(--bi-accent-deep),var(--bi-buzz-400));
 }
 
-/* â”€â”€ hover lifts â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── hover lifts ──────────────────────────────────────────────────────────── */
 .bi-lift{transition:transform var(--bi-dur-2) var(--bi-ease-out),box-shadow var(--bi-dur-2) var(--bi-ease-out)}
 .bi-lift:hover{transform:translateY(-3px);box-shadow:var(--bi-shadow-m)}
 
@@ -1281,7 +1281,7 @@
   transition:background-size var(--bi-dur-3) var(--bi-ease)}
 .bi-sweep:hover{background-size:100% 1.5px}
 
-/* â”€â”€ surface treatments â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── surface treatments ───────────────────────────────────────────────────── */
 /* text that carries the accent as a gradient */
 .bi-gradient-text{
   background:linear-gradient(100deg,var(--bi-text) 12%,var(--bi-accent) 52%,var(--bi-text) 88%);
@@ -1291,7 +1291,7 @@
 .bi-gradient-text--live{animation:biShine 5.5s linear infinite}
 @keyframes biShine{to{background-position:-220% 0}}
 
-/* a soft aurora behind a hero â€” one decoration, not five */
+/* a soft aurora behind a hero — one decoration, not five */
 .bi-aurora{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .bi-aurora::before,.bi-aurora::after{
   content:'';position:absolute;width:60vw;height:60vw;border-radius:50%;
@@ -1321,7 +1321,7 @@
 }
 @keyframes biPulse{to{transform:scale(2.4);opacity:0}}
 
-/* â”€â”€ reduced motion: hold every resting state open â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── reduced motion: hold every resting state open ────────────────────────── */
 @media (prefers-reduced-motion: reduce){
   .bi-motion [data-bi-reveal],
   .bi-motion [data-bi-reveal].in{
@@ -1335,7 +1335,7 @@
 }
 
 /* ==========================================================================
-   v0.8 â€” THEMER
+   v0.8 — THEMER
    Chrome for buzz-and-ink/themer. Styled from the same tokens it edits, so
    the panel re-inks along with everything else while you drag the picker.
    ========================================================================== */
@@ -1417,8 +1417,8 @@
 .bi-themer-actions .bi-btn{flex:1;justify-content:center;padding:9px 12px;font-size:var(--bi-text-xs)}
 
 /* ==========================================================================
-   v0.9 â€” PLAY: SURFACES
-   Paper things. Stickers, sticky notes, tape, polaroids, speech bubbles â€”
+   v0.9 — PLAY: SURFACES
+   Paper things. Stickers, sticky notes, tape, polaroids, speech bubbles —
    the components that make an interface feel handled rather than rendered.
 
    Every one of them reads --bi-tilt-1/--bi-tilt-2 for its rotation and
@@ -1426,10 +1426,10 @@
    set at once and reduced motion flattens it without removing the colour.
    ========================================================================== */
 
-/* â”€â”€ pop colour helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+/* ── pop colour helper ─────────────────────────────────────────────────────
    .bi-pop-lemon etc. set a surface and its matching ink together, so text on
    a coloured thing is never left to chance. Used by note / sticker / bubble /
-   tag / avatar below â€” and safe on anything of your own. â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+   tag / avatar below — and safe on anything of your own. ─────────────────── */
 [class*="bi-pop-"]{background:var(--pop,var(--bi-accent-soft));color:var(--pop-ink,var(--bi-accent-deep))}
 .bi-pop-pink{--pop:var(--bi-pop-pink);--pop-ink:var(--bi-pop-pink-ink)}
 .bi-pop-violet{--pop:var(--bi-pop-violet);--pop-ink:var(--bi-pop-violet-ink)}
@@ -1440,7 +1440,7 @@
 .bi-pop-peach{--pop:var(--bi-pop-peach);--pop-ink:var(--bi-pop-peach-ink)}
 .bi-pop-lilac{--pop:var(--bi-pop-lilac);--pop-ink:var(--bi-pop-lilac-ink)}
 
-/* â”€â”€ sticky note â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── sticky note ─────────────────────────────────────────────────────────── */
 .bi-note{
   position:relative;display:flex;flex-direction:column;gap:6px;
   padding:var(--bi-space-4) var(--bi-space-4) var(--bi-space-5);
@@ -1461,7 +1461,7 @@
   letter-spacing:.1em;text-transform:uppercase;opacity:.6;
 }
 
-/* â”€â”€ masking tape â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── masking tape ────────────────────────────────────────────────────────── */
 .bi-tape{
   position:absolute;top:-11px;left:50%;
   width:88px;height:26px;
@@ -1473,7 +1473,7 @@
 .bi-tape--left{left:16px;translate:0;rotate:-34deg}
 .bi-tape--right{left:auto;right:16px;translate:0;rotate:28deg}
 
-/* â”€â”€ sticker â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── sticker ─────────────────────────────────────────────────────────────── */
 .bi-sticker{
   display:inline-flex;align-items:center;gap:7px;
   font-family:var(--bi-font-mono);font-size:var(--bi-text-2xs);font-weight:700;
@@ -1488,7 +1488,7 @@
 .bi-sticker:hover{rotate:0deg;scale:1.07}
 .bi-sticker--square{border-radius:var(--bi-r-s)}
 
-/* â”€â”€ corner ribbon â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── corner ribbon ───────────────────────────────────────────────────────── */
 .bi-ribbon{position:relative;overflow:hidden}
 .bi-ribbon::after{
   content:attr(data-ribbon);position:absolute;top:13px;right:-42px;
@@ -1499,7 +1499,7 @@
   box-shadow:0 2px 8px rgba(20,16,11,.28);pointer-events:none;
 }
 
-/* â”€â”€ speech bubble â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── speech bubble ───────────────────────────────────────────────────────── */
 .bi-bubble{
   position:relative;display:inline-block;max-width:44ch;
   padding:var(--bi-space-4) var(--bi-space-5);
@@ -1520,7 +1520,7 @@
 .bi-bubble--right::after{left:auto;right:calc(var(--bi-r-l) + 6px)}
 .bi-bubble--me{background:var(--bi-accent);color:var(--bi-cream-0);border-color:transparent}
 
-/* â”€â”€ polaroid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── polaroid ────────────────────────────────────────────────────────────── */
 .bi-polaroid{
   display:inline-flex;flex-direction:column;padding:11px 11px 0;
   background:var(--bi-cream-0);
@@ -1541,7 +1541,7 @@
   font-family:var(--bi-font-display);font-size:var(--bi-text-s);color:var(--bi-ink-800);
 }
 
-/* â”€â”€ marker highlight â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── marker highlight ────────────────────────────────────────────────────── */
 /* A real highlighter overshoots the line and varies in density. One gradient
    plus an uneven radius does more than a flat background ever will. */
 .bi-mark{
@@ -1568,7 +1568,7 @@
   transition:background-size var(--bi-dur-4) var(--bi-ease)}
 .bi-motion .in .bi-mark--draw,.bi-mark--draw.in{background-size:100% 62%}
 
-/* â”€â”€ hand-drawn underline â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── hand-drawn underline ────────────────────────────────────────────────── */
 .bi-squiggle{
   padding-bottom:.22em;
   background-repeat:repeat-x;background-position:0 100%;background-size:18px 6px;
@@ -1581,7 +1581,7 @@
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 8'%3E%3Cpath d='M0 5c3.6-4 7.4-4 11 0s7.4 4 11 0' fill='none' stroke='%23C9BCA4' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 
-/* â”€â”€ blob backdrop â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── blob backdrop ───────────────────────────────────────────────────────── */
 .bi-blob{
   position:absolute;z-index:0;pointer-events:none;
   width:clamp(200px,34vw,440px);aspect-ratio:1;
@@ -1595,14 +1595,14 @@
   100%{border-radius:63% 37% 44% 56% / 39% 62% 38% 61%;transform:translate3d(-3%,3%,0) rotate(-7deg) scale(.97)}
 }
 
-/* â”€â”€ wave divider â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── wave divider ────────────────────────────────────────────────────────── */
 .bi-wave{
   display:block;width:100%;height:34px;border:none;
   background-repeat:repeat-x;background-position:0 0;background-size:112px 34px;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 112 34' preserveAspectRatio='none'%3E%3Cpath d='M0 22c14-18 28-18 42 0s28 18 42 0 28-18 28 0v12H0z' fill='%23F3ECDD'/%3E%3C/svg%3E");
 }
 
-/* â”€â”€ paper textures â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── paper textures ──────────────────────────────────────────────────────── */
 .bi-dots{
   background-image:radial-gradient(circle,color-mix(in srgb,var(--bi-text) 15%,transparent) 1px,transparent 1px);
   background-size:16px 16px;
@@ -1613,7 +1613,7 @@
     linear-gradient(90deg,color-mix(in srgb,var(--bi-text) 7%,transparent) 1px,transparent 1px);
   background-size:22px 22px;
 }
-/* very light film grain â€” keeps big flat surfaces from looking dead */
+/* very light film grain — keeps big flat surfaces from looking dead */
 .bi-grain{position:relative;isolation:isolate}
 .bi-grain::after{
   content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.32;
@@ -1621,16 +1621,16 @@
 }
 
 /* ==========================================================================
-   v0.9 â€” PLAY: BEHAVIOUR
+   v0.9 — PLAY: BEHAVIOUR
    Things that move. Hover personalities, idle life, click feedback, and the
    loud variants of components the system already ships.
 
    All amplitude routes through --bi-play, so `data-mood="playful"` turns it
-   up, and prefers-reduced-motion sets it to 0 â€” which collapses every
+   up, and prefers-reduced-motion sets it to 0 — which collapses every
    animation below to nothing without a single extra media query.
    ========================================================================== */
 
-/* â”€â”€ hover personalities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── hover personalities ─────────────────────────────────────────────────── */
 .bi-wobble{transition:transform var(--bi-dur-2) var(--bi-bounce)}
 .bi-wobble:hover{animation:biWobble .55s var(--bi-ease-out)}
 @keyframes biWobble{
@@ -1655,7 +1655,7 @@
 .bi-pop-hover:hover{transform:scale(calc(1 + .06 * var(--bi-play))) rotate(calc(-1.5deg * var(--bi-play)))}
 .bi-pop-hover:active{transform:scale(.96)}
 
-/* â”€â”€ idle life â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── idle life ───────────────────────────────────────────────────────────── */
 .bi-bob{animation:biBob calc(3.4s / max(var(--bi-play),.4)) var(--bi-ease-out) infinite}
 @keyframes biBob{50%{transform:translateY(calc(-7px * var(--bi-play)))}}
 
@@ -1671,7 +1671,7 @@
 .bi-breathe{animation:biBreathe calc(4.2s / max(var(--bi-play),.4)) var(--bi-ease-out) infinite}
 @keyframes biBreathe{50%{transform:scale(calc(1 + .035 * var(--bi-play)))}}
 
-/* â”€â”€ attention â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── attention ───────────────────────────────────────────────────────────── */
 .bi-shake{animation:biShake .5s var(--bi-ease-out)}
 @keyframes biShake{
   10%,90%{transform:translateX(calc(-2px * var(--bi-play)))}
@@ -1687,7 +1687,7 @@
   100%{transform:none}
 }
 
-/* â”€â”€ shine sweep â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── shine sweep ─────────────────────────────────────────────────────────── */
 .bi-shine{position:relative;overflow:hidden;isolation:isolate}
 .bi-shine::after{
   content:'';position:absolute;top:0;bottom:0;left:-60%;width:45%;
@@ -1697,7 +1697,7 @@
 .bi-shine:hover::after{animation:biShineSweep .85s var(--bi-ease-out)}
 @keyframes biShineSweep{to{left:130%}}
 
-/* â”€â”€ animated gradient border â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── animated gradient border ────────────────────────────────────────────── */
 /* Two backgrounds with different clip boxes: the inner one paints the card,
    the outer one paints the border. No pseudo-element, no layout cost. */
 .bi-rainbow{
@@ -1710,7 +1710,7 @@
 }
 @keyframes biRainbow{to{background-position:0 0,-220% 0}}
 
-/* â”€â”€ click ripple (motion.js paints the dot; this animates it) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── click ripple (motion.js paints the dot; this animates it) ───────────── */
 .bi-ripple-host{position:relative;overflow:hidden}
 .bi-ripple-dot{
   position:absolute;border-radius:99px;pointer-events:none;
@@ -1720,7 +1720,7 @@
 }
 @keyframes biRipple{to{transform:translate(-50%,-50%) scale(1);opacity:0}}
 
-/* â”€â”€ confetti (motion.js spawns the pieces) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── confetti (motion.js spawns the pieces) ──────────────────────────────── */
 .bi-confetti{position:fixed;inset:0;z-index:var(--bi-z-toast);pointer-events:none;overflow:hidden}
 .bi-confetti i{
   position:absolute;display:block;width:9px;height:14px;
@@ -1732,7 +1732,7 @@
   100%{transform:translate3d(var(--dx,0),var(--dy,80vh),0) rotate(var(--dr,540deg));opacity:0}
 }
 
-/* â”€â”€ loud variants of existing components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── loud variants of existing components ────────────────────────────────── */
 
 /* a button with a hard shelf that presses in */
 .bi-btn--pop{
@@ -1774,7 +1774,7 @@
 }
 .bi-card--sticker:hover{rotate:0deg;translate:0 -4px;scale:1.015;box-shadow:var(--bi-shadow-m)}
 
-/* â”€â”€ flip card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── flip card ───────────────────────────────────────────────────────────── */
 .bi-flip{perspective:1000px;background:none;border:none;padding:0;cursor:pointer}
 .bi-flip-inner{
   position:relative;width:100%;height:100%;transform-style:preserve-3d;
@@ -1791,7 +1791,7 @@
 /* flip needs real height; the front is absolutely positioned so it can't set it */
 .bi-flip{min-height:150px}
 
-/* â”€â”€ big display counter â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── big display counter ─────────────────────────────────────────────────── */
 .bi-counter{
   display:flex;flex-direction:column;gap:4px;align-items:flex-start;
 }
@@ -1805,7 +1805,7 @@
   text-transform:uppercase;color:var(--bi-text-3);
 }
 
-/* â”€â”€ doodle arrow â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── doodle arrow ────────────────────────────────────────────────────────── */
 .bi-doodle-arrow{
   display:inline-block;width:64px;height:40px;flex:none;
   background-repeat:no-repeat;background-size:contain;background-position:center;
@@ -1813,7 +1813,7 @@
 }
 .bi-doodle-arrow--flip{transform:scaleX(-1)}
 
-/* â”€â”€ starburst â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── starburst ───────────────────────────────────────────────────────────── */
 .bi-burst{
   display:inline-grid;place-items:center;flex:none;
   width:72px;height:72px;padding:8px;text-align:center;
@@ -1824,7 +1824,7 @@
   rotate:var(--bi-tilt-1);
 }
 
-/* â”€â”€ reduced motion: kill the wobble, keep the colour â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── reduced motion: kill the wobble, keep the colour ────────────────────── */
 @media (prefers-reduced-motion: reduce){
   .bi-wobble:hover,.bi-jelly:hover,.bi-shake,.bi-tada,.bi-shine:hover::after{animation:none}
   .bi-bob,.bi-sway,.bi-spin-slow,.bi-breathe,.bi-blob,.bi-rainbow,
@@ -1836,7 +1836,7 @@
 }
 
 /* ==========================================================================
-   v0.9 â€” FORMS
+   v0.9 — FORMS
    The system had controls but no *field*: no label, no help text, no error,
    no required marker, no invalid state. That is the difference between a set
    of inputs and something you can build a real form out of.
@@ -1849,8 +1849,8 @@
        <p class="bi-help" id="email-help">We only use this for receipts.</p>
      </div>
 
-   Add `aria-invalid="true"` to the control and the whole field turns â€”
-   border, ring, and message â€” because the styling keys off the ARIA
+   Add `aria-invalid="true"` to the control and the whole field turns —
+   border, ring, and message — because the styling keys off the ARIA
    attribute rather than a class. The accessible state and the visible state
    cannot drift apart, since they are the same thing.
    ========================================================================== */
@@ -1894,7 +1894,7 @@
   display:flex;align-items:flex-start;gap:6px;margin:0;
   font-size:var(--bi-text-xs);color:var(--bi-critical);line-height:var(--bi-leading-snug);
 }
-/* the glyph means the message survives greyscale and colour blindness â€”
+/* the glyph means the message survives greyscale and colour blindness —
    an error that is only red is an error some people cannot see */
 .bi-error::before{content:'!';flex:none;
   display:inline-grid;place-items:center;width:15px;height:15px;margin-top:1px;
@@ -1924,7 +1924,7 @@
 }
 .bi-input:read-only:not(:disabled){background:var(--bi-bg-deep);color:var(--bi-text-2)}
 
-/* â”€â”€ textarea â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── textarea ────────────────────────────────────────────────────────────── */
 .bi-textarea{
   font-family:var(--bi-font-body);font-size:var(--bi-text-s);color:var(--bi-text);
   line-height:var(--bi-leading-snug);
@@ -1935,11 +1935,11 @@
 .bi-textarea::placeholder{color:var(--bi-text-3)}
 .bi-textarea:focus{outline:none;border-color:var(--bi-accent);box-shadow:0 0 0 3px var(--bi-accent-glow)}
 
-/* â”€â”€ input sizes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── input sizes ─────────────────────────────────────────────────────────── */
 .bi-input--s,.bi-textarea--s{padding:8px 11px;font-size:var(--bi-text-xs)}
 .bi-input--l{padding:15px 17px;font-size:var(--bi-text-m)}
 
-/* â”€â”€ input group: addons, prefixes, buttons welded to a field â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── input group: addons, prefixes, buttons welded to a field ────────────── */
 .bi-input-group{
   display:flex;align-items:stretch;width:100%;
   border:1px solid var(--bi-line);border-radius:var(--bi-r-s);
@@ -1961,7 +1961,7 @@
 .bi-input-group .bi-btn{border-radius:0;box-shadow:none;flex:none}
 .bi-input-group .bi-btn:hover{transform:none;box-shadow:none}
 
-/* â”€â”€ fieldset / grouped questions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── fieldset / grouped questions ────────────────────────────────────────── */
 .bi-fieldset{border:none;margin:0;padding:0;min-width:0}
 .bi-fieldset > legend{
   font-family:var(--bi-font-mono);font-size:var(--bi-text-2xs);letter-spacing:.14em;
@@ -1973,14 +1973,14 @@
 .bi-field-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--bi-space-4)}
 @media (max-width:640px){ .bi-field-row{grid-template-columns:1fr} }
 
-/* â”€â”€ character counter â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── character counter ───────────────────────────────────────────────────── */
 .bi-count-hint{
   display:flex;justify-content:flex-end;
   font-family:var(--bi-font-mono);font-size:var(--bi-text-2xs);color:var(--bi-text-3);
 }
 .bi-count-hint.over{color:var(--bi-critical);font-weight:700}
 
-/* â”€â”€ dropzone â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── dropzone ────────────────────────────────────────────────────────────── */
 .bi-dropzone{
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
   padding:var(--bi-space-7) var(--bi-space-5);text-align:center;cursor:pointer;
@@ -1995,7 +1995,7 @@
 .bi-dropzone svg{color:var(--bi-text-3);margin-bottom:2px}
 .bi-dropzone.on svg{color:var(--bi-accent)}
 
-/* â”€â”€ file row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── file row ────────────────────────────────────────────────────────────── */
 .bi-file{
   display:flex;align-items:center;gap:11px;
   padding:10px 13px;border:1px solid var(--bi-line);border-radius:var(--bi-r-s);
@@ -2008,13 +2008,13 @@
 .bi-file button:hover{color:var(--bi-critical)}
 
 /* ==========================================================================
-   v0.9 â€” BUTTONS, COMPLETED
+   v0.9 — BUTTONS, COMPLETED
    ========================================================================== */
 
 .bi-btn--s{padding:9px 16px;font-size:var(--bi-text-xs);gap:7px}
 .bi-btn--l{padding:16px 30px;font-size:var(--bi-text-m);gap:11px}
 
-/* square, for a bare icon â€” the label moves to aria-label */
+/* square, for a bare icon — the label moves to aria-label */
 .bi-btn--icon{padding:0;width:38px;height:38px;justify-content:center;gap:0}
 .bi-btn--icon.bi-btn--s{width:31px;height:31px}
 .bi-btn--icon.bi-btn--l{width:46px;height:46px}
@@ -2027,7 +2027,7 @@
 .bi-btn--quiet{background:transparent;color:var(--bi-text-2);box-shadow:none}
 .bi-btn--quiet:hover{background:var(--bi-bg-deep);color:var(--bi-text);transform:none}
 
-/* loading â€” the label stays in the DOM (so width never jumps and screen
+/* loading — the label stays in the DOM (so width never jumps and screen
    readers keep the name) and is hidden visually while the spinner runs */
 .bi-btn[data-loading="true"]{position:relative;color:transparent !important;pointer-events:none}
 .bi-btn[data-loading="true"] > *{visibility:hidden}
@@ -2041,7 +2041,7 @@
   border-color:color-mix(in srgb,var(--bi-text) 25%,transparent);border-top-color:var(--bi-text);
 }
 
-/* â”€â”€ button group â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── button group ────────────────────────────────────────────────────────── */
 .bi-btn-group{display:inline-flex}
 .bi-btn-group .bi-btn{border-radius:0;box-shadow:none}
 .bi-btn-group .bi-btn:hover{transform:none;box-shadow:none}
@@ -2049,23 +2049,23 @@
 .bi-btn-group .bi-btn:last-child{border-top-right-radius:var(--bi-r-s);border-bottom-right-radius:var(--bi-r-s)}
 .bi-btn-group .bi-btn--ghost + .bi-btn--ghost{border-left-width:0}
 
-/* actions row â€” the standard footer of a form or a dialog */
+/* actions row — the standard footer of a form or a dialog */
 .bi-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .bi-actions .spacer{flex:1}
 
 /* ==========================================================================
-   v0.9 â€” DATA, COMPLETED
+   v0.9 — DATA, COMPLETED
    Selection, bulk actions, and the states a real table spends most of its
    life in: empty, loading, and error. A table component that only styles the
    happy path is half a component.
    ========================================================================== */
 
-/* â”€â”€ selection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── selection ───────────────────────────────────────────────────────────── */
 .bi-table th.pick,.bi-table td.pick{width:1%;padding-right:0;white-space:nowrap}
 .bi-table tr[aria-selected="true"] td{background:var(--bi-accent-soft)}
 .bi-table tr[aria-selected="true"] td:first-child{box-shadow:inset 3px 0 0 var(--bi-accent)}
 
-/* bulk bar â€” appears once something is picked. Sticks to the bottom of the
+/* bulk bar — appears once something is picked. Sticks to the bottom of the
    table's own container, not the viewport, so it belongs to the table. */
 .bi-table-bulk{
   position:sticky;bottom:0;z-index:3;
@@ -2088,7 +2088,7 @@
 .bi-table-bulk button:hover{background:color-mix(in srgb,var(--bi-bg) 16%,transparent)}
 .bi-table-bulk button.danger{border-color:transparent;background:var(--bi-critical);color:var(--bi-cream-0)}
 
-/* â”€â”€ table states â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── table states ────────────────────────────────────────────────────────── */
 .bi-table td.state{
   padding:var(--bi-space-8) var(--bi-space-4);text-align:center;color:var(--bi-text-2);
 }
@@ -2097,7 +2097,7 @@
 .bi-table tr.loading td{padding-top:14px;padding-bottom:14px}
 .bi-table tr.loading .bi-skeleton{height:11px}
 
-/* â”€â”€ popover â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── popover ─────────────────────────────────────────────────────────────── */
 /* Distinct from tooltip (hint, hover, no interaction) and dropdown (a menu):
    a popover holds real content and can be focused into. */
 .bi-popover{
@@ -2118,7 +2118,7 @@
 .bi-popover p{margin:0 0 10px;color:var(--bi-text-2)}
 .bi-popover p:last-child{margin-bottom:0}
 
-/* â”€â”€ description list (key/value) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── description list (key/value) ────────────────────────────────────────── */
 .bi-dl{display:grid;grid-template-columns:auto 1fr;gap:10px var(--bi-space-5);margin:0}
 .bi-dl dt{
   font-family:var(--bi-font-mono);font-size:var(--bi-text-2xs);letter-spacing:.12em;
@@ -2129,7 +2129,7 @@
 .bi-dl--rows dt{padding-top:0}
 .bi-dl--bordered dt,.bi-dl--bordered dd{padding-bottom:10px;border-bottom:1px solid var(--bi-line-soft)}
 
-/* â”€â”€ page header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── page header ─────────────────────────────────────────────────────────── */
 .bi-page-head{
   display:flex;align-items:flex-start;gap:var(--bi-space-5);flex-wrap:wrap;
   padding-bottom:var(--bi-space-5);margin-bottom:var(--bi-space-6);
@@ -2144,7 +2144,7 @@
 .bi-page-head p{margin:7px 0 0;font-size:var(--bi-text-s);color:var(--bi-text-2);max-width:64ch}
 .bi-page-head .bi-actions{padding-top:6px}
 
-/* â”€â”€ section / panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── section / panel ─────────────────────────────────────────────────────── */
 .bi-panel{
   background:var(--bi-surface);border:1px solid var(--bi-line);border-radius:var(--bi-r-m);
 }
@@ -2163,17 +2163,17 @@
 .bi-panel > footer .spacer{flex:1}
 
 /* ==========================================================================
-   v0.9 â€” ACCESSIBILITY UTILITIES
+   v0.9 — ACCESSIBILITY UTILITIES
    ========================================================================== */
 
 /* Visible to screen readers, invisible on screen. The clip-path/1px pattern
    rather than display:none, because display:none removes it from the
-   accessibility tree too â€” which defeats the entire point. */
+   accessibility tree too — which defeats the entire point. */
 .bi-sr-only{
   position:absolute !important;width:1px;height:1px;padding:0;margin:-1px;
   overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0;
 }
-/* â€¦until it is focused, for skip links */
+/* …until it is focused, for skip links */
 .bi-sr-only--focusable:focus-visible{
   position:fixed !important;top:12px;left:12px;z-index:var(--bi-z-tip);
   width:auto;height:auto;margin:0;padding:11px 18px;
@@ -2197,7 +2197,7 @@
 }
 
 /* ==========================================================================
-   v0.9 â€” PRINT
+   v0.9 — PRINT
    A design system that has never been printed is not finished. Screens-only
    chrome comes off, ink goes black on white, and links reveal their target.
    ========================================================================== */
@@ -2249,13 +2249,13 @@
   background:var(--sw-bg,#FFF);
   box-shadow:inset -6px -6px 0 -2px var(--sw-surface,#EEE);
 }
-.bi-themer-surface[data-surface="cream"]   i{--sw-bg:#FAF6EE;--sw-surface:#FFFDF8}
-.bi-themer-surface[data-surface="white"]   i{--sw-bg:#F7F7F9;--sw-surface:#FFFFFF}
-.bi-themer-surface[data-surface="ivory"]   i{--sw-bg:#FBFAF6;--sw-surface:#FFFFFF}
-.bi-themer-surface[data-surface="sand"]    i{--sw-bg:#F5F2ED;--sw-surface:#FCFAF7}
-.bi-themer-surface[data-surface="slate"]   i{--sw-bg:#F3F5F7;--sw-surface:#FFFFFF}
-.bi-themer-surface[data-surface="ink"]     i{--sw-bg:#181310;--sw-surface:#241D14}
-.bi-themer-surface[data-surface="carbon"]  i{--sw-bg:#1E1E1E;--sw-surface:#2C2C2C}
+.bi-themer-surface[data-surface="cream"]   i{--sw-bg:#F8F2E4;--sw-surface:#FFFDF8}
+.bi-themer-surface[data-surface="white"]   i{--sw-bg:#FFFFFF;--sw-surface:#FFFFFF}
+.bi-themer-surface[data-surface="sand"]    i{--sw-bg:#E9DCC0;--sw-surface:#FAF5E9}
+.bi-themer-surface[data-surface="slate"]   i{--sw-bg:#D4E2F6;--sw-surface:#F6FAFE}
+.bi-themer-surface[data-surface="ink"]     i{--sw-bg:#171210;--sw-surface:#241C15}
+.bi-themer-surface[data-surface="carbon"]  i{--sw-bg:#303033;--sw-surface:#3E3E42}
 .bi-themer-surface[data-surface="black"]   i{--sw-bg:#000000;--sw-surface:#0E0E0E}
-.bi-themer-surface[data-surface="midnight"]i{--sw-bg:#0F1420;--sw-surface:#18202F}
-.bi-themer-surface[data-surface="espresso"]i{--sw-bg:#1A1310;--sw-surface:#271C17}
+.bi-themer-surface[data-surface="midnight"]i{--sw-bg:#0D1628;--sw-surface:#16223A}
+.bi-themer-surface[data-surface="espresso"]i{--sw-bg:#2A1A12;--sw-surface:#3A261B}
+.bi-themer-surface[data-surface="mist"] i{--sw-bg:#ECECF1;--sw-surface:#FAFAFC}

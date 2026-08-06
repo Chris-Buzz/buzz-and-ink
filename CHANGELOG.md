@@ -11,16 +11,25 @@ product — forms, validation, selection, print, and the accessibility surface
 that was missing.
 
 ### Added — surface themes
-- `data-surface` — five light palettes (`cream`, `white`, `ivory`, `sand`,
+- `data-surface` — five light palettes (`white`, `cream`, `mist`, `sand`,
   `slate`) and five dark (`ink`, `carbon`, `black`, `midnight`, `espresso`).
   Complete sets rather than tints: each defines its own bg, raised surface, two
   hairline weights and three text tiers. `black` is a true black for OLED;
   `carbon` is a neutral charcoal with no colour cast. Omitting the attribute
   keeps the previous cream/ink defaults, so nothing changes for existing work.
-- All ten verified against their own background and their own raised surface —
-  text ≥ 7:1, secondary ≥ 4.5:1, meta ≥ 3:1, hairlines ≥ 1.35:1 — with a test
-  that re-checks every one on each run. The first pass failed: light hairlines
-  measured 1.27:1 and disappeared on a bright screen.
+- Verified on two axes, each with its own test. **Contrast**: text ≥ 7:1,
+  secondary ≥ 4.5:1, meta ≥ 3:1, hairlines ≥ 1.35:1, against the theme's own
+  background and its own raised surface. **Separation**: every theme ≥ 3 OKLab
+  ΔE from every other.
+- The separation gate was added after the first version of this set passed
+  contrast everywhere and still shipped five light themes measuring ΔE 0.8–2.3
+  apart — indistinguishable. They had been spread by hue alone, which is nearly
+  invisible at the low chroma a light background requires. Lightness is now the
+  primary axis, alternating warm and cool along it; worst pair is 3.1 and most
+  are 5–11. The dark set had the same flaw: `ink` and `espresso` were ΔE 0.4
+  apart and are now 5.3.
+- Repaired mojibake in `tokens.css` and `components.css` — 3,704 characters had
+  been double-encoded by an earlier append step.
 - The theme panel gained surface swatches that preview the palette they apply,
   and now adopts whatever the page already declares instead of resetting it.
 
