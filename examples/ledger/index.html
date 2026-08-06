@@ -371,6 +371,7 @@
 
 <script type="module">
 import { injectIcons } from '../../src/icons.js';
+import { themer } from '../../src/themer.js';
 
 injectIcons();
 
@@ -726,6 +727,10 @@ document.querySelector('[data-act="theme"]').addEventListener('click', () => {
 });
 document.getElementById('printBtn').addEventListener('click', () => window.print());
 document.getElementById('exportBtn').addEventListener('click', () => toast('CSV exported'));
+
+/* Live theme panel — bottom right. Try the surface swatches: five light
+   palettes and five dark, each a complete set rather than a tint. */
+themer();
 
 /* ── toasts ────────────────────────────────────────────────── */
 function toast(message, kind = '') {

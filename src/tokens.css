@@ -545,3 +545,135 @@
 @media (prefers-reduced-motion: reduce){
   :root{--bi-play:0}
 }
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   v0.9 â€” SURFACE THEMES
+   `data-theme` picks the scheme; `data-surface` picks which one.
+
+     <html data-theme="light" data-surface="slate">
+     <html data-theme="dark"  data-surface="black">
+
+   Five of each, and they are complete sets rather than tints: every one
+   defines its own bg / bg-deep / surface / line / line-soft / text tiers, the
+   way Carbon ships White, G10, G90 and G100. Leaving `data-surface` off keeps
+   the originals â€” cream in light, warm ink in dark â€” so nothing changes for
+   anyone already using the system.
+
+     light   cream (default) Â· white Â· ivory Â· sand Â· slate
+     dark    ink (default)   Â· carbon Â· black Â· midnight Â· espresso
+
+   Every combination was checked rather than eyeballed, against its own
+   background *and* against its own raised surface:
+
+     text    â‰¥ 7:1    (AAA body)      text-2 â‰¥ 4.5:1 (AA secondary)
+     text-3  â‰¥ 3:1    (meta only)     line   â‰¥ 1.35:1
+
+   That last one is why the light hairlines are darker than they look like
+   they should be on paper: the first pass came in at 1.27 and the rules
+   visibly disappeared on a bright screen.
+
+   Note the pairing in `white`: the page is very slightly cool (#F7F7F9) and
+   the card is pure white, not the other way round. A pure-white page with
+   white cards has nothing to separate them â€” one of the two has to give.
+
+   These set the semantic roles directly, so they win over `data-paper`, which
+   only tints the cream scale underneath.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+/* white â€” crisp neutral, cards pop off a faintly cool page */
+:root:not([data-theme="dark"])[data-surface="white"]{
+  --bi-bg:#F7F7F9;
+  --bi-bg-deep:#EDEDF1;
+  --bi-surface:#FFFFFF;
+  --bi-line:#D3D3DA;
+  --bi-line-soft:#E4E4EA;
+  --bi-text:#16161A;
+  --bi-text-2:#53535D;
+  --bi-text-3:#7E7E8B;
+}
+
+/* ivory â€” cooler, whiter paper */
+:root:not([data-theme="dark"])[data-surface="ivory"]{
+  --bi-bg:#FBFAF6;
+  --bi-bg-deep:#F0EFE6;
+  --bi-surface:#FFFFFF;
+  --bi-line:#D6D4C5;
+  --bi-line-soft:#E7E5DA;
+  --bi-text:#1C1C18;
+  --bi-text-2:#57574E;
+  --bi-text-3:#828276;
+}
+
+/* sand â€” warm greige, softer than cream */
+:root:not([data-theme="dark"])[data-surface="sand"]{
+  --bi-bg:#F5F2ED;
+  --bi-bg-deep:#E7E0D4;
+  --bi-surface:#FCFAF7;
+  --bi-line:#CEC5B4;
+  --bi-line-soft:#DFD8CA;
+  --bi-text:#26221C;
+  --bi-text-2:#5E574C;
+  --bi-text-3:#897F71;
+}
+
+/* slate â€” cool grey, closest to a classic product UI */
+:root:not([data-theme="dark"])[data-surface="slate"]{
+  --bi-bg:#F3F5F7;
+  --bi-bg-deep:#E4E8EE;
+  --bi-surface:#FFFFFF;
+  --bi-line:#C9D0DA;
+  --bi-line-soft:#DDE2E9;
+  --bi-text:#171A20;
+  --bi-text-2:#535A66;
+  --bi-text-3:#7D8794;
+}
+
+/* carbon â€” neutral charcoal, no colour cast */
+[data-theme="dark"][data-surface="carbon"]{
+  --bi-bg:#1E1E1E;
+  --bi-bg-deep:#141414;
+  --bi-surface:#2C2C2C;
+  --bi-line:#454545;
+  --bi-line-soft:#373737;
+  --bi-text:#F4F4F4;
+  --bi-text-2:#B4B4B4;
+  --bi-text-3:#8A8A8A;
+}
+
+/* black â€” true black for OLED and full-bleed */
+[data-theme="dark"][data-surface="black"]{
+  --bi-bg:#000000;
+  --bi-bg-deep:#000000;
+  --bi-surface:#0E0E0E;
+  --bi-line:#2A2A2A;
+  --bi-line-soft:#1C1C1C;
+  --bi-text:#FFFFFF;
+  --bi-text-2:#B9B9B9;
+  --bi-text-3:#8C8C8C;
+}
+
+/* midnight â€” blue-black */
+[data-theme="dark"][data-surface="midnight"]{
+  --bi-bg:#0F1420;
+  --bi-bg-deep:#080B12;
+  --bi-surface:#18202F;
+  --bi-line:#2D3849;
+  --bi-line-soft:#222B3B;
+  --bi-text:#E9EEF6;
+  --bi-text-2:#A7B2C4;
+  --bi-text-3:#7A8699;
+}
+
+/* espresso â€” brown-black */
+[data-theme="dark"][data-surface="espresso"]{
+  --bi-bg:#1A1310;
+  --bi-bg-deep:#120C0A;
+  --bi-surface:#271C17;
+  --bi-line:#3E2E26;
+  --bi-line-soft:#30231D;
+  --bi-text:#F3E8E0;
+  --bi-text-2:#BCA79A;
+  --bi-text-3:#8E7A6E;
+}
+
+

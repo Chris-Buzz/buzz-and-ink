@@ -206,3 +206,63 @@ test('every typed export ships a matching .d.ts', () => {
     }
   }
 });
+
+/* ── surface themes ──────────────────────────────────────────────────────── */
+
+/** WCAG relative-luminance contrast between two hex colours. */
+function contrast(a, b) {
+  const lum = (h) => {
+    const [r, g, b2] = [1, 3, 5]
+      .map((i) => parseInt(h.slice(i, i + 2), 16) / 255)
+      .map((c) => (c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)));
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b2;
+  };
+  const [x, y] = [lum(a), lum(b)];
+  const [hi, lo] = x > y ? [x, y] : [y, x];
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+/** Pull every `--bi-*: #hex` pair out of one rule block in tokens.css. */
+function surfaceThemes() {
+  const css = read('src/tokens.css');
+  const out = {};
+  for (const [, selector, block] of css.matchAll(/([^{}\n][^{}]*\[data-surface="[a-z]+"\])\s*\{([^}]*)\}/g)) {
+    const vars = {};
+    for (const [, k, v] of block.matchAll(/--bi-([a-z0-9-]+)\s*:\s*(#[0-9A-Fa-f]{6})/g)) vars[k] = v;
+    if (vars.bg && vars.text) out[selector.trim()] = vars;
+  }
+  return out;
+}
+
+test('every surface theme is a complete set', () => {
+  const themes = surfaceThemes();
+  // 4 light + 4 dark alternates; the two defaults live in :root and [data-theme=dark]
+  assert.ok(Object.keys(themes).length >= 8,
+    `expected the alternate surface themes, found ${Object.keys(themes).length}`);
+  for (const [name, v] of Object.entries(themes)) {
+    for (const key of ['bg', 'bg-deep', 'surface', 'line', 'line-soft', 'text', 'text-2', 'text-3']) {
+      assert.ok(v[key], `${name} is missing --bi-${key}`);
+    }
+  }
+});
+
+test('every surface theme meets its contrast floor', () => {
+  // These are the thresholds the palette was designed against. A theme that
+  // drifts below one of them has a real, visible accessibility failure —
+  // faint hairlines and unreadable meta text are the usual symptoms.
+  const FLOOR = { text: 7, 'text-2': 4.5, 'text-3': 3, line: 1.35 };
+  for (const [name, v] of Object.entries(surfaceThemes())) {
+    for (const [key, min] of Object.entries(FLOOR)) {
+      const got = contrast(v.bg, v[key]);
+      assert.ok(got >= min,
+        `${name}: --bi-${key} is ${got.toFixed(2)}:1 against --bi-bg, needs ${min}:1`);
+    }
+    // body text has to hold up on a raised card too, not just the page
+    const onSurface = contrast(v.surface, v.text);
+    assert.ok(onSurface >= 7,
+      `${name}: text on --bi-surface is ${onSurface.toFixed(2)}:1, needs 7:1`);
+    // and the card has to be distinguishable from the page at all
+    assert.ok(contrast(v.bg, v.surface) >= 1.02 || v.bg === v.surface,
+      `${name}: --bi-surface is indistinguishable from --bi-bg`);
+  }
+});

@@ -10,6 +10,20 @@ The completeness release. v0.8 could build a dashboard; v0.9 can build a
 product — forms, validation, selection, print, and the accessibility surface
 that was missing.
 
+### Added — surface themes
+- `data-surface` — five light palettes (`cream`, `white`, `ivory`, `sand`,
+  `slate`) and five dark (`ink`, `carbon`, `black`, `midnight`, `espresso`).
+  Complete sets rather than tints: each defines its own bg, raised surface, two
+  hairline weights and three text tiers. `black` is a true black for OLED;
+  `carbon` is a neutral charcoal with no colour cast. Omitting the attribute
+  keeps the previous cream/ink defaults, so nothing changes for existing work.
+- All ten verified against their own background and their own raised surface —
+  text ≥ 7:1, secondary ≥ 4.5:1, meta ≥ 3:1, hairlines ≥ 1.35:1 — with a test
+  that re-checks every one on each run. The first pass failed: light hairlines
+  measured 1.27:1 and disappeared on a bright screen.
+- The theme panel gained surface swatches that preview the palette they apply,
+  and now adopts whatever the page already declares instead of resetting it.
+
 ### Added — forms
 - `bi-field`, `bi-label`, `bi-help`, `bi-error` — the field wrapper the system
   never had. Validation styling keys off `aria-invalid` rather than a class, so
@@ -75,6 +89,14 @@ Buzz & Ink stays editorial by default. None of this is on unless you ask.
   inline markup inside a split heading survives.
 
 ### Fixed
+- Form fields in a `.bi-field-row` no longer sit one space-step lower than
+  their neighbour — the adjacent-sibling rhythm margin was leaking into the
+  horizontal grid, where the grid's own `gap` already owns spacing.
+- Table rules render evenly. Two causes: the last row's `border-bottom` stacked
+  against a following footer's `border-top` into a doubled line, and rows landed
+  on fractional pixels, so a 1px border was rasterised across two device rows at
+  half opacity and read as faded or cut. Cells now have a fixed line-height and
+  min-height, putting every rule back on a whole pixel.
 - Chart tooltips no longer render as an empty box on load — a class-level
   `display` was outranking the UA sheet's `[hidden]`.
 - `bi-polaroid > .shot` exposes a `--shot` custom property instead of hardcoding

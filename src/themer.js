@@ -21,6 +21,12 @@ import { createTheme } from './theme.js';
 
 const KEY = 'bi-themer';
 
+/** Surface themes, per scheme. Picking one is picking a whole palette. */
+export const SURFACES = {
+  light: ['cream', 'white', 'ivory', 'sand', 'slate'],
+  dark:  ['ink', 'carbon', 'black', 'midnight', 'espresso'],
+};
+
 /** The attribute switches the system already understands. */
 const VOICES = [
   { attr: 'data-theme',    label: 'theme',    options: ['light', 'dark'] },
@@ -59,6 +65,7 @@ function el(tag, cls, text) {
 const COLOR_KEYS = ['accent', 'neutral', 'paper'];
 const VOICE_VALUES = {
   theme: ['light', 'dark'],
+  surface: [...SURFACES.light, ...SURFACES.dark],
   radius: ['standard', 'sharp', 'soft'],
   contrast: ['standard', 'deep'],
   type: ['fraunces', 'bricolage'],
@@ -97,8 +104,14 @@ export function themer(opts = {}) {
   const saved = persist ? load() : null;
   const state = {
     ...PRESETS['buzz & ink'],
+    // Adopt whatever the page already declares, so the panel opens agreeing
+    // with what is on screen instead of resetting it on first interaction.
     theme: document.documentElement.getAttribute('data-theme') || 'light',
-    radius: 'standard', contrast: 'standard', type: 'fraunces',
+    surface: document.documentElement.getAttribute('data-surface')
+      || (document.documentElement.getAttribute('data-theme') === 'dark' ? 'ink' : 'cream'),
+    radius: document.documentElement.getAttribute('data-radius') || 'standard',
+    contrast: document.documentElement.getAttribute('data-contrast') || 'standard',
+    type: document.documentElement.getAttribute('data-type') || 'fraunces',
     ...(saved || {}),
     ...(opts.initial || {}),
   };
@@ -116,6 +129,13 @@ export function themer(opts = {}) {
 
     const root = document.documentElement;
     root.setAttribute('data-theme', state.theme);
+    // The two defaults live in :root / [data-theme=dark], so the attribute
+    // comes off entirely rather than being set to the default name.
+    if (state.surface && state.surface !== 'cream' && state.surface !== 'ink') {
+      root.setAttribute('data-surface', state.surface);
+    } else {
+      root.removeAttribute('data-surface');
+    }
     root.setAttribute('data-radius', state.radius);
     root.setAttribute('data-contrast', state.contrast);
     root.setAttribute('data-type', state.type);
@@ -204,6 +224,29 @@ export function themer(opts = {}) {
     inputs[key] = { hex, swatch };
   }
 
+  /* surface themes — swatches rather than words, because the whole point is
+     what they look like. Each chip previews its own bg / surface / text. */
+  body.append(el('div', 'bi-themer-label', 'surface'));
+  const surfaceRow = el('div', 'bi-themer-surfaces');
+  function paintSurfaces() {
+    surfaceRow.textContent = '';
+    for (const name of SURFACES[state.theme]) {
+      const chip = el('button', 'bi-themer-surface');
+      chip.dataset.surface = name;
+      chip.title = name;
+      chip.setAttribute('aria-label', `${name} surface`);
+      chip.classList.toggle('on', state.surface === name);
+      chip.append(el('i'), el('span', null, name));
+      chip.addEventListener('click', () => {
+        state.surface = name;
+        paintSurfaces();
+        apply();
+      });
+      surfaceRow.append(chip);
+    }
+  }
+  body.append(surfaceRow);
+
   /* voice switches */
   for (const voice of VOICES) {
     const row = el('div', 'bi-themer-row');
@@ -215,6 +258,12 @@ export function themer(opts = {}) {
       b.dataset.voice = voice.label;
       b.addEventListener('click', () => {
         state[voice.label === 'edges' ? 'radius' : voice.label] = option;
+        // Surfaces are scheme-specific — "slate" means nothing in dark mode.
+        // Flipping the scheme resets to that scheme's default surface.
+        if (voice.label === 'theme') {
+          state.surface = option === 'dark' ? 'ink' : 'cream';
+          paintSurfaces();
+        }
         syncInputs();
         apply();
       });
@@ -277,6 +326,7 @@ export function themer(opts = {}) {
     panel.classList.add('open');
   }
 
+  paintSurfaces();
   syncInputs();
   apply();
 

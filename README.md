@@ -49,6 +49,41 @@ section differently):
 The voices work by remapping the base scales in place, so every semantic role follows.
 The accent voice applies in both themes; neutral and paper shape the light theme.
 
+## Surface themes — five light, five dark
+
+`data-theme` picks the scheme, `data-surface` picks which one. These are
+complete palettes, not tints: each defines its own background, raised surface,
+two hairline weights, and three text tiers — the way Carbon ships White, G10,
+G90 and G100.
+
+```html
+<html data-theme="light" data-surface="slate">
+<html data-theme="dark"  data-surface="black">
+```
+
+| Light | | Dark | |
+|---|---|---|---|
+| `cream` *(default)* | warm editorial paper | `ink` *(default)* | warm near-black |
+| `white` | crisp neutral; cards pop off a faintly cool page | `carbon` | neutral charcoal, no colour cast |
+| `ivory` | cooler, whiter paper | `black` | true black, for OLED and full-bleed |
+| `sand` | warm greige, softer than cream | `midnight` | blue-black |
+| `slate` | cool grey, closest to a classic product UI | `espresso` | brown-black |
+
+Leave `data-surface` off and you get the originals, so nothing changes for
+existing work.
+
+Every one was measured, not eyeballed — against its own background *and* its
+own raised surface: body text ≥ 7:1 (AAA), secondary ≥ 4.5:1, meta ≥ 3:1,
+hairlines ≥ 1.35:1. A test re-checks all ten on every run.
+
+Two findings from that pass worth knowing, because both are easy to get wrong:
+
+- The light hairlines are **darker than they look right on paper**. The first
+  attempt measured 1.27:1 and the rules visibly vanished on a bright screen.
+- In `white`, the page is very slightly cool (`#F7F7F9`) and the *card* is pure
+  white — not the other way round. A white page with white cards has nothing to
+  separate them; one of the two has to give.
+
 ## Bring your own colors
 
 The built-in voices are presets. For **any** palette, `createTheme()` derives full

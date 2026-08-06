@@ -938,6 +938,29 @@
 /* wrapper that lets a wide table scroll without pushing the page sideways */
 .bi-table-scroll{overflow-x:auto;max-width:100%}
 
+/* ── hairline hygiene ─────────────────────────────────────────────────────
+   Two things make table rules look broken, and both are geometry, not colour.
+
+   1. A doubled line. `border-collapse` merges borders *inside* the table, but
+      anything after it — a panel footer, a bulk bar — brings its own
+      border-top, so the last row's border-bottom stacks against it. Drop the
+      last one whenever something follows.
+
+   2. Sub-pixel rows. Row height is content height plus padding, and content
+      height comes from unitless line-height against a fractional font size,
+      so rows land on .3 and .7 boundaries. A 1px border sitting on a half
+      pixel is rasterised across two device rows at half opacity each, which
+      reads as a line that faded out or got cut. Giving the cell a fixed
+      min-height on a whole pixel puts every rule back on a device pixel. */
+.bi-panel > .bi-table-scroll .bi-table tbody tr:last-child td,
+.bi-table-scroll:has(+ *) .bi-table tbody tr:last-child td{border-bottom:none}
+
+.bi-table td{line-height:20px}
+.bi-table td .bi-cell{min-height:32px}
+.bi-table--compact td{line-height:18px}
+.bi-table--compact td .bi-cell{min-height:24px}
+.bi-table--roomy td .bi-cell{min-height:38px}
+
 /* ==========================================================================
    v0.8 â€” STAT DELTA
    ========================================================================== */
@@ -1833,15 +1856,25 @@
    ========================================================================== */
 
 .bi-field{display:flex;flex-direction:column;gap:6px;min-width:0}
-/* Rhythm between fields, whichever wrapper they arrive in. A bare
-   `.bi-field + .bi-field` misses the case where a two-up row precedes a full
-   width field, which is the most common form layout there is. */
+
+/* Vertical rhythm between stacked form blocks, whichever wrapper they arrive
+   in — a bare `.bi-field + .bi-field` misses a two-up row followed by a
+   full-width field, which is the most common form layout there is. */
 .bi-field + .bi-field,
 .bi-field-row + .bi-field,
 .bi-field + .bi-field-row,
 .bi-field-row + .bi-field-row,
 .bi-field + .bi-fieldset,
 .bi-fieldset + .bi-field{margin-top:var(--bi-space-5)}
+
+/* …but never between the two halves of a row. Those are siblings laid out
+   side by side, so the adjacent-sibling margin above would push the second
+   one down by exactly one space step and knock the pair out of alignment.
+   The grid's own `gap` owns spacing inside the row. */
+.bi-field-row > .bi-field + .bi-field{margin-top:0}
+/* Fields are grid items here, so stretch would make a field with an error
+   message taller than its neighbour; start keeps both labels on one line. */
+.bi-field-row{align-items:start}
 
 .bi-label{
   display:flex;align-items:center;gap:7px;
@@ -2195,3 +2228,34 @@
   .bi-table{font-size:10pt}
   .bi-table--sticky thead th{position:static}
 }
+
+/* ── themer: surface swatches ─────────────────────────────────────────────
+   Each chip previews the theme it applies — page colour outside, card colour
+   inside, text colour on top. Naming a palette tells you nothing; showing it
+   tells you everything. */
+.bi-themer-surfaces{display:flex;flex-wrap:wrap;gap:5px}
+.bi-themer-surface{
+  display:inline-flex;align-items:center;gap:7px;cursor:pointer;
+  font-family:var(--bi-font-mono);font-size:var(--bi-text-2xs);letter-spacing:.06em;
+  color:var(--bi-text-2);background:var(--bi-bg-deep);
+  border:1px solid var(--bi-line);border-radius:var(--bi-r-s);padding:4px 8px 4px 5px;
+  transition:border-color var(--bi-dur-1),color var(--bi-dur-1);
+}
+.bi-themer-surface:hover{border-color:var(--bi-accent);color:var(--bi-text)}
+.bi-themer-surface.on{border-color:var(--bi-accent);color:var(--bi-text);font-weight:700}
+.bi-themer-surface i{
+  width:16px;height:16px;flex:none;border-radius:3px;
+  border:1px solid rgba(128,128,128,.35);
+  background:var(--sw-bg,#FFF);
+  box-shadow:inset -6px -6px 0 -2px var(--sw-surface,#EEE);
+}
+.bi-themer-surface[data-surface="cream"]   i{--sw-bg:#FAF6EE;--sw-surface:#FFFDF8}
+.bi-themer-surface[data-surface="white"]   i{--sw-bg:#F7F7F9;--sw-surface:#FFFFFF}
+.bi-themer-surface[data-surface="ivory"]   i{--sw-bg:#FBFAF6;--sw-surface:#FFFFFF}
+.bi-themer-surface[data-surface="sand"]    i{--sw-bg:#F5F2ED;--sw-surface:#FCFAF7}
+.bi-themer-surface[data-surface="slate"]   i{--sw-bg:#F3F5F7;--sw-surface:#FFFFFF}
+.bi-themer-surface[data-surface="ink"]     i{--sw-bg:#181310;--sw-surface:#241D14}
+.bi-themer-surface[data-surface="carbon"]  i{--sw-bg:#1E1E1E;--sw-surface:#2C2C2C}
+.bi-themer-surface[data-surface="black"]   i{--sw-bg:#000000;--sw-surface:#0E0E0E}
+.bi-themer-surface[data-surface="midnight"]i{--sw-bg:#0F1420;--sw-surface:#18202F}
+.bi-themer-surface[data-surface="espresso"]i{--sw-bg:#1A1310;--sw-surface:#271C17}
