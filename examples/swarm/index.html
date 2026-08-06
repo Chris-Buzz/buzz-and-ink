@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-mood="playful" data-radius="soft" data-contrast="standard" data-accent="buzz" data-neutral="warm" data-paper="cream" data-type="bricolage">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swarm — the beekeepers' board</title>
+<meta name="description" content="The loud half of Buzz & Ink: pop palette, play components, and the whole motion layer turned up.">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter+Tight:wght@400..700&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../src/index.css">
+<style>
+  /* ============================================================
+     SWARM — a community board for people who keep bees.
+
+     This is the system with the volume up: data-mood="playful",
+     the pop palette, and most of the v0.9 play components on one
+     page. It is the counterweight to Hive Desk and Comb — same
+     tokens, same components, completely different register.
+
+     Bespoke CSS here is layout only.
+     ============================================================ */
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:var(--bi-font-body);background:var(--bi-bg);color:var(--bi-text);
+    -webkit-font-smoothing:antialiased;font-size:var(--bi-text-m);
+    line-height:var(--bi-leading-body);overflow-x:hidden;
+  }
+  ::selection{background:var(--bi-accent);color:var(--bi-cream-0)}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 var(--bi-space-6)}
+
+  /* ── nav ─────────────────────────────────────────────────── */
+  header.nav{position:sticky;top:0;z-index:var(--bi-z-nav);
+    background:color-mix(in srgb,var(--bi-bg) 86%,transparent);backdrop-filter:blur(14px);
+    border-bottom:2px solid var(--bi-text)}
+  header.nav .wrap{display:flex;align-items:center;gap:12px;height:68px}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--bi-font-display);
+    font-weight:800;font-size:var(--bi-text-l);letter-spacing:-.02em;margin-right:14px}
+  .brand svg{color:var(--bi-accent)}
+  header.nav a{font-size:var(--bi-text-s);font-weight:600;color:var(--bi-text-2);
+    text-decoration:none;padding:8px 12px;border-radius:99px;transition:all var(--bi-dur-1) var(--bi-ease-out)}
+  header.nav a:hover{color:var(--bi-text);background:var(--bi-accent-soft)}
+  header.nav .grow{flex:1}
+
+  /* ── hero ────────────────────────────────────────────────── */
+  .hero{position:relative;padding:var(--bi-space-10) 0 var(--bi-space-9);overflow:hidden}
+  .hero .wrap{position:relative;z-index:2}
+  .hero h1{
+    font-family:var(--bi-font-display);font-weight:800;
+    font-size:clamp(42px,7.4vw,92px);line-height:.94;letter-spacing:-.035em;
+    max-width:15ch;margin:16px 0 20px;
+  }
+  .hero .lede{font-size:clamp(17px,1.7vw,21px);color:var(--bi-text-2);max-width:50ch;line-height:1.55}
+  .hero .cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:var(--bi-space-7)}
+  .hero-deco{position:absolute;inset:0;z-index:1;pointer-events:none}
+
+  /* ── generic section ─────────────────────────────────────── */
+  section.blk{padding:var(--bi-space-9) 0;position:relative}
+  .head{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap;margin-bottom:var(--bi-space-7)}
+  .head h2{font-family:var(--bi-font-display);font-weight:800;
+    font-size:clamp(28px,3.6vw,46px);line-height:1.02;letter-spacing:-.028em}
+  .head p{color:var(--bi-text-2);max-width:46ch;font-size:var(--bi-text-s)}
+  .head .grow{flex:1}
+
+  /* ── note board ──────────────────────────────────────────── */
+  .board{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:var(--bi-space-6) var(--bi-space-5)}
+
+  /* ── polaroid wall ───────────────────────────────────────── */
+  .wall{display:flex;flex-wrap:wrap;gap:var(--bi-space-6);justify-content:center}
+  .bi-polaroid{width:212px}
+  /* stand-in imagery — the system ships no photo assets, so the "shot" is a
+     token-built gradient. Swap for a real <img class="shot"> in a product. */
+  .shot--1{--shot:linear-gradient(150deg,var(--bi-buzz-300),var(--bi-buzz-600))}
+  .shot--2{--shot:linear-gradient(150deg,var(--bi-pop-mint),var(--bi-pop-mint-ink))}
+  .shot--3{--shot:linear-gradient(150deg,var(--bi-pop-sky),var(--bi-pop-sky-ink))}
+  .shot--4{--shot:linear-gradient(150deg,var(--bi-pop-lilac),var(--bi-pop-lilac-ink))}
+  .shot{display:grid;place-items:center;color:var(--bi-cream-0);opacity:.95}
+
+  /* ── comments ────────────────────────────────────────────── */
+  .thread{display:flex;flex-direction:column;gap:var(--bi-space-5);max-width:720px}
+  .msg{display:flex;gap:13px;align-items:flex-end}
+  .msg--me{flex-direction:row-reverse}
+  .msg--me .bi-bubble{border-bottom-left-radius:calc(var(--bi-r-l) + 8px);border-bottom-right-radius:calc(var(--bi-r-s) + 2px)}
+
+  /* ── flip cards ──────────────────────────────────────────── */
+  .flips{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));gap:var(--bi-space-4)}
+  .bi-flip-front b{font-family:var(--bi-font-display);font-weight:700;font-size:var(--bi-text-l)}
+  .bi-flip-front span,.bi-flip-back span{font-family:var(--bi-font-mono);font-size:var(--bi-text-2xs);
+    letter-spacing:.12em;text-transform:uppercase;opacity:.72}
+  .bi-flip-back b{font-family:var(--bi-font-mono);font-size:clamp(24px,3vw,32px);font-weight:700}
+
+  /* ── stat strip ──────────────────────────────────────────── */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:var(--bi-space-5)}
+
+  /* ── controls ────────────────────────────────────────────── */
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+    padding:var(--bi-space-4);border:2px dashed var(--bi-line);border-radius:var(--bi-r-l)}
+  .controls .lbl{font-family:var(--bi-font-mono);font-size:var(--bi-text-2xs);
+    letter-spacing:.14em;text-transform:uppercase;color:var(--bi-text-3)}
+
+  footer.foot{background:var(--bi-text);color:var(--bi-bg);padding:var(--bi-space-8) 0 var(--bi-space-7)}
+  footer.foot .wrap{display:flex;flex-wrap:wrap;gap:18px;align-items:center}
+  footer.foot .grow{flex:1}
+  footer.foot p{font-family:var(--bi-font-mono);font-size:var(--bi-text-xs);
+    letter-spacing:.1em;text-transform:uppercase;opacity:.66}
+
+  @media (max-width:640px){
+    .hero{padding:var(--bi-space-8) 0 var(--bi-space-7)}
+    .wall{gap:var(--bi-space-5)}
+  }
+</style>
+</head>
+<body class="bi">
+
+<div class="bi-scrollbar" data-bi-scroll-progress></div>
+
+<!-- ── nav ──────────────────────────────────────────────────── -->
+<header class="nav">
+  <div class="wrap">
+    <span class="brand">
+      <svg class="bi-icon bi-icon--l bi-sway"><use href="#bi-i-bee"/></svg> Swarm
+    </span>
+    <a href="#board">Board</a>
+    <a href="#wall">Wall</a>
+    <a href="#talk">Talk</a>
+    <span class="grow"></span>
+    <span class="bi-sticker bi-pop-mint" style="--pop-ink:var(--bi-pop-mint-ink)">
+      <svg class="bi-icon bi-icon--s"><use href="#bi-i-sparkle"/></svg> 412 online
+    </span>
+    <button class="bi-btn bi-btn--pop bi-jelly" id="joinBtn" data-bi-ripple>Join the swarm</button>
+  </div>
+</header>
+
+<!-- ── hero ─────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-deco">
+    <span class="bi-blob bi-pop-lemon" style="top:-14%;left:-8%"></span>
+    <span class="bi-blob bi-pop-mint" style="bottom:-24%;right:-10%;animation-delay:-6s"></span>
+    <span class="bi-blob bi-pop-pink" style="top:24%;right:22%;width:200px;animation-delay:-11s;opacity:.45"></span>
+  </div>
+
+  <div class="wrap">
+    <span class="bi-sticker bi-pop-violet bi-wobble">
+      <svg class="bi-icon bi-icon--s"><use href="#bi-i-party"/></svg> Season 7 is open
+    </span>
+
+    <h1 data-bi-split data-bi-reveal>Everyone who keeps <span class="bi-mark bi-pop-lemon">bees</span> is here.</h1>
+
+    <p class="lede" data-bi-reveal data-bi-delay="300">
+      Swap notes, post your frames, ask the question you're embarrassed to ask.
+      Four thousand beekeepers, one very loud board.
+    </p>
+
+    <div class="cta" data-bi-reveal data-bi-delay="420">
+      <button class="bi-btn bi-btn--pop bi-jelly" id="celebrate" data-bi-ripple>
+        <svg class="bi-icon"><use href="#bi-i-sparkles"/></svg> Post something
+      </button>
+      <button class="bi-btn bi-btn--ghost bi-pop-hover" id="tourBtn">Take the tour</button>
+      <span class="bi-doodle-arrow"></span>
+      <span style="font-family:var(--bi-font-mono);font-size:var(--bi-text-xs);color:var(--bi-text-3);letter-spacing:.08em">
+        it throws confetti, obviously
+      </span>
+    </div>
+  </div>
+</section>
+
+<hr class="bi-squiggle-rule" style="max-width:1140px;margin:0 auto">
+
+<!-- ── stats ────────────────────────────────────────────────── -->
+<section class="blk">
+  <div class="wrap">
+    <div class="stats" data-bi-stagger="90">
+      <div class="bi-counter" data-bi-reveal="scale">
+        <b data-bi-count="4128">0</b><span>keepers</span>
+      </div>
+      <div class="bi-counter" data-bi-reveal="scale">
+        <b data-bi-count="19640">0</b><span>hives logged</span>
+      </div>
+      <div class="bi-counter" data-bi-reveal="scale">
+        <b data-bi-count="86.4" data-bi-decimals="1" data-bi-suffix="t">0</b><span>honey this year</span>
+      </div>
+      <div class="bi-counter" data-bi-reveal="scale">
+        <b data-bi-count="312">0</b><span>questions answered today</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── the board ────────────────────────────────────────────── -->
+<section class="blk" id="board">
+  <div class="wrap">
+    <div class="head" data-bi-reveal>
+      <div>
+        <span class="bi-kicker">The board</span>
+        <h2>Pinned this week</h2>
+      </div>
+      <span class="grow"></span>
+      <p>Anyone can pin. The good ones stay up, the rest slide off by Sunday.</p>
+    </div>
+
+    <div class="board" id="noteBoard" data-bi-stagger="70"></div>
+  </div>
+</section>
+
+<hr class="bi-wave" style="margin-top:var(--bi-space-7)">
+
+<!-- ── polaroid wall ────────────────────────────────────────── -->
+<section class="blk" id="wall" style="background:var(--bi-bg-deep)">
+  <div class="wrap">
+    <div class="head" data-bi-reveal>
+      <div>
+        <span class="bi-kicker">The wall</span>
+        <h2>Frames people are <span class="bi-mark bi-pop-pink">proud</span> of</h2>
+      </div>
+    </div>
+
+    <div class="wall" data-bi-stagger="90">
+      <figure class="bi-polaroid" data-bi-reveal="scale">
+        <div class="shot shot--1"><svg class="bi-icon" style="width:34px;height:34px"><use href="#bi-i-hex"/></svg></div>
+        <figcaption>Capped and heavy — H07</figcaption>
+      </figure>
+      <figure class="bi-polaroid" data-bi-reveal="scale">
+        <div class="shot shot--2"><svg class="bi-icon" style="width:34px;height:34px"><use href="#bi-i-leaf"/></svg></div>
+        <figcaption>First clover flow</figcaption>
+      </figure>
+      <figure class="bi-polaroid" data-bi-reveal="scale">
+        <div class="shot shot--3"><svg class="bi-icon" style="width:34px;height:34px"><use href="#bi-i-drop"/></svg></div>
+        <figcaption>Extraction day, 41 lb</figcaption>
+      </figure>
+      <figure class="bi-polaroid" data-bi-reveal="scale">
+        <div class="shot shot--4"><svg class="bi-icon" style="width:34px;height:34px"><use href="#bi-i-crown"/></svg></div>
+        <figcaption>New queen, marked blue</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ── flip cards ───────────────────────────────────────────── -->
+<section class="blk">
+  <div class="wrap">
+    <div class="head" data-bi-reveal>
+      <div>
+        <span class="bi-kicker">Yard report</span>
+        <h2>Flip one over</h2>
+      </div>
+      <span class="grow"></span>
+      <p>Hover, or tap on a touch screen.</p>
+    </div>
+
+    <div class="flips" id="flipRow"></div>
+  </div>
+</section>
+
+<!-- ── talk ─────────────────────────────────────────────────── -->
+<section class="blk" id="talk" style="background:var(--bi-bg-deep)">
+  <div class="wrap">
+    <div class="head" data-bi-reveal>
+      <div>
+        <span class="bi-kicker">Talk</span>
+        <h2>Today's thread</h2>
+      </div>
+    </div>
+
+    <div class="thread" id="thread"></div>
+
+    <div style="display:flex;gap:10px;margin-top:var(--bi-space-6);max-width:720px" data-bi-reveal>
+      <input class="bi-input" id="replyBox" placeholder="Say something helpful…">
+      <button class="bi-btn bi-btn--pop bi-jelly" id="sendBtn" data-bi-ripple>
+        <svg class="bi-icon"><use href="#bi-i-send"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ── season goal ──────────────────────────────────────────── -->
+<section class="blk">
+  <div class="wrap" style="display:grid;grid-template-columns:1.3fr 1fr;gap:var(--bi-space-8);align-items:center">
+    <div data-bi-reveal>
+      <span class="bi-kicker">Season goal</span>
+      <h2 style="font-family:var(--bi-font-display);font-weight:800;font-size:clamp(26px,3.2vw,40px);line-height:1.05;letter-spacing:-.026em;margin:14px 0 16px">
+        We're <span class="bi-mark bi-pop-mint">86%</span> of the way to a hundred tonnes.
+      </h2>
+      <div class="bi-progress bi-progress--candy" style="height:14px;margin-bottom:18px">
+        <i style="width:86%"></i>
+      </div>
+      <p style="color:var(--bi-text-2);font-size:var(--bi-text-s);max-width:44ch">
+        Every jar logged on Swarm counts. The counter resets on the first frost and
+        nobody has ever been normal about it.
+      </p>
+    </div>
+
+    <div style="display:grid;place-items:center" data-bi-reveal="scale">
+      <div class="bi-burst bi-pop-peach bi-breathe" style="width:150px;height:150px;font-size:var(--bi-text-s)">
+        86.4<br>TONNES
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── live controls ────────────────────────────────────────── -->
+<section class="blk">
+  <div class="wrap">
+    <div class="controls" data-bi-reveal>
+      <span class="lbl">Try it</span>
+      <div class="bi-seg" id="moodSeg">
+        <button data-mood="editorial">Editorial</button>
+        <button class="on" data-mood="playful">Playful</button>
+        <button data-mood="bold">Bold</button>
+      </div>
+      <div class="bi-seg" id="accentSeg">
+        <button class="on" data-accent="buzz">Buzz</button>
+        <button data-accent="punch">Punch</button>
+        <button data-accent="electric">Electric</button>
+        <button data-accent="mint">Mint</button>
+      </div>
+      <div class="bi-seg" id="densitySeg">
+        <button data-density="compact">Compact</button>
+        <button class="on" data-density="standard">Standard</button>
+        <button data-density="comfortable">Comfy</button>
+      </div>
+      <label class="bi-switch" style="font-size:var(--bi-text-s)">
+        <input type="checkbox" id="darkSw"><i></i> Dark
+      </label>
+      <label class="bi-switch" style="font-size:var(--bi-text-s)">
+        <input type="checkbox" id="trailSw"><i></i> Cursor trail
+      </label>
+      <span class="grow" style="flex:1"></span>
+      <span class="bi-tag bi-tag--pop bi-pop-lilac" data-bi-scramble>MOOD SWING</span>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <span class="brand" style="color:var(--bi-bg)">
+      <svg class="bi-icon bi-icon--l bi-bob" style="color:var(--bi-buzz-400)"><use href="#bi-i-bee"/></svg> Swarm
+    </span>
+    <span class="grow"></span>
+    <p>Buzz &amp; Ink v0.9 · the play layer</p>
+  </div>
+</footer>
+
+<div class="bi-toasts" id="toasts"></div>
+
+<script type="module">
+import { injectIcons, icon } from '../../src/icons.js';
+import { initMotion, confetti, cursorTrail } from '../../src/motion.js';
+
+injectIcons();
+
+/* ── the note board ────────────────────────────────────────── */
+const NOTES = [
+  ['lemon',  'Swarm on the fence line',  'Caught it at 7am with a cardboard box and pure optimism. She is in a nuc now and furious.', '2h', 'R. Okafor'],
+  ['mint',   'Do NOT skip the mite wash', 'I skipped one round in July and lost two colonies by September. Learn from me.', '4h', 'D. Whitlock'],
+  ['sky',    'Cheap frame jig that works', 'Two scrap boards and a clamp. Built forty frames on Sunday without crying once.', '6h', 'M. Aliyev'],
+  ['pink',   'Queen marking colours 2026', 'It is yellow this year. Yellow. Write it on your hand.', '9h', 'S. Bergman'],
+  ['peach',  'Anyone else getting propolis everywhere?', 'My car keys are now a permanent part of the hive tool.', '11h', 'J. Ndlovu'],
+  ['lilac',  'Extractor share, north county', 'Six of us split one radial. Message me if you want in for August.', '1d', 'P. Castellanos'],
+];
+const board = document.getElementById('noteBoard');
+NOTES.forEach(([tone, title, body, when, who]) => {
+  const note = document.createElement('article');
+  note.className = `bi-note bi-pop-${tone}`;
+  note.setAttribute('data-bi-reveal', 'scale');
+
+  const tape = document.createElement('span');
+  tape.className = 'bi-tape';
+
+  const b = document.createElement('b'); b.textContent = title;
+  const p = document.createElement('p'); p.textContent = body;
+  const t = document.createElement('time'); t.textContent = `${when} · ${who}`;
+
+  note.append(tape, b, p, t);
+  note.addEventListener('click', () => toast(`Opened “${title}”`));
+  board.append(note);
+});
+
+/* ── flip cards ────────────────────────────────────────────── */
+const YARDS = [
+  ['Yard A', '8 hives',  'mint',   '112 lb', 'this season'],
+  ['Yard B', '6 hives',  'sky',    '74 lb',  'this season'],
+  ['Ridge',  '4 hives',  'lemon',  '38 lb',  'this season'],
+  ['Orchard','5 hives',  'violet', '61 lb',  'this season'],
+];
+const flipRow = document.getElementById('flipRow');
+YARDS.forEach(([name, sub, tone, big, cap], i) => {
+  const card = document.createElement('button');
+  card.className = 'bi-flip';
+  card.setAttribute('data-bi-reveal', 'scale');
+  card.setAttribute('aria-label', `${name}: ${big} ${cap}`);
+
+  const inner = document.createElement('div'); inner.className = 'bi-flip-inner';
+  const front = document.createElement('div'); front.className = 'bi-flip-front';
+  front.insertAdjacentHTML('beforeend', icon(['hex','leaf','target','trophy'][i], 'bi-icon bi-icon--l'));
+  const fb = document.createElement('b'); fb.textContent = name;
+  const fs = document.createElement('span'); fs.textContent = sub;
+  front.append(fb, fs);
+
+  const back = document.createElement('div');
+  back.className = `bi-flip-back bi-pop-${tone}`;
+  const bb = document.createElement('b'); bb.textContent = big;
+  const bs = document.createElement('span'); bs.textContent = cap;
+  back.append(bb, bs);
+
+  inner.append(front, back);
+  card.append(inner);
+  // touch has no hover, so tapping toggles the same class the CSS listens for
+  card.addEventListener('click', () => card.classList.toggle('on'));
+  flipRow.append(card);
+});
+
+/* ── the thread ────────────────────────────────────────────── */
+const THREAD = [
+  ['RO', 'pink',  false, 'Second brood box or another super? Colony is packed and I keep flip-flopping.'],
+  ['DW', 'mint',  false, 'Super. If the queen is laying well you want the space above her, not beside her.'],
+  ['CB', '',      true,  'Agreed — and put a queen excluder under it or you will be picking brood out of comb honey in September.'],
+  ['MA', 'sky',   false, 'The excluder debate begins. I am staying out of it. 🐝-free zone.'],
+  ['RO', 'pink',  false, 'Super it is. Thank you both, genuinely.'],
+];
+const thread = document.getElementById('thread');
+function addMessage([who, tone, isMe, text]) {
+  const row = document.createElement('div');
+  row.className = 'msg' + (isMe ? ' msg--me' : '');
+  row.setAttribute('data-bi-reveal', isMe ? 'right' : 'left');
+
+  const av = document.createElement('span');
+  av.className = 'bi-avatar' + (isMe ? '' : ` bi-avatar--pop bi-pop-${tone}`);
+  av.textContent = who;
+
+  const bub = document.createElement('div');
+  bub.className = 'bi-bubble' + (isMe ? ' bi-bubble--me bi-bubble--right' : '');
+  bub.textContent = text;
+
+  row.append(av, bub);
+  thread.append(row);
+  return row;
+}
+THREAD.forEach(addMessage);
+
+/* ── interactions ──────────────────────────────────────────── */
+document.getElementById('celebrate').addEventListener('click', (e) => {
+  confetti({ origin: e.currentTarget, count: 90 });
+  toast('Posted to the board', 'bi-toast--ok');
+});
+document.getElementById('joinBtn').addEventListener('click', (e) => {
+  confetti({ origin: e.currentTarget, count: 50, spread: 260 });
+  toast('Welcome to the swarm');
+});
+document.getElementById('tourBtn').addEventListener('click', () => {
+  document.getElementById('board').scrollIntoView({ behavior: 'smooth' });
+});
+
+const replyBox = document.getElementById('replyBox');
+function send() {
+  const text = replyBox.value.trim();
+  if (!text) { replyBox.classList.add('bi-shake'); setTimeout(() => replyBox.classList.remove('bi-shake'), 520); return; }
+  const row = addMessage(['CB', '', true, text]);
+  row.classList.add('in');                       // already on screen — show it now
+  replyBox.value = '';
+  row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  toast('Sent', 'bi-toast--ok');
+}
+document.getElementById('sendBtn').addEventListener('click', send);
+replyBox.addEventListener('keydown', (e) => { if (e.key === 'Enter') send(); });
+
+/* ── live controls ─────────────────────────────────────────── */
+const root = document.documentElement;
+function wireSeg(id, attr) {
+  document.querySelectorAll(`#${id} button`).forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll(`#${id} button`).forEach((b) => b.classList.remove('on'));
+      btn.classList.add('on');
+      const value = btn.dataset[attr];
+      if (value === 'standard') root.removeAttribute(`data-${attr}`);
+      else root.setAttribute(`data-${attr}`, value);
+    });
+  });
+}
+wireSeg('moodSeg', 'mood');
+wireSeg('accentSeg', 'accent');
+wireSeg('densitySeg', 'density');
+
+document.getElementById('darkSw').addEventListener('change', (e) => {
+  root.setAttribute('data-theme', e.target.checked ? 'dark' : 'light');
+});
+
+let stopTrail = null;
+document.getElementById('trailSw').addEventListener('change', (e) => {
+  if (e.target.checked) stopTrail = cursorTrail();
+  else { stopTrail?.(); stopTrail = null; }
+});
+
+/* ── toasts ────────────────────────────────────────────────── */
+function toast(message, kind = '') {
+  const t = document.createElement('div');
+  t.className = `bi-toast ${kind}`;
+  t.textContent = message;
+  document.getElementById('toasts').append(t);
+  setTimeout(() => {
+    t.style.transition = 'opacity .3s,transform .3s';
+    t.style.opacity = '0'; t.style.transform = 'translateY(8px)';
+    setTimeout(() => t.remove(), 320);
+  }, 2000);
+}
+
+initMotion();
+</script>
+</body>
+</html>

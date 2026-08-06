@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Read-only by default; the publish job below asks for exactly what it needs.
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test (node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22, 24]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      # No install step: the package has zero runtime and zero test
+      # dependencies, so there is nothing to resolve and nothing to trust.
+      - name: Test
+        run: npm test
+
+  audit:
+    name: supply chain
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Assert the package stays dependency-free
+        run: |
+          deps=$(node -p "JSON.stringify(require('./package.json').dependencies || {})")
+          if [ "$deps" != "{}" ]; then
+            echo "::error::buzz-and-ink must ship zero runtime dependencies (found $deps)"
+            exit 1
+          fi
+          echo "no runtime dependencies"
+
+      - name: Audit the workspaces that do have dependencies
+        run: |
+          for dir in react astryx; do
+            if [ -f "$dir/package.json" ]; then
+              echo "--- $dir ---"
+              (cd "$dir" && npm audit --audit-level=high) || exit 1
+            fi
+          done
+
+      - name: Check what npm would actually publish
+        run: |
+          npm pack --dry-run --json > pack.json
+          node -e "
+            const files = require('./pack.json')[0].files.map(f => f.path);
+            const leaked = files.filter(f =>
+              /(^|\/)\.env|\.pem$|\.key$|(^|\/)node_modules\//.test(f));
+            if (leaked.length) {
+              console.error('::error::secrets or junk in the tarball:', leaked.join(', '));
+              process.exit(1);
+            }
+            console.log('tarball contains', files.length, 'files:');
+            for (const f of files) console.log(' ', f);
+          "
+
+  secrets:
+    name: secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Scan tracked files for credential shapes
+        run: |
+          # Providers make their tokens pattern-matchable on purpose; use that.
+          if git grep -nIE '(sk-[A-Za-z0-9]{20,}|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z_-]{30,}|xox[baprs]-[A-Za-z0-9-]{10,}|-----BEGIN [A-Z ]*PRIVATE KEY-----)' -- . ':(exclude)*.lock' ':(exclude)package-lock.json'; then
+            echo "::error::possible credential committed"
+            exit 1
+          fi
+          echo "no credential patterns found"

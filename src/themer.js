@@ -46,9 +46,41 @@ function el(tag, cls, text) {
   return node;
 }
 
+/* localStorage is attacker-writable in any XSS scenario and survives across
+   sessions, so what comes back out is untrusted input — not "our own data".
+
+   Two things follow. First, the restored object is rebuilt key by key from a
+   known schema rather than spread wholesale: JSON.parse happily produces an
+   own "__proto__" property, and Object.assign-ing that onto the state object
+   walks the prototype setter and pollutes Object.prototype for the whole page.
+   Second, each value is validated — the colours reach createTheme() and the
+   voices become DOM attributes, so a junk value should be dropped, not
+   applied. */
+const COLOR_KEYS = ['accent', 'neutral', 'paper'];
+const VOICE_VALUES = {
+  theme: ['light', 'dark'],
+  radius: ['standard', 'sharp', 'soft'],
+  contrast: ['standard', 'deep'],
+  type: ['fraunces', 'bricolage'],
+};
+const HEX_OK = /^#[0-9a-fA-F]{6}$/;
+
 function load() {
-  try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { return null; }
+  let raw;
+  try { raw = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { return null; }
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+
+  const clean = Object.create(null);
+  for (const key of COLOR_KEYS) {
+    const v = raw[key];
+    if (typeof v === 'string' && HEX_OK.test(v)) clean[key] = v.toUpperCase();
+  }
+  for (const [key, allowed] of Object.entries(VOICE_VALUES)) {
+    if (allowed.includes(raw[key])) clean[key] = raw[key];
+  }
+  return clean;
 }
+
 function save(state) {
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch { /* private mode — fine */ }
 }

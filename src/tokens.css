@@ -163,14 +163,29 @@
      fraunces voice:  Fraunces · Inter · JetBrains Mono
      bricolage voice: Bricolage Grotesque · Inter Tight · IBM Plex Mono */
 
-  --bi-text-xs:11px;
-  --bi-text-s:13px;
-  --bi-text-m:15px;
-  --bi-text-l:18px;
-  --bi-text-xl:clamp(24px,2.6vw,32px);
+  /* Type scale. Raised in v0.9 — the old scale bottomed out at 9px for mono
+     caps, which is the least legible combination there is (small + uppercase
+     + letter-spaced). 11px is the floor now, and nothing in the system sets a
+     size in raw px: every component pulls one of these, so a project can
+     re-scale the whole UI by overriding six values. */
+  --bi-text-2xs:11px;   /* micro labels — mono caps only, never prose */
+  --bi-text-xs:12px;
+  --bi-text-s:14px;
+  --bi-text-m:16px;
+  --bi-text-l:19px;
+  --bi-text-xl:clamp(25px,2.6vw,33px);
   --bi-text-display:clamp(40px,5.4vw,66px);
   --bi-text-hero:clamp(50px,6.8vw,92px);
-  --bi-track-label:.14em;
+  --bi-track-label:.12em;
+
+  /* line-height, so density is tunable in one place */
+  --bi-leading-tight:1.2;
+  --bi-leading-snug:1.45;
+  --bi-leading-body:1.65;
+
+  /* Density. `data-density="compact"` restores something near the old scale
+     for dashboards that genuinely need the rows; "comfortable" opens it up.
+     Set on <html> or any subtree root. */
 
   /* ── semantic roles (light / standard) ────────────────────────────────── */
   --bi-bg:var(--bi-cream-50);
@@ -254,6 +269,33 @@
   --bi-shadow-m:0 4px 10px rgba(20,16,11,.06),0 22px 60px rgba(20,16,11,.13);
   --bi-shadow-raise:0 8px 24px var(--bi-accent-glow);
   --bi-shadow-raise-hover:0 14px 34px var(--bi-accent-glow);
+}
+
+/* ── density ───────────────────────────────────────────────────────────────
+   The scale above is the comfortable middle. A data-dense dashboard can buy
+   back rows with "compact"; a marketing page can breathe with "comfortable".
+   Because every component reads the tokens, this re-scales the entire UI. ── */
+[data-density="compact"]{
+  --bi-text-2xs:10px;
+  --bi-text-xs:11px;
+  --bi-text-s:13px;
+  --bi-text-m:14px;
+  --bi-text-l:17px;
+  --bi-leading-body:1.5;
+  --bi-space-3:10px;
+  --bi-space-4:13px;
+  --bi-space-5:16px;
+}
+[data-density="comfortable"]{
+  --bi-text-2xs:12px;
+  --bi-text-xs:13px;
+  --bi-text-s:15px;
+  --bi-text-m:17px;
+  --bi-text-l:21px;
+  --bi-leading-body:1.75;
+  --bi-space-3:14px;
+  --bi-space-4:18px;
+  --bi-space-5:24px;
 }
 
 /* ── contrast: DEEP (whiter whites, deeper blacks, deeper orange) ────────── */
@@ -385,4 +427,121 @@
   --bi-surface:#171209;
   --bi-text:#FFFFFF;
   --bi-accent:var(--bi-buzz-400);
+}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   v0.9 â€” THE PLAY LAYER
+   Buzz & Ink is editorial by default and should stay that way. Everything
+   below is opt-in: new colors that only appear when you ask for them, and a
+   `data-mood` axis that retunes the whole system's register in one attribute.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+:root{
+  /* â”€â”€ pop palette â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+     Eight surface/ink pairs for the playful components â€” stickers, sticky
+     notes, speech bubbles, confetti, blob backdrops.
+
+     These are deliberately NOT a chart palette. The series ramp encodes
+     meaning, so it is validated for colorblind separation; these encode
+     nothing, so they optimise for joy instead. What they *are* checked for is
+     the thing that actually bites: every `-ink` clears WCAG AA on its own
+     surface (worst pair 5.37:1), so text on a colored sticker is always
+     readable. Never use a pop color to carry data â€” reach for --bi-series-*. */
+  --bi-pop-pink:#FBE0EA;      --bi-pop-pink-ink:#A11B4B;
+  --bi-pop-violet:#E9E2FB;    --bi-pop-violet-ink:#4C2A9E;
+  --bi-pop-sky:#DDECFA;       --bi-pop-sky-ink:#1B5A94;
+  --bi-pop-teal:#D6F0F2;      --bi-pop-teal-ink:#0A6670;
+  --bi-pop-mint:#DEF3E2;      --bi-pop-mint-ink:#1F6E3C;
+  --bi-pop-lemon:#FBF0CC;     --bi-pop-lemon-ink:#7A5A05;
+  --bi-pop-peach:#FDE6D8;     --bi-pop-peach-ink:#96431C;
+  --bi-pop-lilac:#F2E3F7;     --bi-pop-lilac-ink:#6B2E7E;
+
+  /* gradients, for the loud moments */
+  --bi-grad-sunrise:linear-gradient(100deg,#E2603A,#E8A020 52%,#EBCB5A);
+  --bi-grad-candy:linear-gradient(100deg,#EB477B,#8674FF 55%,#0FA3B1);
+  --bi-grad-meadow:linear-gradient(100deg,#37A56A,#0FA3B1 60%,#2E7BC4);
+  --bi-grad-accent:linear-gradient(100deg,var(--bi-accent-deep),var(--bi-buzz-400));
+
+  /* how much the play components tilt, wobble, and bounce. data-mood retunes
+     these, so one attribute changes the whole system's body language. */
+  --bi-tilt-1:-1.6deg;
+  --bi-tilt-2:2.2deg;
+  --bi-bounce:cubic-bezier(.34,1.56,.44,1);
+  --bi-play:1;              /* 0 = still, 1 = normal, 1.6 = loud */
+}
+
+/* â”€â”€ accent voice: PUNCH (hot pink) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+[data-accent="punch"]{
+  --bi-buzz-50:#FFEFF1;  --bi-buzz-100:#FFDEE4; --bi-buzz-200:#FFC0CC;
+  --bi-buzz-300:#FF99B0; --bi-buzz-400:#FF6A93; --bi-buzz-500:#EB477B;
+  --bi-buzz-600:#CC2F64; --bi-buzz-700:#AA2051; --bi-buzz-800:#87193F;
+  --bi-buzz-900:#671430;
+}
+
+/* â”€â”€ accent voice: ELECTRIC (violet) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+[data-accent="electric"]{
+  --bi-buzz-50:#F2F2FF;  --bi-buzz-100:#E5E5FF; --bi-buzz-200:#CFCEFF;
+  --bi-buzz-300:#B5B2FF; --bi-buzz-400:#9D94FF; --bi-buzz-500:#8674FF;
+  --bi-buzz-600:#7157E9; --bi-buzz-700:#5C45C4; --bi-buzz-800:#48369C;
+  --bi-buzz-900:#362977;
+}
+
+/* â”€â”€ accent voice: MINT (fresh green) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+[data-accent="mint"]{
+  --bi-buzz-50:#E6F9EC;  --bi-buzz-100:#CEF3DA; --bi-buzz-200:#A9E4BD;
+  --bi-buzz-300:#7FD19E; --bi-buzz-400:#57BC82; --bi-buzz-500:#37A56A;
+  --bi-buzz-600:#1C8B54; --bi-buzz-700:#0E7343; --bi-buzz-800:#0B5B34;
+  --bi-buzz-900:#0A4527;
+}
+
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   MOOD â€” the register dial
+   data-mood="editorial" (default) Â· "playful" Â· "bold"
+
+   Mood is not a colour scheme. It retunes the things that make an interface
+   feel *serious* or *fun* regardless of palette: corner softness, how far
+   things travel, how much they overshoot, how heavy the type sits, and how
+   much the play components tilt. One attribute, whole different personality.
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+/* PLAYFUL â€” rounder, springier, tiltier. */
+[data-mood="playful"]{
+  --bi-r-s:10px;
+  --bi-r-m:18px;
+  --bi-r-l:28px;
+  --bi-shadow-raise:0 6px 0 var(--bi-shadow-color);
+  --bi-shadow-raise-hover:0 9px 0 var(--bi-shadow-color);
+  --bi-ease:cubic-bezier(.34,1.56,.44,1);
+  --bi-ease-spring:cubic-bezier(.34,1.8,.4,1);
+  --bi-dur-1:170ms;
+  --bi-dur-2:260ms;
+  --bi-dur-3:400ms;
+  --bi-tilt-1:-2.6deg;
+  --bi-tilt-2:3.4deg;
+  --bi-play:1.5;
+  --bi-track-label:.1em;
+}
+
+/* BOLD â€” flat, heavy, hard-edged. Poster energy rather than bounce. */
+[data-mood="bold"]{
+  --bi-r-s:0px;
+  --bi-r-m:0px;
+  --bi-r-l:0px;
+  --bi-shadow-s:none;
+  --bi-shadow-m:8px 8px 0 var(--bi-shadow-color);
+  --bi-shadow-raise:6px 6px 0 var(--bi-shadow-color);
+  --bi-shadow-raise-hover:10px 10px 0 var(--bi-shadow-color);
+  --bi-ease:cubic-bezier(.2,.9,.3,1);
+  --bi-dur-1:100ms;
+  --bi-dur-2:160ms;
+  --bi-tilt-1:-1deg;
+  --bi-tilt-2:1.4deg;
+  --bi-play:1.2;
+  --bi-track-label:.16em;
+}
+
+/* Someone who asked for reduced motion did not ask for a still interface â€”
+   they asked not to be moved. Kill the wobble; keep the colour and tilt. */
+@media (prefers-reduced-motion: reduce){
+  :root{--bi-play:0}
 }

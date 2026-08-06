@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-radius="standard" data-contrast="standard" data-accent="buzz" data-neutral="warm" data-paper="cream" data-type="fraunces">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ledger — accounts &amp; access</title>
+<meta name="description" content="A professional admin application built entirely on Buzz & Ink v0.9 — forms, validation, table selection, and bulk actions.">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../src/index.css">
+<style>
+  /* ============================================================
+     LEDGER — accounts and access administration.
+
+     The serious end of the system. This example exists to prove
+     the professional surface is complete: a real form with real
+     validation, a table with selection and bulk actions, an
+     inspector, and a settings page — all from shipped components.
+
+     No play-layer classes appear anywhere on this page.
+     ============================================================ */
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{font-family:var(--bi-font-body);background:var(--bi-bg);color:var(--bi-text);-webkit-font-smoothing:antialiased}
+
+  .content{max-width:1080px;margin:0 auto;padding:var(--bi-space-7) var(--bi-space-6) var(--bi-space-9)}
+  .cols{display:grid;grid-template-columns:1fr 320px;gap:var(--bi-space-6);align-items:start}
+  .view{display:none}
+  .view.on{display:block}
+  @media (max-width:960px){ .cols{grid-template-columns:1fr} }
+</style>
+</head>
+<body class="bi">
+
+<a href="#main" class="bi-sr-only bi-sr-only--focusable">Skip to content</a>
+
+<div class="bi-app">
+
+  <div class="bi-menubar">
+    <span class="brand">LEDGER</span>
+    <span class="spacer"></span>
+    <button class="bi-btn bi-btn--quiet bi-btn--s" id="printBtn">
+      <svg class="bi-icon bi-icon--s"><use href="#bi-i-printer"/></svg> Print
+    </button>
+    <button class="bi-btn bi-btn--quiet bi-btn--s" data-act="theme" aria-label="Toggle dark mode">
+      <svg class="bi-icon bi-icon--s"><use href="#bi-i-moon"/></svg>
+    </button>
+  </div>
+
+  <div class="bi-app-body">
+
+    <nav class="bi-sidebar">
+      <header>
+        <svg class="bi-icon bi-icon--l" style="color:var(--bi-accent)"><use href="#bi-i-database"/></svg>
+        <b>Ledger</b>
+      </header>
+      <div class="bi-sidebar-label">Administration</div>
+      <button class="navitem on" data-view="people">
+        <svg class="bi-icon"><use href="#bi-i-users"/></svg><span>People</span><em class="count">8</em>
+      </button>
+      <button class="navitem" data-view="invite">
+        <svg class="bi-icon"><use href="#bi-i-mail"/></svg><span>Invite</span>
+      </button>
+      <button class="navitem" data-view="settings">
+        <svg class="bi-icon"><use href="#bi-i-settings"/></svg><span>Settings</span>
+      </button>
+      <footer>
+        <div class="bi-kbd"><kbd>?</kbd> shortcuts</div>
+      </footer>
+    </nav>
+
+    <main class="bi-app-main" id="main">
+      <div class="bi-app-scroll">
+        <div class="content">
+
+          <!-- ══ PEOPLE ═══════════════════════════════════════ -->
+          <section class="view on" id="v-people">
+            <div class="bi-page-head">
+              <div class="titles">
+                <ol class="bi-breadcrumbs">
+                  <li><a href="#">Organisation</a></li>
+                  <li aria-current="page">People</li>
+                </ol>
+                <h1>People &amp; access</h1>
+                <p>Eight people can sign in. Changing a role takes effect on their next session.</p>
+              </div>
+              <div class="bi-actions">
+                <button class="bi-btn bi-btn--ghost" id="exportBtn">
+                  <svg class="bi-icon bi-icon--s"><use href="#bi-i-download"/></svg> Export
+                </button>
+                <button class="bi-btn bi-btn--primary" id="goInvite">
+                  <svg class="bi-icon bi-icon--s"><use href="#bi-i-plus"/></svg> Invite person
+                </button>
+              </div>
+            </div>
+
+            <div class="cols">
+              <div>
+                <div class="bi-panel">
+                  <header>
+                    <h3>Directory</h3>
+                    <span class="spacer"></span>
+                    <div class="bi-input-group" style="width:230px">
+                      <span class="icon"><svg class="bi-icon bi-icon--s"><use href="#bi-i-search"/></svg></span>
+                      <input class="bi-input bi-input--s" id="search" placeholder="Filter people" aria-label="Filter people">
+                    </div>
+                  </header>
+
+                  <div class="bi-table-scroll">
+                    <table class="bi-table bi-table--sortable bi-table--zebra" id="grid">
+                      <thead>
+                        <tr>
+                          <th class="pick">
+                            <label class="bi-check" style="gap:0">
+                              <input type="checkbox" id="pickAll" aria-label="Select all people">
+                            </label>
+                          </th>
+                          <th data-key="name" data-sort="asc">Name</th>
+                          <th data-key="role" data-sort="none">Role</th>
+                          <th data-key="status" data-sort="none">Status</th>
+                          <th data-key="seen" data-sort="none">Last seen</th>
+                          <th style="width:1%"></th>
+                        </tr>
+                      </thead>
+                      <tbody id="gridBody"></tbody>
+                    </table>
+                  </div>
+
+                  <div id="bulkSlot"></div>
+
+                  <footer>
+                    <span class="bi-tag" id="count"></span>
+                    <span class="spacer"></span>
+                    <div class="bi-pages">
+                      <button disabled aria-label="Previous page">←</button>
+                      <button class="on">1</button><button>2</button>
+                      <button aria-label="Next page">→</button>
+                    </div>
+                  </footer>
+                </div>
+              </div>
+
+              <aside>
+                <div class="bi-panel" style="margin-bottom:var(--bi-space-4)">
+                  <header><h3>Selected</h3></header>
+                  <div class="body" id="inspector">
+                    <div class="bi-empty" style="padding:var(--bi-space-6) 0">
+                      <i>—</i>
+                      <b>Nothing selected</b>
+                      <p>Pick a row to see the details.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bi-alert bi-alert--warn">
+                  <svg class="bi-icon" style="color:var(--bi-warn);margin-top:1px"><use href="#bi-i-alert"/></svg>
+                  <div>
+                    <b>Two seats left</b>
+                    <p>Your plan covers 10 people. Adding an 11th changes the invoice.</p>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </section>
+
+          <!-- ══ INVITE — the form ════════════════════════════ -->
+          <section class="view" id="v-invite">
+            <div class="bi-page-head">
+              <div class="titles">
+                <ol class="bi-breadcrumbs">
+                  <li><a href="#" data-view="people">People</a></li>
+                  <li aria-current="page">Invite</li>
+                </ol>
+                <h1>Invite someone</h1>
+                <p>They'll get an email with a link that expires in seven days.</p>
+              </div>
+            </div>
+
+            <div class="cols">
+              <form class="bi-panel" id="inviteForm" novalidate>
+                <div class="body">
+
+                  <div class="bi-field-row">
+                    <div class="bi-field">
+                      <label class="bi-label" for="fname">First name <b>required</b></label>
+                      <input class="bi-input" id="fname" name="fname" autocomplete="given-name">
+                      <p class="bi-error" id="fname-err" hidden></p>
+                    </div>
+                    <div class="bi-field">
+                      <label class="bi-label" for="lname">Last name <span class="opt">optional</span></label>
+                      <input class="bi-input" id="lname" name="lname" autocomplete="family-name">
+                    </div>
+                  </div>
+
+                  <div class="bi-field">
+                    <label class="bi-label" for="email">Work email <b>required</b></label>
+                    <input class="bi-input" id="email" name="email" type="email"
+                           autocomplete="email" aria-describedby="email-help">
+                    <p class="bi-help" id="email-help">Must be on a domain you've verified.</p>
+                    <p class="bi-error" id="email-err" hidden></p>
+                  </div>
+
+                  <div class="bi-field">
+                    <label class="bi-label" for="role">Role <b>required</b></label>
+                    <div class="bi-select" style="width:100%">
+                      <select id="role" name="role" style="width:100%">
+                        <option value="">Choose a role…</option>
+                        <option value="Viewer">Viewer — read only</option>
+                        <option value="Editor">Editor — can change records</option>
+                        <option value="Admin">Admin — can manage people</option>
+                      </select>
+                    </div>
+                    <p class="bi-error" id="role-err" hidden></p>
+                  </div>
+
+                  <fieldset class="bi-fieldset" style="margin-top:var(--bi-space-5)">
+                    <legend>Access</legend>
+                    <label class="bi-check"><input type="checkbox" checked> Billing records</label><br>
+                    <label class="bi-check"><input type="checkbox"> Audit log</label><br>
+                    <label class="bi-check"><input type="checkbox"> Export to CSV</label>
+                  </fieldset>
+
+                  <div class="bi-field" style="margin-top:var(--bi-space-5)">
+                    <label class="bi-label" for="note">
+                      Note for the invite <span class="opt">optional</span>
+                    </label>
+                    <textarea class="bi-textarea" id="note" maxlength="240"
+                              placeholder="They'll see this in the email."></textarea>
+                    <div class="bi-count-hint" id="noteCount">0 / 240</div>
+                  </div>
+
+                  <div class="bi-field">
+                    <span class="bi-label">Attachments <span class="opt">optional</span></span>
+                    <div class="bi-dropzone" id="drop" tabindex="0" role="button"
+                         aria-label="Add files by clicking or dropping them here">
+                      <svg class="bi-icon bi-icon--l"><use href="#bi-i-upload"/></svg>
+                      <b>Drop files here</b>
+                      <span>or click to browse · PDF, PNG up to 10 MB</span>
+                    </div>
+                    <div id="fileList" style="margin-top:8px"></div>
+                  </div>
+
+                </div>
+
+                <footer>
+                  <button type="button" class="bi-btn bi-btn--quiet" data-view="people">Cancel</button>
+                  <span class="spacer"></span>
+                  <button type="button" class="bi-btn bi-btn--ghost" id="draftBtn">Save draft</button>
+                  <button type="submit" class="bi-btn bi-btn--primary" id="submitBtn">
+                    Send invite <svg class="bi-icon bi-icon--s"><use href="#bi-i-send"/></svg>
+                  </button>
+                </footer>
+              </form>
+
+              <aside>
+                <div class="bi-panel">
+                  <header><h3>What each role can do</h3></header>
+                  <div class="body">
+                    <dl class="bi-dl bi-dl--rows bi-dl--bordered">
+                      <dt>Viewer</dt>
+                      <dd>Read records and run reports. Cannot change anything.</dd>
+                      <dt>Editor</dt>
+                      <dd>Everything a viewer can do, plus create and amend records.</dd>
+                      <dt>Admin</dt>
+                      <dd>Everything, plus inviting people and changing roles.</dd>
+                    </dl>
+                    <button class="bi-btn bi-btn--quiet bi-btn--s" id="popBtn" style="margin-top:14px"
+                            aria-expanded="false" aria-controls="rolePop">
+                      <svg class="bi-icon bi-icon--s"><use href="#bi-i-help"/></svg> About seat limits
+                    </button>
+                    <div class="bi-popover" id="rolePop" role="dialog" aria-label="About seat limits" hidden
+                         style="position:static;margin-top:10px">
+                      <header>
+                        Seat limits
+                        <button aria-label="Close" id="popClose">
+                          <svg class="bi-icon bi-icon--s"><use href="#bi-i-x"/></svg>
+                        </button>
+                      </header>
+                      <p>Admins and editors consume a seat. Viewers are unlimited on your plan.</p>
+                      <p style="margin:0"><a href="#" class="bi-sweep">Read the billing docs</a></p>
+                    </div>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </section>
+
+          <!-- ══ SETTINGS ═════════════════════════════════════ -->
+          <section class="view" id="v-settings">
+            <div class="bi-page-head">
+              <div class="titles">
+                <h1>Settings</h1>
+                <p>Organisation-wide defaults. Changes apply to everyone.</p>
+              </div>
+            </div>
+
+            <div class="bi-panel" style="margin-bottom:var(--bi-space-4)">
+              <header><h3>Organisation</h3></header>
+              <div class="body">
+                <dl class="bi-dl bi-dl--bordered">
+                  <dt>Name</dt><dd>Ridgeline Cooperative</dd>
+                  <dt>Plan</dt><dd>Team · 10 seats <span class="bi-badge">8 USED</span></dd>
+                  <dt>Region</dt><dd>eu-west-1</dd>
+                  <dt>Created</dt><dd>14 March 2024</dd>
+                </dl>
+              </div>
+            </div>
+
+            <div class="bi-panel" style="margin-bottom:var(--bi-space-4)">
+              <header><h3>Appearance</h3></header>
+              <div class="body" style="display:flex;flex-direction:column;gap:var(--bi-space-4)">
+                <div class="bi-field">
+                  <span class="bi-label">Density</span>
+                  <p class="bi-help">How much breathing room the interface gets.</p>
+                  <div class="bi-seg" id="densitySeg" style="margin-top:6px">
+                    <button data-density="compact">Compact</button>
+                    <button class="on" data-density="standard">Standard</button>
+                    <button data-density="comfortable">Comfortable</button>
+                  </div>
+                </div>
+                <div class="bi-field">
+                  <span class="bi-label">Edges</span>
+                  <div class="bi-seg" id="edgeSeg" style="margin-top:6px">
+                    <button class="on" data-radius="standard">Standard</button>
+                    <button data-radius="sharp">Sharp</button>
+                    <button data-radius="soft">Soft</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bi-panel">
+              <header><h3 style="color:var(--bi-critical)">Danger zone</h3></header>
+              <div class="body">
+                <div class="bi-actions">
+                  <div style="flex:1;min-width:220px">
+                    <b style="font-size:var(--bi-text-s)">Revoke every session</b>
+                    <p style="font-size:var(--bi-text-xs);color:var(--bi-text-2);margin-top:3px">
+                      Signs all eight people out immediately. They'll need to sign in again.
+                    </p>
+                  </div>
+                  <button class="bi-btn bi-btn--danger" id="revokeBtn">Revoke sessions</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+
+      <div class="bi-statusbar">
+        <span><i></i>All systems normal</span>
+        <span class="spacer"></span>
+        <span id="statusNote">Ready</span>
+      </div>
+    </main>
+  </div>
+</div>
+
+<dialog class="bi-modal" id="confirm">
+  <h3>Revoke every session?</h3>
+  <p>All eight people will be signed out immediately. This cannot be undone, and
+     anyone mid-edit will lose unsaved work.</p>
+  <div class="bi-actions">
+    <span class="spacer"></span>
+    <button class="bi-btn bi-btn--quiet" id="confirmNo">Cancel</button>
+    <button class="bi-btn bi-btn--danger" id="confirmYes">Revoke sessions</button>
+  </div>
+</dialog>
+
+<div class="bi-toasts" id="toasts"></div>
+
+<script type="module">
+import { injectIcons } from '../../src/icons.js';
+
+injectIcons();
+
+/* ── data ──────────────────────────────────────────────────── */
+const PEOPLE = [
+  { name: 'Chris Buzaid',      email: 'chris@ridgeline.coop',  role: 'Admin',  status: 'Active',  dot: 'good',     seen: '2 min ago' },
+  { name: 'Maya Okonjo',       email: 'maya@ridgeline.coop',   role: 'Editor', status: 'Active',  dot: 'good',     seen: '1 hour ago' },
+  { name: 'Rasheed Kamau',     email: 'rasheed@ridgeline.coop',role: 'Editor', status: 'Active',  dot: 'good',     seen: 'Yesterday' },
+  { name: 'Dana Whitlock',     email: 'dana@ridgeline.coop',   role: 'Viewer', status: 'Invited', dot: 'warn',     seen: '—' },
+  { name: 'Priya Castellanos', email: 'priya@ridgeline.coop',  role: 'Admin',  status: 'Active',  dot: 'good',     seen: '3 days ago' },
+  { name: 'Sam Bergman',       email: 'sam@ridgeline.coop',    role: 'Viewer', status: 'Active',  dot: 'good',     seen: '1 week ago' },
+  { name: 'Jo Ndlovu',         email: 'jo@ridgeline.coop',     role: 'Editor', status: 'Locked',  dot: 'critical', seen: '2 weeks ago' },
+  { name: 'Marat Aliyev',      email: 'marat@ridgeline.coop',  role: 'Viewer', status: 'Invited', dot: 'warn',     seen: '—' },
+];
+
+const initials = (n) => n.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+
+/* ── directory table ───────────────────────────────────────── */
+const body = document.getElementById('gridBody');
+const picked = new Set();
+let sortKey = 'name', sortDir = 'asc', query = '';
+
+function rows() {
+  return PEOPLE
+    .filter((p) => (p.name + p.email + p.role).toLowerCase().includes(query))
+    .sort((a, b) => {
+      const cmp = String(a[sortKey]).localeCompare(String(b[sortKey]));
+      return sortDir === 'asc' ? cmp : -cmp;
+    });
+}
+
+function render() {
+  const list = rows();
+  body.textContent = '';
+
+  list.forEach((p) => {
+    const tr = document.createElement('tr');
+    if (picked.has(p.email)) tr.setAttribute('aria-selected', 'true');
+
+    const pick = document.createElement('td');
+    pick.className = 'pick';
+    const lab = document.createElement('label');
+    lab.className = 'bi-check';
+    lab.style.gap = '0';
+    const box = document.createElement('input');
+    box.type = 'checkbox';
+    box.checked = picked.has(p.email);
+    box.setAttribute('aria-label', `Select ${p.name}`);
+    box.addEventListener('change', () => {
+      box.checked ? picked.add(p.email) : picked.delete(p.email);
+      render();
+    });
+    lab.append(box); pick.append(lab);
+
+    const name = document.createElement('td');
+    const cell = document.createElement('div');
+    cell.className = 'bi-cell';
+    const av = document.createElement('span');
+    av.className = 'bi-avatar bi-avatar--s';
+    av.textContent = initials(p.name);
+    const stack = document.createElement('div');
+    const nb = document.createElement('div');
+    nb.style.cssText = 'font-weight:600';
+    nb.textContent = p.name;
+    const em = document.createElement('div');
+    em.style.cssText = 'font-size:var(--bi-text-xs);color:var(--bi-text-3);font-family:var(--bi-font-mono)';
+    em.textContent = p.email;
+    stack.append(nb, em);
+    cell.append(av, stack); name.append(cell);
+
+    const role = document.createElement('td');
+    const tag = document.createElement('span');
+    tag.className = 'bi-tag';
+    tag.textContent = p.role;
+    role.append(tag);
+
+    const status = document.createElement('td');
+    const sc = document.createElement('div');
+    sc.className = 'bi-cell';
+    const dot = document.createElement('i');
+    dot.className = `bi-cell-dot bi-cell-dot--${p.dot}`;
+    sc.append(dot, document.createTextNode(p.status));
+    status.append(sc);
+
+    const seen = document.createElement('td');
+    seen.textContent = p.seen;
+
+    const act = document.createElement('td');
+    const more = document.createElement('button');
+    more.className = 'bi-btn bi-btn--quiet bi-btn--icon bi-btn--s';
+    more.setAttribute('aria-label', `Actions for ${p.name}`);
+    more.innerHTML = '<svg class="bi-icon bi-icon--s"><use href="#bi-i-more-h"/></svg>';
+    more.addEventListener('click', (e) => { e.stopPropagation(); toast(`Actions for ${p.name}`); });
+    act.append(more);
+
+    tr.append(pick, name, role, status, seen, act);
+    tr.addEventListener('click', (e) => {
+      if (e.target.closest('input,button')) return;
+      inspect(p);
+    });
+    body.append(tr);
+  });
+
+  document.getElementById('count').textContent = `${list.length} of ${PEOPLE.length} people`;
+  document.getElementById('pickAll').checked = list.length > 0 && list.every((p) => picked.has(p.email));
+  renderBulk();
+}
+
+/* ── bulk bar ──────────────────────────────────────────────── */
+function renderBulk() {
+  const slot = document.getElementById('bulkSlot');
+  slot.textContent = '';
+  if (!picked.size) return;
+
+  const bar = document.createElement('div');
+  bar.className = 'bi-table-bulk';
+  const b = document.createElement('b');
+  b.textContent = `${picked.size} selected`;
+  const spacer = document.createElement('span');
+  spacer.className = 'spacer';
+
+  const mk = (label, cls, fn) => {
+    const btn = document.createElement('button');
+    if (cls) btn.className = cls;
+    btn.textContent = label;
+    btn.addEventListener('click', fn);
+    return btn;
+  };
+
+  bar.append(b, spacer,
+    mk('Change role', '', () => toast(`Role change queued for ${picked.size}`)),
+    mk('Export', '', () => toast(`Exported ${picked.size} records`)),
+    mk('Remove', 'danger', () => toast(`${picked.size} removed`, 'bi-toast--warn')),
+    mk('Clear', '', () => { picked.clear(); render(); }));
+  slot.append(bar);
+}
+
+document.getElementById('pickAll').addEventListener('change', (e) => {
+  rows().forEach((p) => e.target.checked ? picked.add(p.email) : picked.delete(p.email));
+  render();
+});
+
+document.querySelectorAll('#grid th[data-key]').forEach((th) => {
+  th.addEventListener('click', () => {
+    const key = th.dataset.key;
+    sortDir = sortKey === key && sortDir === 'asc' ? 'desc' : 'asc';
+    sortKey = key;
+    document.querySelectorAll('#grid th[data-key]').forEach((o) => (o.dataset.sort = 'none'));
+    th.dataset.sort = sortDir;
+    render();
+  });
+});
+document.getElementById('search').addEventListener('input', (e) => {
+  query = e.target.value.toLowerCase().trim();
+  render();
+});
+
+/* ── inspector ─────────────────────────────────────────────── */
+function inspect(p) {
+  const host = document.getElementById('inspector');
+  host.textContent = '';
+
+  const head = document.createElement('div');
+  head.style.cssText = 'display:flex;align-items:center;gap:11px;margin-bottom:var(--bi-space-4)';
+  const av = document.createElement('span');
+  av.className = 'bi-avatar bi-avatar--l';
+  av.textContent = initials(p.name);
+  const t = document.createElement('div');
+  const n = document.createElement('div');
+  n.style.cssText = 'font-family:var(--bi-font-display);font-size:var(--bi-text-m);font-weight:500';
+  n.textContent = p.name;
+  const r = document.createElement('div');
+  r.style.cssText = 'font-family:var(--bi-font-mono);font-size:var(--bi-text-2xs);letter-spacing:.12em;text-transform:uppercase;color:var(--bi-text-3)';
+  r.textContent = p.role;
+  t.append(n, r);
+  head.append(av, t);
+
+  const dl = document.createElement('dl');
+  dl.className = 'bi-dl bi-dl--rows';
+  for (const [k, v] of [['Email', p.email], ['Status', p.status], ['Last seen', p.seen]]) {
+    const dt = document.createElement('dt'); dt.textContent = k;
+    const dd = document.createElement('dd'); dd.textContent = v;
+    dl.append(dt, dd);
+  }
+
+  const acts = document.createElement('div');
+  acts.className = 'bi-actions';
+  acts.style.marginTop = 'var(--bi-space-5)';
+  const edit = document.createElement('button');
+  edit.className = 'bi-btn bi-btn--ghost bi-btn--s';
+  edit.textContent = 'Edit role';
+  edit.addEventListener('click', () => toast(`Editing ${p.name}`));
+  acts.append(edit);
+
+  host.append(head, dl, acts);
+}
+
+render();
+
+/* ── the form ──────────────────────────────────────────────── */
+const form = document.getElementById('inviteForm');
+
+/* Validation writes aria-invalid, and the stylesheet keys off that attribute.
+   One source of truth: a field cannot look wrong but read as fine, or the
+   reverse. */
+function setError(id, message) {
+  const input = document.getElementById(id);
+  const err = document.getElementById(`${id}-err`);
+  if (message) {
+    input.setAttribute('aria-invalid', 'true');
+    input.setAttribute('aria-describedby', `${id}-err`);
+    err.textContent = message;
+    err.hidden = false;
+  } else {
+    input.removeAttribute('aria-invalid');
+    err.hidden = true;
+    err.textContent = '';
+  }
+  return !message;
+}
+
+function validate() {
+  const fname = document.getElementById('fname').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const role = document.getElementById('role').value;
+
+  const okName = setError('fname', fname ? '' : 'Enter a first name.');
+  const okEmail = setError('email',
+    !email ? 'Enter a work email.'
+    : !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email) ? 'That does not look like an email address.'
+    : PEOPLE.some((p) => p.email === email.toLowerCase()) ? 'Someone with that email is already here.'
+    : '');
+  const okRole = setError('role', role ? '' : 'Choose a role.');
+
+  return okName && okEmail && okRole;
+}
+
+['fname', 'email', 'role'].forEach((id) => {
+  const el = document.getElementById(id);
+  // Only re-validate a field once it has already failed — nagging while
+  // someone is still typing their first character is hostile.
+  el.addEventListener('blur', () => { if (el.hasAttribute('aria-invalid')) validate(); });
+  el.addEventListener('input', () => { if (el.hasAttribute('aria-invalid')) validate(); });
+});
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  if (!validate()) {
+    form.querySelector('[aria-invalid="true"]')?.focus();
+    toast('Check the highlighted fields', 'bi-toast--warn');
+    return;
+  }
+  const btn = document.getElementById('submitBtn');
+  btn.dataset.loading = 'true';
+  setTimeout(() => {
+    delete btn.dataset.loading;
+    toast('Invitation sent', 'bi-toast--ok');
+    form.reset();
+    ['fname', 'email', 'role'].forEach((id) => setError(id, ''));
+    show('people');
+  }, 1100);
+});
+
+document.getElementById('draftBtn').addEventListener('click', () => toast('Draft saved'));
+
+/* character counter */
+const note = document.getElementById('note');
+note.addEventListener('input', () => {
+  const hint = document.getElementById('noteCount');
+  hint.textContent = `${note.value.length} / 240`;
+  hint.classList.toggle('over', note.value.length > 220);
+});
+
+/* dropzone */
+const drop = document.getElementById('drop');
+const fileList = document.getElementById('fileList');
+const addFile = (name, size) => {
+  const row = document.createElement('div');
+  row.className = 'bi-file';
+  row.innerHTML = '<svg class="bi-icon bi-icon--s"><use href="#bi-i-file-text"/></svg>';
+  const n = document.createElement('span'); n.className = 'name'; n.textContent = name;
+  const s = document.createElement('span'); s.className = 'size'; s.textContent = size;
+  const x = document.createElement('button');
+  x.setAttribute('aria-label', `Remove ${name}`);
+  x.innerHTML = '<svg class="bi-icon bi-icon--s"><use href="#bi-i-x"/></svg>';
+  x.addEventListener('click', () => row.remove());
+  row.append(n, s, x);
+  fileList.append(row);
+};
+drop.addEventListener('click', () => addFile('agreement.pdf', '284 KB'));
+drop.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); drop.click(); } });
+['dragenter', 'dragover'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('on'); }));
+['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('on'); }));
+drop.addEventListener('drop', (e) => {
+  for (const f of e.dataTransfer?.files ?? []) addFile(f.name, `${Math.round(f.size / 1024)} KB`);
+});
+
+/* popover */
+const pop = document.getElementById('rolePop');
+const popBtn = document.getElementById('popBtn');
+popBtn.addEventListener('click', () => {
+  const open = pop.hidden;
+  pop.hidden = !open;
+  popBtn.setAttribute('aria-expanded', String(open));
+});
+document.getElementById('popClose').addEventListener('click', () => {
+  pop.hidden = true;
+  popBtn.setAttribute('aria-expanded', 'false');
+  popBtn.focus();
+});
+
+/* ── danger confirm ────────────────────────────────────────── */
+const dlg = document.getElementById('confirm');
+document.getElementById('revokeBtn').addEventListener('click', () => dlg.showModal());
+document.getElementById('confirmNo').addEventListener('click', () => dlg.close());
+document.getElementById('confirmYes').addEventListener('click', () => {
+  dlg.close();
+  toast('All sessions revoked', 'bi-toast--warn');
+});
+
+/* ── navigation ────────────────────────────────────────────── */
+function show(view) {
+  document.querySelectorAll('.view').forEach((v) => v.classList.toggle('on', v.id === `v-${view}`));
+  document.querySelectorAll('.bi-sidebar .navitem').forEach((b) => b.classList.toggle('on', b.dataset.view === view));
+  document.querySelector('.bi-app-scroll').scrollTop = 0;
+}
+document.querySelectorAll('[data-view]').forEach((el) => {
+  el.addEventListener('click', (e) => {
+    if (el.tagName === 'A') e.preventDefault();
+    show(el.dataset.view);
+  });
+});
+document.getElementById('goInvite').addEventListener('click', () => show('invite'));
+
+/* ── settings controls ─────────────────────────────────────── */
+const root = document.documentElement;
+function wireSeg(id, attr) {
+  document.querySelectorAll(`#${id} button`).forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll(`#${id} button`).forEach((b) => b.classList.remove('on'));
+      btn.classList.add('on');
+      const v = btn.dataset[attr];
+      if (v === 'standard' && attr === 'density') root.removeAttribute('data-density');
+      else root.setAttribute(`data-${attr}`, v);
+    });
+  });
+}
+wireSeg('densitySeg', 'density');
+wireSeg('edgeSeg', 'radius');
+
+document.querySelector('[data-act="theme"]').addEventListener('click', () => {
+  root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+document.getElementById('printBtn').addEventListener('click', () => window.print());
+document.getElementById('exportBtn').addEventListener('click', () => toast('CSV exported'));
+
+/* ── toasts ────────────────────────────────────────────────── */
+function toast(message, kind = '') {
+  document.getElementById('statusNote').textContent = message;
+  const t = document.createElement('div');
+  t.className = `bi-toast ${kind}`;
+  t.textContent = message;
+  document.getElementById('toasts').append(t);
+  setTimeout(() => {
+    t.style.transition = 'opacity .3s';
+    t.style.opacity = '0';
+    setTimeout(() => t.remove(), 320);
+  }, 2200);
+}
+</script>
+</body>
+</html>

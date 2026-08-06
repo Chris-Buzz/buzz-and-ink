@@ -1,7 +1,7 @@
 {
   "name": "buzz-and-ink",
-  "version": "0.8.0",
-  "description": "Buzz & Ink — an editorial design system in warm cream, working orange, and rich ink. Tokens-first, framework-agnostic CSS with switchable edge personalities, OKLCH bring-your-own-color theming, a motion layer, and token-driven charts.",
+  "version": "0.9.0",
+  "description": "Buzz & Ink — a complete, dependency-free editorial design system. Tokens-first CSS, 240+ components, OKLCH bring-your-own-color theming, a motion layer, accessible token-driven charts, and an opt-in play layer.",
   "license": "MIT",
   "type": "module",
   "author": "Christopher Buzaid <cjpbuzaid@gmail.com>",
@@ -16,16 +16,24 @@
     "design-tokens",
     "ui",
     "editorial",
+    "components",
     "charts",
+    "dataviz",
     "motion",
-    "theming",
     "animation",
-    "dataviz"
+    "theming",
+    "oklch",
+    "accessible",
+    "a11y",
+    "zero-dependency",
+    "framework-agnostic"
   ],
   "files": [
     "src",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "SECURITY.md",
+    "CHANGELOG.md"
   ],
   "style": "src/index.css",
   "exports": {
@@ -58,6 +66,25 @@
     }
   },
   "scripts": {
-    "docs": "npx serve . -l 5177"
-  }
+    "test": "node --test test/run.js",
+    "docs": "npx serve . -l 5177",
+    "prepublishOnly": "npm test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "browserslist": [
+    "> 0.5%",
+    "last 2 versions",
+    "not dead",
+    "Firefox ESR"
+  ],
+  "dependencies": {}
 }

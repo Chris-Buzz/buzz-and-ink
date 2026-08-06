@@ -128,16 +128,70 @@ export const ICONS = {
   'wifi':           '<path d="M2.5 9a14 14 0 0 1 19 0M5.8 12.5a9.4 9.4 0 0 1 12.4 0M9 16a4.7 4.7 0 0 1 6 0"/><circle cx="12" cy="19.3" r="1.1"/>',
   'terminal':       '<rect x="3" y="4.5" width="18" height="15" rx="1.5"/><path d="m7 10 2.5 2.5L7 15M12.5 15.5H17"/>',
   'printer':        '<path d="M7 8.5V3.5h10v5"/><rect x="3.5" y="8.5" width="17" height="7.5" rx="1.5"/><path d="M7 13.5h10V21H7z"/>',
+
+  /* ── v0.9 — the expressive set ─────────────────────────────────────────────
+     The system had no vocabulary for delight — nothing to put on a sticker, a
+     celebration, or an empty state that wanted to be warm rather than neutral.
+     Same grammar as everything above: 24×24, 1.5 stroke, round caps, drawn
+     not borrowed. Still no emoji — these ink with currentColor and sit on the
+     baseline like type. ──────────────────────────────────────────────────── */
+
+  'sparkle':        '<path d="M12 2.8 13.9 9 20 10.9 13.9 12.8 12 19 10.1 12.8 4 10.9 10.1 9z"/><path d="M18.6 3.4v3M20.1 4.9h-3M5.4 16.6v2.4M6.6 17.8H4.2"/>',
+  'sparkles':       '<path d="M9.5 3.2 11 8l4.8 1.5L11 11 9.5 15.8 8 11 3.2 9.5 8 8z"/><path d="M17.2 13.4 18.2 16.4 21.2 17.4 18.2 18.4 17.2 21.4 16.2 18.4 13.2 17.4 16.2 16.4z"/>',
+  'star-burst':     '<path d="m12 2.6 2.3 4.9 5.3-1.4-1.4 5.3 4.9 2.3-4.9 2.3 1.4 5.3-5.3-1.4L12 21.4l-2.3-4.5-5.3 1.4 1.4-5.3L.9 11.7l4.9-2.3-1.4-5.3 5.3 1.4z"/>',
+  'party':          '<path d="M3.2 21 9 8.2 16.4 15z"/><path d="M13.5 6.5c.6-1.7 2.2-2.6 3.6-2M18 9.5c1.4-.9 3.2-.6 4.2.6M14.8 2.6l.5 1.7M20.6 5.1l-1.5 1M21.6 12.2l-1.8-.3"/>',
+  'gift':           '<rect x="3.2" y="9.5" width="17.6" height="11" rx="1.5"/><path d="M2.5 9.5h19M12 9.5V20.5"/><path d="M12 9.5C10.5 6.5 9 4.5 7.2 4.5a2.3 2.3 0 0 0 0 5zM12 9.5c1.5-3 3-5 4.8-5a2.3 2.3 0 0 1 0 5z"/>',
+  'crown':          '<path d="M3.2 7.5 6.5 13 12 5.5 17.5 13l3.3-5.5V19H3.2z"/><path d="M3.2 15.5h17.6"/>',
+  'flame':          '<path d="M12 21c3.9 0 6.5-2.5 6.5-6 0-4.5-4.5-6.2-3.5-11-2.5.8-4.5 3-4.5 5.5 0 1.6.6 2.4.6 3.2 0 1-.8 1.8-1.8 1.8s-1.8-.9-1.8-2.4c-1.2 1.2-2 3-2 4.9C5.5 18.5 8.1 21 12 21z"/>',
+  'rocket':         '<path d="M12 2.5c3.2 2.4 5 6 5 10.2l-2.4 3H9.4L7 12.7C7 8.5 8.8 4.9 12 2.5z"/><circle cx="12" cy="10" r="2"/><path d="M9.4 15.7 7 17.2v3l2.6-1.4M14.6 15.7 17 17.2v3l-2.6-1.4"/>',
+  'smile':          '<circle cx="12" cy="12" r="8.8"/><path d="M8.6 14.2a4.4 4.4 0 0 0 6.8 0"/><path d="M9.2 9.4v.6M14.8 9.4v.6"/>',
+  'heart-hand':     '<path d="M12 20.4 6.2 14.8a3.6 3.6 0 0 1 5.1-5.1l.7.7.7-.7a3.6 3.6 0 0 1 5.1 5.1z"/><path d="M12 9.7V3.4"/>',
+  'thumbs-up':      '<path d="M7 10.5 11.2 3a2.4 2.4 0 0 1 2.3 3l-.9 3.6h5.3a2 2 0 0 1 2 2.5l-1.6 6.4a2 2 0 0 1-2 1.5H7z"/><rect x="2.8" y="10.5" width="4.2" height="10.5" rx="1"/>',
+  'music':          '<circle cx="6" cy="17.5" r="2.8"/><circle cx="17.5" cy="15" r="2.8"/><path d="M8.8 17.5v-11l11.5-2.5v11"/><path d="M8.8 9.5 20.3 7"/>',
+  'coffee':         '<path d="M3.5 8.5h13V15a4.5 4.5 0 0 1-4.5 4.5H8A4.5 4.5 0 0 1 3.5 15z"/><path d="M16.5 10.5h2a2.5 2.5 0 0 1 0 5h-2"/><path d="M7 5.5V3M11 5.5V3"/>',
+  'leaf':           '<path d="M4.5 19.5C3 13 7 5.5 20 4.5c1 12-6 16.5-12.5 15"/><path d="M4.5 19.5C8 15 12 12.5 16.5 11"/>',
+  'cloud':          '<path d="M7 18.5a4.2 4.2 0 0 1-.5-8.4 5.6 5.6 0 0 1 10.8-1.2A3.9 3.9 0 0 1 17.5 18.5z"/>',
+  'rainbow':        '<path d="M2.5 19.5a9.5 9.5 0 0 1 19 0"/><path d="M6 19.5a6 6 0 0 1 12 0"/><path d="M9.5 19.5a2.5 2.5 0 0 1 5 0"/>',
+  'umbrella':       '<path d="M2.8 12.2a9.2 9.2 0 0 1 18.4 0z"/><path d="M12 12.2V19a2.2 2.2 0 0 0 4.4 0"/><path d="M12 3v-.8"/>',
+  'balloon':        '<path d="M12 15.5c3 0 5.2-2.8 5.2-6.3S15 3 12 3 6.8 5.7 6.8 9.2s2.2 6.3 5.2 6.3z"/><path d="m12 15.5-1 1.6h2z"/><path d="M11.5 17.5c1.5 1.2-.8 2 .5 3.5"/>',
+  'wand':           '<path d="m4 20 11-11"/><path d="m14 6 4 4"/><path d="M18.5 2.5v3M20 4h-3M6.5 3.5v2.2M7.6 4.6H5.4M20.5 13v2.2M21.6 14.1h-2.2"/>',
+  'palette':        '<path d="M12 21a9 9 0 1 1 9-9c0 2-1.6 2.8-3.2 2.8h-1.6a2 2 0 0 0-1.4 3.4A1.9 1.9 0 0 1 12 21z"/><circle cx="7.8" cy="12" r="1.1"/><circle cx="9.8" cy="8" r="1.1"/><circle cx="14.2" cy="7.6" r="1.1"/><circle cx="17" cy="10.8" r="1.1"/>',
+  'trophy':         '<path d="M7.5 3.5h9v6a4.5 4.5 0 0 1-9 0z"/><path d="M7.5 5.5H4.8v1.6a3 3 0 0 0 2.7 3M16.5 5.5h2.7v1.6a3 3 0 0 1-2.7 3"/><path d="M12 14v3.5M8.5 20.5h7l-.8-3h-5.4z"/>',
+  'target':         '<circle cx="12" cy="12" r="8.8"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4"/>',
+  'compass':        '<circle cx="12" cy="12" r="8.8"/><path d="m15.4 8.6-2 5.4-5.4 2 2-5.4z"/>',
+  'anchor':         '<circle cx="12" cy="5" r="2.4"/><path d="M12 7.4V21"/><path d="M7.5 11.5h9"/><path d="M3.5 14.5A8.5 8.5 0 0 0 12 21a8.5 8.5 0 0 0 8.5-6.5"/>',
+  'puzzle':         '<path d="M10 3.5h4v2.2a1.8 1.8 0 1 0 3.6 0V3.5h2.9v6h-2.2a1.8 1.8 0 1 0 0 3.6h2.2v7.4h-6v-2.2a1.8 1.8 0 1 0-3.6 0v2.2H3.5v-6h2.2a1.8 1.8 0 1 0 0-3.6H3.5v-4H10z"/>',
+  'moon-star':      '<path d="M20 13.5A8.5 8.5 0 1 1 10.5 4a7 7 0 0 0 9.5 9.5z"/><path d="m17.6 2.6.9 2 2 .9-2 .9-.9 2-.9-2-2-.9 2-.9z"/>',
 };
 
-const wrap = (name, inner, attrs = '') =>
+const wrap = (inner, attrs = '') =>
   `<svg ${attrs}viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" ` +
   `stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
 
-/** Standalone inline SVG string for one icon. */
+/**
+ * Class names are an allowlist, not an escape: this string is returned for
+ * interpolation into markup, so a quote in `cls` would close the attribute and
+ * everything after it becomes markup the browser trusts. Only the characters
+ * a CSS class can legally contain get through.
+ */
+const CLASS_OK = /^[A-Za-z0-9 _-]*$/;
+
+/**
+ * Standalone inline SVG string for one icon.
+ *
+ * `name` is looked up with a own-property check rather than plain `ICONS[name]`
+ * — a bare index reaches inherited keys, so `icon('constructor')` would find a
+ * function, pass the truthiness test, and stringify into the output.
+ *
+ * @param {string} name  Key from ICONS. Unknown names return ''.
+ * @param {string} [cls] Class attribute. Non-conforming values fall back to
+ *   'bi-icon' rather than being escaped — a mangled class is a silent bug,
+ *   a rejected one is not.
+ */
 export const icon = (name, cls = 'bi-icon') => {
-  const d = ICONS[name];
-  return d ? wrap(name, d, `class="${cls}" `) : '';
+  if (!Object.hasOwn(ICONS, name)) return '';
+  const safeCls = CLASS_OK.test(cls) ? cls : 'bi-icon';
+  return wrap(ICONS[name], `class="${safeCls}" `);
 };
 
 /** Mount the <symbol> sprite once; then reference via <use href="#bi-i-name">. */

@@ -32,7 +32,7 @@
   header.top .wrap{display:flex;align-items:center;gap:14px;height:62px}
   .wordmark{
     display:flex;align-items:center;gap:9px;
-    font-family:var(--bi-font-mono);font-weight:500;font-size:13px;letter-spacing:.16em;
+    font-family:var(--bi-font-mono);font-weight:500;font-size:var(--bi-text-s);letter-spacing:.16em;
     color:var(--bi-text);margin-right:10px;
   }
   .wordmark b{color:var(--bi-accent);font-weight:500}
@@ -44,7 +44,7 @@
     font-family:var(--bi-font-display);font-weight:520;font-size:clamp(30px,4vw,46px);
     line-height:1.04;letter-spacing:-.02em;margin:12px 0 8px;
   }
-  .hero p{font-size:15px;color:var(--bi-text-2);max-width:58ch;line-height:1.6}
+  .hero p{font-size:var(--bi-text-m);color:var(--bi-text-2);max-width:58ch;line-height:1.6}
 
   /* layout */
   .grid{display:grid;gap:var(--bi-space-4);margin-bottom:var(--bi-space-4)}
@@ -55,7 +55,7 @@
     padding:var(--bi-space-5);display:flex;flex-direction:column;
   }
   .panel > header{display:flex;align-items:center;gap:12px;margin-bottom:var(--bi-space-4)}
-  .panel > header h3{font-family:var(--bi-font-display);font-weight:520;font-size:16px;letter-spacing:-.01em}
+  .panel > header h3{font-family:var(--bi-font-display);font-weight:520;font-size:var(--bi-text-m);letter-spacing:-.01em}
   .panel > header .grow{flex:1}
 
   /* filter bar — one row, above the charts */
@@ -64,7 +64,7 @@
 
   footer.foot{
     border-top:1px solid var(--bi-line);margin-top:var(--bi-space-8);padding:var(--bi-space-6) 0;
-    font-family:var(--bi-font-mono);font-size:10.5px;letter-spacing:.1em;
+    font-family:var(--bi-font-mono);font-size:var(--bi-text-xs);letter-spacing:.1em;
     text-transform:uppercase;color:var(--bi-text-3);
   }
 
@@ -180,7 +180,7 @@
       <header>
         <h3>Reads by section</h3>
         <span class="grow"></span>
-        <label class="bi-switch" style="font-size:11.5px">
+        <label class="bi-switch" style="font-size:var(--bi-text-xs)">
           <input type="checkbox" id="stackToggle"><i></i> Stack
         </label>
       </header>

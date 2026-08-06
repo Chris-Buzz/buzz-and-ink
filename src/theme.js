@@ -118,9 +118,33 @@ const PAPER_STEPS = [
  *   '[data-bi-theme="name"]' to scope a theme to a subtree.
  * @returns {{name: string, css: string, tokens: Record<string,string>, apply: (doc?: Document) => void}}
  */
+/* Both of these end up inside a generated stylesheet, so both are validated
+   rather than escaped — CSS has no escape that makes an arbitrary string safe
+   in both a comment and a selector position.
+
+   `name` lands in a /* … *​/ comment and an element id: a name containing the
+   comment terminator would close the comment early and let whatever follows be
+   parsed as real CSS.
+
+   `selector` is injected verbatim as a rule head. A caller passing user input
+   here could otherwise close the block and append rules of their own. The
+   permitted set covers the selectors a theme legitimately needs — :root,
+   .class, #id, [data-attr="value"], descendants — and nothing that can
+   terminate a declaration block. */
+const NAME_OK = /^[A-Za-z0-9_-]{1,64}$/;
+const SELECTOR_OK = /^[A-Za-z0-9\s.#:_\-[\]="',>()*]{1,200}$/;
+
 export function createTheme(opts = {}) {
-  const name = opts.name || 'custom';
-  const selector = opts.selector || ':root';
+  const name = opts.name === undefined ? 'custom' : String(opts.name);
+  const selector = opts.selector === undefined ? ':root' : String(opts.selector);
+
+  if (!NAME_OK.test(name)) {
+    throw new Error(`createTheme: name must match ${NAME_OK} — got "${name}"`);
+  }
+  if (!SELECTOR_OK.test(selector) || selector.includes('}') || selector.includes('{')) {
+    throw new Error(`createTheme: unsafe selector "${selector}"`);
+  }
+
   const tokens = {};
 
   if (opts.accent) {
